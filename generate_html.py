@@ -6,6 +6,7 @@ from datetime import datetime
 DB_PATH = Path(__file__).parent / "comedy_images.db"
 INDEX_HTML_FILE = Path(__file__).parent / "indexv2.html"
 UPCOMING_HTML_FILE = Path(__file__).parent / "upcoming.html"
+SHOWS_HTML_FILE = Path(__file__).parent / "shows.html"
 
 def get_connection():
     conn = sqlite3.connect(DB_PATH)
@@ -28,7 +29,7 @@ def get_all_shows_with_images():
         JOIN venues v ON i.venue_id = v.id
         WHERE i.event_name IS NOT NULL AND i.event_name != ''
         ORDER BY i.scraped_at DESC
-        LIMIT 30
+        LIMIT 50
     """)
     shows = [dict(row) for row in cursor.fetchall()]
     conn.close()
@@ -140,11 +141,32 @@ def generate_upcoming_event_html(show):
 </div>
 """
 
+def generate_recurring_show_html(show):
+    """Generates HTML for a show-item on shows.html."""
+    title = extract_title(show['event_name'], max_length=50)
+    month, day, weekday = parse_date(show)
+
+    return f"""
+<div class="show-item" data-day="{weekday[:3].lower()}" data-price="paid" data-location="east">
+    <div class="show-day">
+        <span class="day">{weekday[:3].upper()}</span>
+        <span class="time"></span>
+    </div>
+    <div class="show-info">
+        <h3>{title}</h3>
+        <p class="host">Weekly Showcase</p>
+        <p class="venue">📍 {show['venue_name']}</p>
+        <p class="description">{extract_title(show['event_name'], 120)}</p>
+    </div>
+    <a href="{show['venue_url']}" class="btn btn-outline" target="_blank">Get Tickets</a>
+</div>
+"""
+
 def update_index_page(shows):
     """Updates the indexv2.html file."""
     print("Updating indexv2.html...")
     featured_show = shows[0]
-    regular_shows = shows[1:11] # Limit to 10
+    regular_shows = shows[1:11] 
 
     featured_show_html = generate_featured_show_html(featured_show)
     show_html_parts = [generate_show_html(show) for show in regular_shows]
@@ -164,7 +186,7 @@ def update_upcoming_page(shows):
     """Updates the upcoming.html file."""
     print("Updating upcoming.html...")
     top_picks = shows[:5]
-    upcoming_events = shows[5:]
+    upcoming_events = shows[5:20]
 
     top_picks_html = "\n".join([generate_top_pick_html(show) for show in top_picks])
     upcoming_html = "\n".join([generate_upcoming_event_html(show) for show in upcoming_events])
@@ -179,6 +201,20 @@ def update_upcoming_page(shows):
         f.write(content)
     print("Successfully updated upcoming.html.")
 
+def update_shows_page(shows):
+    """Updates the shows.html file."""
+    print("Updating shows.html...")
+    
+    shows_html = "\n".join([generate_recurring_show_html(show) for show in shows])
+
+    with open(SHOWS_HTML_FILE, 'r', encoding='utf-8') as f:
+        content = f.read()
+    
+    content = content.replace('<!-- SHOWS_PLACEHOLDER -->', shows_html)
+
+    with open(SHOWS_HTML_FILE, 'w', encoding='utf-8') as f:
+        f.write(content)
+    print("Successfully updated shows.html.")
 
 def main():
     print("Generating HTML for shows...")
@@ -190,6 +226,7 @@ def main():
 
     update_index_page(shows)
     update_upcoming_page(shows)
+    update_shows_page(shows)
 
 
 if __name__ == "__main__":

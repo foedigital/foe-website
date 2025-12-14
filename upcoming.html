@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upcoming Shows - ATX Comedy</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .event-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            display: grid;
+            grid-template-columns: 120px 1fr auto;
+            gap: 25px;
+            align-items: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .event-card:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateX(10px);
+        }
+
+        .event-date {
+            text-align: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #ff6b6b, #f9c80e);
+            border-radius: 10px;
+        }
+
+        .event-date .month {
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            opacity: 0.9;
+        }
+
+        .event-date .day {
+            font-size: 2.5rem;
+            font-weight: bold;
+            line-height: 1;
+        }
+
+        .event-date .weekday {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .event-info h3 {
+            color: #f9c80e;
+            font-size: 1.3rem;
+            margin-bottom: 8px;
+        }
+
+        .event-info .time {
+            color: #4ecdc4;
+            margin-bottom: 5px;
+        }
+
+        .event-info .venue {
+            color: #ff6b6b;
+            margin-bottom: 8px;
+        }
+
+        .event-info .description {
+            color: #aaa;
+            font-size: 0.95rem;
+        }
+
+        .event-info .price {
+            color: #4ecdc4;
+            font-weight: bold;
+            margin-top: 8px;
+        }
+
+        .special-badge {
+            display: inline-block;
+            background: #ff6b6b;
+            color: #fff;
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .venue-section {
+            margin-bottom: 50px;
+        }
+
+        .venue-section h3 {
+            color: #fff;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .venue-section h3 a {
+            color: #f9c80e;
+            text-decoration: none;
+        }
+
+        .venue-section h3 a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            .event-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .event-date {
+                justify-self: center;
+                width: 120px;
+            }
+        }
+
+        /* Featured Section */
+        .featured-section {
+            margin-bottom: 60px;
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .featured-card {
+            background: linear-gradient(135deg, rgba(249, 200, 14, 0.15) 0%, rgba(255, 107, 107, 0.15) 100%);
+            border: 2px solid #f9c80e;
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .featured-card::before {
+            content: 'TOP PICK';
+            position: absolute;
+            top: 15px;
+            right: -30px;
+            background: #f9c80e;
+            color: #1a1a2e;
+            padding: 5px 40px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            transform: rotate(45deg);
+        }
+
+        .featured-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(249, 200, 14, 0.2);
+        }
+
+        .featured-card h3 {
+            color: #f9c80e;
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            padding-right: 40px;
+        }
+
+        .featured-card .schedule {
+            color: #4ecdc4;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .featured-card .venue {
+            color: #ff6b6b;
+            margin-bottom: 12px;
+        }
+
+        .featured-card .description {
+            color: #ccc;
+            font-size: 0.95rem;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .featured-card .btn {
+            width: 100%;
+            text-align: center;
+        }
+
+        /* FREE Badge */
+        .free-badge {
+            display: inline-block;
+            background: #4ecdc4;
+            color: #1a1a2e;
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-left: 10px;
+            animation: pulse-free 2s infinite;
+            box-shadow: 0 0 15px rgba(78, 205, 196, 0.5);
+        }
+
+        @keyframes pulse-free {
+            0%, 100% {
+                box-shadow: 0 0 15px rgba(78, 205, 196, 0.5);
+            }
+            50% {
+                box-shadow: 0 0 25px rgba(78, 205, 196, 0.8);
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">ATX <span>Comedy</span></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shows.html">Shows</a></li>
+                <li><a href="upcoming.html" class="active">Upcoming</a></li>
+                <li><a href="merch.html">Merch</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Upcoming <span>Events</span></h1>
+            <p>Special shows, recordings, and one-time events happening in the next 30 days!</p>
+        </div>
+    </section>
+
+    <section>
+        <!-- Featured Shows -->
+        <div class="featured-section">
+            <h2>Top Picks</h2>
+            <div class="featured-grid">
+
+                <div class="featured-card">
+                    <h3>Banana Phone <span class="free-badge">FREE</span></h3>
+                    <p class="schedule">Every Sunday @ 10:00 PM</p>
+                    <p class="venue">📍 Creek and the Cave</p>
+                    <p class="description">Ring ring ring! Austin's wildest late-night open mic hosted by Kandace Medina. Doors at 9:30 PM, hecklers ring in!</p>
+                    <a href="https://www.instagram.com/bananaphonemic/" class="btn" target="_blank">Follow on Instagram</a>
+                </div>
+
+                <div class="featured-card">
+                    <h3>The Absolute Show</h3>
+                    <p class="schedule">Every Wednesday @ 8:00 PM</p>
+                    <p class="venue">📍 Creek and the Cave</p>
+                    <p class="description">Late night type comedy experience with no rules! Hosted by Lukas McCrary. $10 online, $15 at door.</p>
+                    <a href="https://www.creekandcave.com/" class="btn" target="_blank">Get Tickets</a>
+                </div>
+
+                <div class="featured-card">
+                    <h3>Black Rabbit Underground</h3>
+                    <p class="schedule">Every Saturday @ 8:00 PM</p>
+                    <p class="venue">📍 Black Rabbit ATX (BYOB)</p>
+                    <p class="description">Austin's only BYOB underground comedy club! New lineup every show with the best touring and local comics.</p>
+                    <a href="https://www.eventbrite.com/e/black-rabbit-underground-comedy-tickets-753496647757" class="btn" target="_blank">Get Tickets</a>
+                </div>
+
+                <div class="featured-card">
+                    <h3>Roast Battle: Austin</h3>
+                    <p class="schedule">Friday, December 26</p>
+                    <p class="venue">📍 Creek and the Cave</p>
+                    <p class="description">Comedy Store league format with five brutal matchups, championship battles, and surprise judges!</p>
+                    <a href="https://www.creekandcave.com/" class="btn" target="_blank">Get Tickets</a>
+                </div>
+
+                <div class="featured-card">
+                    <h3>Optimum Noctis</h3>
+                    <p class="schedule">Every Tuesday Evening</p>
+                    <p class="venue">📍 Creek and the Cave</p>
+                    <p class="description">Hosted by LeMaire Lee, Nate Marshall & Shawn Gardini. A can't-miss Tuesday night showcase!</p>
+                    <a href="https://www.creekandcave.com/" class="btn" target="_blank">Get Tickets</a>
+                </div>
+
+            </div>
+        </div>
+
+        <h2>December 2025 Events</h2>
+
+        <!-- Creek and the Cave -->
+        <div class="venue-section">
+            <h3><a href="https://www.creekandcave.com/" target="_blank">Creek and the Cave</a> - 611 E 7th St</h3>
+
+            <div class="event-card">
+                <div class="event-date">
+                    <span class="month">Dec</span>
+                    <span class="day">13</span>
+                    <span class="weekday">Saturday</span>
+                </div>
+                <div class="event-info">
+                    <h3>Vanessa Gonzalez - LIVE SPECIAL RECORDING <span class="special-badge">Special</span></h3>
+                    <p class="time">Multiple Showtimes</p>
+                    <p class="venue">📍 Creek and the Cave</p>
+                    <p class="description">Named one of Variety's Top 10 Comics to Watch in 2022. Featured on Netflix, HBO MAX, and Comedy Central!</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="event-card">
+                <div class="event-date">
+                    <span class="month">Dec</span>
+                    <span class="day">20</span>
+                    <span class="weekday">Saturday</span>
+                </div>
+                <div class="event-info">
+                    <h3>Christmas at The Creek! <span class="special-badge">Holiday</span></h3>
+                    <p class="time">Evening Show</p>
+                    <p class="venue">📍 Creek and the Cave</p>
+                    <p class="description">Fourth annual event! Austin's best comics, gift giveaway including PS5, Santa meet-and-greet. Costumes encouraged!</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="event-card">
+                <div class="event-date">
+                    <span class="month">Dec</span>
+                    <span class="day">22</span>
+                    <span class="weekday">Monday</span>
+                </div>
+                <div class="event-info">
+                    <h3>Laughs with the Staff</h3>
+                    <p class="time">Evening Show</p>
+                    <p class="venue">📍 Creek and the Cave</p>
+                    <p class="description">Perfect show for a first time viewer! Featuring club staff favorites in a relaxed setting.</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="event-card">
+                <div class="event-date">
+                    <span class="month">Dec</span>
+                    <span class="day">23</span>
+                    <span class="weekday">Tuesday</span>
+                </div>
+                <div class="event-info">
+                    <h3>Algonauts</h3>
+                    <p class="time">Evening Show</p>
+                    <p class="venue">📍 Creek and the Cave</p>
+                    <p class="description">Interactive live show exploring internet algorithms with audience participation!</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="event-card">
+                <div class="event-date">
+                    <span class="month">Dec</span>
+                    <span class="day">23</span>
+                    <span class="weekday">Tuesday</span>
+                </div>
+                <div class="event-info">
+                    <h3>The Roast of Santa <span class="special-badge">Holiday</span></h3>
+                    <p class="time">Evening Show</p>
+                    <p class="venue">📍 Creek and the Cave</p>
+                    <p class="description">Holiday characters roast Santa - as joyful as the season and dark as coal!</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="event-card">
+                <div class="event-date">
+                    <span class="month">Dec</span>
+                    <span class="day">24</span>
+                    <span class="weekday">Wednesday</span>
+                </div>
+                <div class="event-info">
+                    <h3>King Of The Creek</h3>
+                    <p class="time">Evening Show</p>
+                    <p class="venue">📍 Creek and the Cave</p>
+                    <p class="description">Professionals versus amateurs competing for the throne and cash prize!</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="event-card">
+                <div class="event-date">
+                    <span class="month">Dec</span>
+                    <span class="day">26</span>
+                    <span class="weekday">Friday</span>
+                </div>
+                <div class="event-info">
+                    <h3>Roast Battle: Austin</h3>
+                    <p class="time">Evening Show</p>
+                    <p class="venue">📍 Creek and the Cave</p>
+                    <p class="description">Comedy Store league format with five matchups, championship battles, and surprise judges!</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="event-card">
+                <div class="event-date">
+                    <span class="month">Dec</span>
+                    <span class="day">30</span>
+                    <span class="weekday">Tuesday</span>
+                </div>
+                <div class="event-info">
+                    <h3>The Roast of 2025 <span class="special-badge">Special</span></h3>
+                    <p class="time">Evening Show</p>
+                    <p class="venue">📍 Creek and the Cave</p>
+                    <p class="description">Austin's sharpest comics deliver a savage takedown of 2025's headlines and viral moments!</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="event-card">
+                <div class="event-date">
+                    <span class="month">Dec</span>
+                    <span class="day">31</span>
+                    <span class="weekday">Wednesday</span>
+                </div>
+                <div class="event-info">
+                    <h3>Lukas McCrary's NYE Comedy Spectacular <span class="special-badge">NYE</span></h3>
+                    <p class="time">Doors 30 min before</p>
+                    <p class="venue">📍 Creek and the Cave</p>
+                    <p class="description">Ring in the New Year with laughs! NY Times called his work "daring and completely unnecessary."</p>
+                    <p class="price">$15 online, $20 at door</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+        </div>
+
+        <!-- Other Venues -->
+        <div class="venue-section">
+            <h3>More Venues Coming Soon</h3>
+            <p style="color: #aaa; padding: 20px;">
+                We're working on adding events from Comedy Mothership, Velveeta Room, Sunset Strip, East Austin Comedy, and Rozco's Comedy.
+                Check back soon or visit their websites directly:
+            </p>
+            <div style="display: flex; flex-wrap: wrap; gap: 15px; padding: 0 20px;">
+                <a href="https://comedymothership.com/" class="btn btn-outline" target="_blank">Comedy Mothership</a>
+                <a href="https://www.thevelveetaroom.com/" class="btn btn-outline" target="_blank">Velveeta Room</a>
+                <a href="https://www.sunsetstripatx.com/" class="btn btn-outline" target="_blank">Sunset Strip ATX</a>
+                <a href="https://eastaustincomedy.com/" class="btn btn-outline" target="_blank">East Austin Comedy</a>
+                <a href="https://www.rozcoscomedy.com/" class="btn btn-outline" target="_blank">Rozco's Comedy</a>
+            </div>
+        </div>
+
+    </section>
+
+    <footer>
+        <p>ATX Comedy - Funny Over Everything</p>
+        <p style="margin-top: 10px;">Supporting Austin's Stand-Up Comedy Scene</p>
+        <div class="social-links">
+            <a href="#">📸</a>
+            <a href="#">🐦</a>
+            <a href="#">📘</a>
+        </div>
+        <p style="margin-top: 20px; font-size: 0.9rem;">&copy; 2024 ATX Comedy. All rights reserved.</p>
+    </footer>
+</body>
+</html>

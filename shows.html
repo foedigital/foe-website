@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shows - ATX Comedy</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Filter Styles */
+        .filters {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 40px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .filters h3 {
+            color: #f9c80e;
+            margin-bottom: 20px;
+            font-size: 1.3rem;
+        }
+
+        .filter-group {
+            margin-bottom: 20px;
+        }
+
+        .filter-group:last-child {
+            margin-bottom: 0;
+        }
+
+        .filter-group label.group-label {
+            display: block;
+            color: #fff;
+            font-weight: bold;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: #ccc;
+            padding: 10px 18px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        .filter-btn:hover {
+            border-color: #f9c80e;
+            color: #f9c80e;
+        }
+
+        .filter-btn.active {
+            background: #f9c80e;
+            border-color: #f9c80e;
+            color: #1a1a2e;
+            font-weight: bold;
+        }
+
+        .clear-filters {
+            background: transparent;
+            border: 2px solid #ff6b6b;
+            color: #ff6b6b;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+        }
+
+        .clear-filters:hover {
+            background: #ff6b6b;
+            color: #fff;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 60px 20px;
+            color: #888;
+            display: none;
+        }
+
+        .no-results h3 {
+            color: #f9c80e;
+            margin-bottom: 10px;
+        }
+
+        .show-item {
+            display: grid;
+        }
+
+        .show-item.hidden {
+            display: none;
+        }
+
+        /* Price badge */
+        .price-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .price-badge.free {
+            background: transparent;
+            border: 3px solid #e74c3c;
+            color: #e74c3c;
+            font-weight: bold;
+            text-transform: uppercase;
+            transform: rotate(-10deg);
+            padding: 5px 10px;
+            border-radius: 8px;
+        }
+
+        .price-badge.paid {
+            background: #ff6b6b;
+            color: #fff;
+        }
+
+        /* Location badge */
+        .location-badge {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            margin-left: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            color: #aaa;
+        }
+
+        @media (max-width: 768px) {
+            .filter-options {
+                gap: 8px;
+            }
+            .filter-btn {
+                padding: 8px 14px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">ATX <span>Comedy</span></a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shows.html" class="active">Shows</a></li>
+                <li><a href="upcoming.html">Upcoming</a></li>
+                <li><a href="merch.html">Merch</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Weekly <span>Shows</span></h1>
+            <p>Austin's best recurring comedy shows. Mark your calendar and never miss a laugh!</p>
+        </div>
+    </section>
+
+    <section>
+        <h2>Recurring Shows in ATX</h2>
+
+        <!-- Filters -->
+        <div class="filters">
+            <h3>Filter Shows</h3>
+
+            <div class="filter-group">
+                <label class="group-label">Price</label>
+                <div class="filter-options" id="price-filters">
+                    <button class="filter-btn active" data-filter="price" data-value="all">All</button>
+                    <button class="filter-btn" data-filter="price" data-value="free">Free</button>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="group-label">Day of Week</label>
+                <div class="filter-options" id="day-filters">
+                    <button class="filter-btn" data-filter="day" data-value="mon">Mon</button>
+                    <button class="filter-btn" data-filter="day" data-value="tue">Tue</button>
+                    <button class="filter-btn" data-filter="day" data-value="wed">Wed</button>
+                    <button class="filter-btn" data-filter="day" data-value="thu">Thu</button>
+                    <button class="filter-btn" data-filter="day" data-value="fri">Fri</button>
+                    <button class="filter-btn" data-filter="day" data-value="sat">Sat</button>
+                    <button class="filter-btn" data-filter="day" data-value="sun">Sun</button>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <label class="group-label">Location</label>
+                <div class="filter-options" id="location-filters">
+                    <button class="filter-btn" data-filter="location" data-value="dirty6th">Dirty 6th</button>
+                    <button class="filter-btn" data-filter="location" data-value="east">East Austin</button>
+                    <button class="filter-btn" data-filter="location" data-value="other">Other</button>
+                </div>
+            </div>
+
+            <button class="clear-filters" onclick="clearAllFilters()">Clear All Filters</button>
+        </div>
+
+        <div class="no-results" id="no-results">
+            <h3>No shows found</h3>
+            <p>Try adjusting your filters to find more shows.</p>
+        </div>
+
+        <div class="show-list" id="show-list">
+
+<!-- MONDAY -->
+            <div class="show-item" data-day="mon" data-price="free" data-location="east">
+                <div class="show-day">
+                    <span class="day">MON</span>
+                    <span class="time">6:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>The Monday Gamble Mic <span class="price-badge free">Free</span></h3>
+                    <p class="host">Open Mic - Signups in person</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">Roll the dice on new talent! Sign up in person and take your shot at the mic.</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">More Info</a>
+            </div>
+
+            <div class="show-item" data-day="mon" data-price="paid" data-location="east">
+                <div class="show-day">
+                    <span class="day">MON</span>
+                    <span class="time">7:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>MONDAZE</h3>
+                    <p class="host">Weekly Showcase</p>
+                    <p class="venue">📍 East Austin Comedy Club <span class="location-badge">East Austin</span></p>
+                    <p class="description">Cure your case of the Mondays with live stand-up comedy!</p>
+                </div>
+                <a href="https://eastaustincomedy.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="show-item" data-day="mon" data-price="paid" data-location="east">
+                <div class="show-day">
+                    <span class="day">MON</span>
+                    <span class="time">8:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Clocked Out Comedy</h3>
+                    <p class="host">Hosted by: HBO's Dave Jay</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">The showcase you don't want to miss! Late night happy hour included.</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="show-item" data-day="mon" data-price="paid" data-location="east">
+                <div class="show-day">
+                    <span class="day">MON</span>
+                    <span class="time">10:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>New Joke Monday</h3>
+                    <p class="host">Hosted by: Sam Hunter</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">Austin's best comedians trying out brand new material. See jokes before anyone else!</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="show-item" data-day="mon" data-price="free" data-location="east">
+                <div class="show-day">
+                    <span class="day">MON</span>
+                    <span class="time">12:00 AM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Monday Night Gimmick Mic <span class="price-badge free">Free</span></h3>
+                    <p class="host">Hosted by: Matt Alvarez</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">New gimmick every Monday! 2-min sets (3 min with gimmick). Expect the unexpected.</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">More Info</a>
+            </div>
+
+            <!-- TUESDAY -->
+            <div class="show-item" data-day="tue" data-price="free" data-location="east">
+                <div class="show-day">
+                    <span class="day">TUE</span>
+                    <span class="time">6:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Dunk Tank <span class="price-badge free">Free</span></h3>
+                    <p class="host">Open Mic - Signup at 5:45 PM</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">An evening of laughs where comics try fresh material. Capped at 15 comics.</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">More Info</a>
+            </div>
+
+            <div class="show-item" data-day="tue" data-price="free" data-location="east">
+                <div class="show-day">
+                    <span class="day">TUE</span>
+                    <span class="time">12:00 AM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Hood Therapy Tuesdays <span class="price-badge free">Free</span></h3>
+                    <p class="host">Hosted by: Xavier Cardona</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">Late night open mic therapy session. Signup at 11:30 PM.</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">More Info</a>
+            </div>
+
+            <!-- WEDNESDAY -->
+            <div class="show-item" data-day="wed" data-price="free" data-location="east">
+                <div class="show-day">
+                    <span class="day">WED</span>
+                    <span class="time">6:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Off The Cuff <span class="price-badge free">Free</span></h3>
+                    <p class="host">Hosted by: Rachel Wolfson</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">Riff Mic! Improv meets stand-up. Signups at 5:30 PM.</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">More Info</a>
+            </div>
+
+            <div class="show-item" data-day="wed" data-price="paid" data-location="east">
+                <div class="show-day">
+                    <span class="day">WED</span>
+                    <span class="time">7:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Cold Brew</h3>
+                    <p class="host">Weekly Showcase</p>
+                    <p class="venue">📍 East Austin Comedy Club <span class="location-badge">East Austin</span></p>
+                    <p class="description">Smooth comedy to get you through the week. Fresh talent every Wednesday.</p>
+                </div>
+                <a href="https://eastaustincomedy.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="show-item" data-day="wed" data-price="paid" data-location="east">
+                <div class="show-day">
+                    <span class="day">WED</span>
+                    <span class="time">8:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>The Absolute Show</h3>
+                    <p class="host">Hosted by: Lukas McCrary</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">Late night type comedy experience with no rules! $10 online, $15 at door.</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="show-item" data-day="wed" data-price="paid" data-location="east">
+                <div class="show-day">
+                    <span class="day">WED</span>
+                    <span class="time">8:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Comedians On The Rise</h3>
+                    <p class="host">Showcase</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">Stand-up comedy showcase jam packed with Austin's biggest and brightest rising stars!</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="show-item" data-day="wed" data-price="paid" data-location="east">
+                <div class="show-day">
+                    <span class="day">WED</span>
+                    <span class="time">10:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>The Forge</h3>
+                    <p class="host">Presented by: Cody Miears & Roderick McDaniel</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">Stand-up comedy showcase featuring comics you need to know!</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="show-item" data-day="wed" data-price="free" data-location="east">
+                <div class="show-day">
+                    <span class="day">WED</span>
+                    <span class="time">12:00 AM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Wild West Wednesdays <span class="price-badge free">Free</span></h3>
+                    <p class="host">Hosted by: Hunter Parker</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">Open mic madness! 11:30 PM signup, 20-comic cap. Anything goes.</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">More Info</a>
+            </div>
+
+            <!-- THURSDAY -->
+            <div class="show-item" data-day="thu" data-price="free" data-location="east">
+                <div class="show-day">
+                    <span class="day">THU</span>
+                    <span class="time">6:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Bear Arms: Open Mic <span class="price-badge free">Free</span></h3>
+                    <p class="host">Hosted by: Robert May</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">Come armed with jokes! Signups at 5:45 PM.</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">More Info</a>
+            </div>
+
+            <div class="show-item" data-day="thu" data-price="paid" data-location="east">
+                <div class="show-day">
+                    <span class="day">THU</span>
+                    <span class="time">7:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Comic of the Week</h3>
+                    <p class="host">Featured Showcase</p>
+                    <p class="venue">📍 East Austin Comedy Club <span class="location-badge">East Austin</span></p>
+                    <p class="description">One comic, one hour, one amazing show. See Austin's best do extended sets.</p>
+                </div>
+                <a href="https://eastaustincomedy.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="show-item" data-day="thu" data-price="paid" data-location="east">
+                <div class="show-day">
+                    <span class="day">THU</span>
+                    <span class="time">8:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Black Rabbit Underground Comedy</h3>
+                    <p class="host">New lineup every show</p>
+                    <p class="venue">📍 Black Rabbit ATX <span class="location-badge">East Austin</span></p>
+                    <p class="description">Austin's only BYOB underground comedy club! Best nationally touring and local comics.</p>
+                </div>
+                <a href="https://www.eventbrite.com/e/black-rabbit-underground-comedy-tickets-753496647757" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="show-item" data-day="thu" data-price="paid" data-location="east">
+                <div class="show-day">
+                    <span class="day">THU</span>
+                    <span class="time">9:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Goon Sesh Comedy</h3>
+                    <p class="host">Weekly Showcase</p>
+                    <p class="venue">📍 East Austin Comedy Club <span class="location-badge">East Austin</span></p>
+                    <p class="description">Get goofy with Austin's wildest comics every Thursday night.</p>
+                </div>
+                <a href="https://eastaustincomedy.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="show-item" data-day="thu" data-price="free" data-location="east">
+                <div class="show-day">
+                    <span class="day">THU</span>
+                    <span class="time">12:00 AM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Word Up! Open Mic <span class="price-badge free">Free</span></h3>
+                    <p class="host">Hosted by: Jordyn Aguilar</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">Late night laughs for the true comedy heads.</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">More Info</a>
+            </div>
+
+            <!-- FRIDAY -->
+            <div class="show-item" data-day="fri" data-price="paid" data-location="east">
+                <div class="show-day">
+                    <span class="day">FRI</span>
+                    <span class="time">6:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Daywalkers Comedy</h3>
+                    <p class="host">Early Show</p>
+                    <p class="venue">📍 East Austin Comedy Club <span class="location-badge">East Austin</span></p>
+                    <p class="description">Comedy for those who don't stay up late! Perfect way to start your Friday night.</p>
+                </div>
+                <a href="https://eastaustincomedy.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="show-item" data-day="fri" data-price="paid" data-location="east">
+                <div class="show-day">
+                    <span class="day">FRI</span>
+                    <span class="time">8:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Black Rabbit Underground Comedy</h3>
+                    <p class="host">New lineup every show</p>
+                    <p class="venue">📍 Black Rabbit ATX <span class="location-badge">East Austin</span></p>
+                    <p class="description">Austin's only BYOB underground comedy club! Bring your own drinks, we bring the laughs.</p>
+                </div>
+                <a href="https://www.eventbrite.com/e/black-rabbit-underground-comedy-tickets-753496647757" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="show-item" data-day="fri" data-price="paid" data-location="east">
+                <div class="show-day">
+                    <span class="day">FRI</span>
+                    <span class="time">8:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Creek Featured</h3>
+                    <p class="host">Rotating Lineups</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">See our favorite comics doing feature length sets. VIP seating available!</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="show-item" data-day="fri" data-price="paid" data-location="east">
+                <div class="show-day">
+                    <span class="day">FRI</span>
+                    <span class="time">10:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>FREAKY</h3>
+                    <p class="host">Late Night Show</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">Dark, dirty and unapologetically hilarious! Inappropriate comedy from HBO & Comedy Central comics.</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <!-- SATURDAY -->
+            <div class="show-item" data-day="sat" data-price="free" data-location="east">
+                <div class="show-day">
+                    <span class="day">SAT</span>
+                    <span class="time">4:15 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>New Joke Saturday Open Mic <span class="price-badge free">Free</span></h3>
+                    <p class="host">Hosted by: JT Kelley</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">Up and coming and veteran comedians work new material. Happy hour pricing!</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">More Info</a>
+            </div>
+
+            <div class="show-item" data-day="sat" data-price="paid" data-location="east">
+                <div class="show-day">
+                    <span class="day">SAT</span>
+                    <span class="time">8:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Black Rabbit Underground Comedy</h3>
+                    <p class="host">New lineup every show</p>
+                    <p class="venue">📍 Black Rabbit ATX <span class="location-badge">East Austin</span></p>
+                    <p class="description">Saturday night at Austin's only BYOB underground comedy club!</p>
+                </div>
+                <a href="https://www.eventbrite.com/e/black-rabbit-underground-comedy-tickets-753496647757" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="show-item" data-day="sat" data-price="paid" data-location="east">
+                <div class="show-day">
+                    <span class="day">SAT</span>
+                    <span class="time">8:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Main Course Comedy</h3>
+                    <p class="host">Secret Lineup</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">Secret lineup of the best comedians in Texas! Many featured on HBO, Netflix, SNL.</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="show-item" data-day="sat" data-price="paid" data-location="east">
+                <div class="show-day">
+                    <span class="day">SAT</span>
+                    <span class="time">10:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>FREAKY</h3>
+                    <p class="host">Late Night Show</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">Dark, dirty and unapologetically hilarious! The show that pushes every boundary.</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <!-- SUNDAY -->
+            <div class="show-item" data-day="sun" data-price="free" data-location="east">
+                <div class="show-day">
+                    <span class="day">SUN</span>
+                    <span class="time">3:30 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Writers' Room <span class="price-badge free">Free</span></h3>
+                    <p class="host">Hosted by: Emmy-nominated Dan French</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">Comedy Accelerator Workshop. Weekly development for comedians and writers. 3:30-5:00 PM.</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">More Info</a>
+            </div>
+
+            <div class="show-item" data-day="sun" data-price="paid" data-location="east">
+                <div class="show-day">
+                    <span class="day">SUN</span>
+                    <span class="time">7:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Funday</h3>
+                    <p class="host">Sunday Showcase</p>
+                    <p class="venue">📍 East Austin Comedy Club <span class="location-badge">East Austin</span></p>
+                    <p class="description">End your weekend with laughs! The perfect Sunday night comedy show.</p>
+                </div>
+                <a href="https://eastaustincomedy.com/" class="btn btn-outline" target="_blank">Get Tickets</a>
+            </div>
+
+            <div class="show-item" data-day="sun" data-price="free" data-location="east">
+                <div class="show-day">
+                    <span class="day">SUN</span>
+                    <span class="time">7:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Down the Rabbit Hole <span class="price-badge free">Free</span></h3>
+                    <p class="host">Free BYOB Comedy Showcase</p>
+                    <p class="venue">📍 Black Rabbit ATX <span class="location-badge">East Austin</span></p>
+                    <p class="description">Rapid fire quick sets with Austin's best comic talent. Free show, bring your own drinks!</p>
+                </div>
+                <a href="https://www.eventbrite.com/e/down-the-rabbit-hole-free-byob-comedy-showcase-tickets-924641316067" class="btn btn-outline" target="_blank">RSVP Free</a>
+            </div>
+
+            <div class="show-item" data-day="sun" data-price="free" data-location="east">
+                <div class="show-day">
+                    <span class="day">SUN</span>
+                    <span class="time">8:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>The Creek Open Mic <span class="price-badge free">Free</span></h3>
+                    <p class="host">Open Mic</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">Free with RSVP, $5 at door. All-day happy hour! Sign up via email.</p>
+                </div>
+                <a href="https://www.creekandcave.com/" class="btn btn-outline" target="_blank">RSVP</a>
+            </div>
+
+            <div class="show-item" data-day="sun" data-price="free" data-location="east">
+                <div class="show-day">
+                    <span class="day">SUN</span>
+                    <span class="time">10:00 PM</span>
+                </div>
+                <div class="show-info">
+                    <h3>Banana Phone <span class="price-badge free">Free</span></h3>
+                    <p class="host">Hosted by: Kandace Medina</p>
+                    <p class="venue">📍 Creek and the Cave <span class="location-badge">East Austin</span></p>
+                    <p class="description">Ring ring ring ring ring ring ring... Banana Phone! Doors at 9:30 PM, ~2 hour runtime. Hecklers ring in!</p>
+                </div>
+                <a href="https://www.instagram.com/bananaphonemic/" class="btn btn-outline" target="_blank">Follow</a>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        <p>ATX Comedy - Funny Over Everything</p>
+        <p style="margin-top: 10px;">Supporting Austin's Stand-Up Comedy Scene</p>
+        <div class="social-links">
+            <a href="#">📸</a>
+            <a href="#">🐦</a>
+            <a href="#">📘</a>
+        </div>
+        <p style="margin-top: 20px; font-size: 0.9rem;">&copy; 2024 ATX Comedy. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Active filters state
+        const activeFilters = {
+            price: [],
+            day: [],
+            location: []
+        };
+
+        // Get all filter buttons and show items
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        const priceFilterButtons = document.querySelectorAll('#price-filters .filter-btn');
+        const showItems = document.querySelectorAll('.show-item');
+        const noResults = document.getElementById('no-results');
+
+        // Add click event to all filter buttons
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const filterType = button.dataset.filter;
+                const filterValue = button.dataset.value;
+
+                if (filterType === 'price') {
+                    // Handle price filters separately
+                    priceFilterButtons.forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+
+                    if (filterValue === 'all') {
+                        activeFilters.price = [];
+                    } else {
+                        activeFilters.price = [filterValue];
+                    }
+                } else {
+                    // Toggle active state for other filters
+                    button.classList.toggle('active');
+
+                    // Update active filters
+                    if (button.classList.contains('active')) {
+                        activeFilters[filterType].push(filterValue);
+                    } else {
+                        const index = activeFilters[filterType].indexOf(filterValue);
+                        if (index > -1) {
+                            activeFilters[filterType].splice(index, 1);
+                        }
+                    }
+                }
+
+                // Apply filters
+                applyFilters();
+            });
+        });
+
+        function applyFilters() {
+            let visibleCount = 0;
+
+            showItems.forEach(item => {
+                const itemDay = item.dataset.day;
+                const itemPrice = item.dataset.price;
+                const itemLocation = item.dataset.location;
+
+                // Check if item matches all active filters
+                const matchesDay = activeFilters.day.length === 0 || activeFilters.day.includes(itemDay);
+                const matchesPrice = activeFilters.price.length === 0 || activeFilters.price.includes(itemPrice);
+                const matchesLocation = activeFilters.location.length === 0 || activeFilters.location.includes(itemLocation);
+
+                if (matchesDay && matchesPrice && matchesLocation) {
+                    item.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    item.classList.add('hidden');
+                }
+            });
+
+            // Show/hide no results message
+            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        function clearAllFilters() {
+            // Reset active filters
+            activeFilters.price = [];
+            activeFilters.day = [];
+            activeFilters.location = [];
+
+            // Remove active class from all buttons
+            filterButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Set 'All' price filter to active
+            document.querySelector('#price-filters .filter-btn[data-value="all"]').classList.add('active');
+
+            // Show all items
+            showItems.forEach(item => {
+                item.classList.remove('hidden');
+            });
+
+            // Hide no results message
+            noResults.style.display = 'none';
+        }
+    </script>
+</body>
+</html>

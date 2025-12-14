@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(start chrome \"C:\\Users\\willm\\Projects\\AtxComedy\\index.html\")",
+      "WebFetch(domain:beacons.ai)",
+      "WebFetch(domain:www.instagram.com)",
+      "WebFetch(domain:www.thevelveetaroom.com)",
+      "WebFetch(domain:www.creekandcave.com)",
+      "WebFetch(domain:comedymothership.com)",
+      "WebFetch(domain:www.sunsetstripatx.com)",
+      "WebFetch(domain:eastaustincomedy.com)",
+      "WebFetch(domain:linktr.ee)",
+      "WebFetch(domain:www.rozcoscomedy.com)",
+      "Bash(git --version:*)",
+      "Bash(git init:*)"
+    ]
+  }
+}

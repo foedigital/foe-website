@@ -4,7 +4,7 @@ import re
 from datetime import datetime
 
 DB_PATH = Path(__file__).parent / "comedy_images.db"
-INDEX_HTML_FILE = Path(__file__).parent / "indexv2.html"
+INDEX_HTML_FILE = Path(__file__).parent / "index.html"
 UPCOMING_HTML_FILE = Path(__file__).parent / "upcoming.html"
 SHOWS_HTML_FILE = Path(__file__).parent / "shows.html"
 

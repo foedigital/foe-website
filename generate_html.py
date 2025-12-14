@@ -54,7 +54,6 @@ def parse_date(show):
         month_str = date_match.group(1)[:3].upper()
         day_str = date_match.group(2)
         
-        # Simple weekday guess
         try:
             date_obj = datetime.strptime(f"2025 {month_str} {day_str}", "%Y %b %d")
             weekday_str = date_obj.strftime('%A')
@@ -65,6 +64,26 @@ def parse_date(show):
 
     return 'TBA', '', ''
 
+def generate_featured_show_html(show):
+    """Generates the HTML for the featured show section."""
+    title = extract_title(show['event_name'], max_length=100)
+    image_path = show['local_path'].replace('\\', '/')
+    description = extract_title(show['event_name'], max_length=200)
+
+    return f"""
+<section class="featured-show-section">
+    <h2>Featured Show</h2>
+    <div class="featured-show-card">
+        <img src="{image_path}" alt="{title}" class="featured-show-image">
+        <div class="featured-show-info">
+            <h3>{title}</h3>
+            <p class="venue">📍 {show['venue_name']}</p>
+            <p class="description">{description}</p>
+            <a href="{show['venue_url']}" class="btn" target="_blank">Get Tickets</a>
+        </div>
+    </div>
+</section>
+"""
 
 def generate_show_html(show):
     """Generates the HTML for a single show item for indexv2.html."""
@@ -124,12 +143,17 @@ def generate_upcoming_event_html(show):
 def update_index_page(shows):
     """Updates the indexv2.html file."""
     print("Updating indexv2.html...")
-    show_html_parts = [generate_show_html(show) for show in shows[:10]] # Limit to 10
+    featured_show = shows[0]
+    regular_shows = shows[1:11] # Limit to 10
+
+    featured_show_html = generate_featured_show_html(featured_show)
+    show_html_parts = [generate_show_html(show) for show in regular_shows]
     shows_html = "\n".join(show_html_parts)
 
     with open(INDEX_HTML_FILE, 'r', encoding='utf-8') as f:
         content = f.read()
     
+    content = content.replace('<!-- FEATURED_SHOW_PLACEHOLDER -->', featured_show_html)
     content = content.replace('<!-- SHOW_LIST_PLACEHOLDER -->', shows_html)
 
     with open(INDEX_HTML_FILE, 'w', encoding='utf-8') as f:
@@ -149,7 +173,6 @@ def update_upcoming_page(shows):
         content = f.read()
 
     content = content.replace('<!-- TOP_PICKS_PLACEHOLDER -->', top_picks_html)
-    # This is a simplification, assumes all upcoming are at the Creek
     content = content.replace('<!-- UPCOMING_EVENTS_PLACEHOLDER_CREEK -->', upcoming_html)
 
     with open(UPCOMING_HTML_FILE, 'w', encoding='utf-8') as f:

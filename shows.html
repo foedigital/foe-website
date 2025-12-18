@@ -6,30 +6,25 @@
     <title>Shows - ATX Comedy</title>
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Filter Styles */
         .filters {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(20, 20, 20, 0.9);
             border-radius: 15px;
             padding: 25px;
             margin-bottom: 40px;
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid #2a2a2a;
         }
-
         .filters h3 {
-            color: #f9c80e;
+            color: #f05a28;
             margin-bottom: 20px;
             font-size: 1.3rem;
         }
-
         .filter-group {
             margin-bottom: 20px;
         }
-
         .filter-group:last-child {
             margin-bottom: 0;
         }
-
         .filter-group label.group-label {
             display: block;
             color: #fff;
@@ -37,13 +32,11 @@
             margin-bottom: 12px;
             font-size: 1rem;
         }
-
         .filter-options {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
         }
-
         .filter-btn {
             background: rgba(255, 255, 255, 0.1);
             border: 2px solid rgba(255, 255, 255, 0.2);
@@ -54,19 +47,66 @@
             transition: all 0.3s ease;
             font-size: 0.95rem;
         }
-
         .filter-btn:hover {
-            border-color: #f9c80e;
-            color: #f9c80e;
+            border-color: #f05a28;
+            color: #f05a28;
         }
-
+        .venue-btn {
+            position: relative;
+        }
+        .venue-btn[title]:hover::after {
+            content: attr(title);
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0, 0, 0, 0.9);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            white-space: nowrap;
+            z-index: 100;
+            margin-bottom: 8px;
+            border: 1px solid #f05a28;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .venue-btn[title]:hover::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 6px solid transparent;
+            border-top-color: #f05a28;
+            margin-bottom: 2px;
+            z-index: 100;
+        }
+        .popup-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f05a28 100%);
+            border: 2px solid #fff;
+            color: #fff;
+            font-weight: bold;
+            animation: popupGlow 2s ease-in-out infinite;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+        .popup-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(118, 75, 162, 0.6);
+            color: #fff;
+            border-color: #fff;
+        }
+        @keyframes popupGlow {
+            0%, 100% { box-shadow: 0 0 5px rgba(118, 75, 162, 0.4); }
+            50% { box-shadow: 0 0 15px rgba(118, 75, 162, 0.8), 0 0 25px rgba(240, 90, 40, 0.4); }
+        }
         .filter-btn.active {
-            background: #f9c80e;
-            border-color: #f9c80e;
-            color: #1a1a2e;
+            background: #f05a28;
+            border-color: #f05a28;
+            color: #fff;
             font-weight: bold;
         }
-
         .clear-filters {
             background: transparent;
             border: 2px solid #ff6b6b;
@@ -77,69 +117,93 @@
             transition: all 0.3s ease;
             margin-top: 15px;
         }
-
         .clear-filters:hover {
             background: #ff6b6b;
             color: #fff;
         }
-
         .no-results {
             text-align: center;
             padding: 60px 20px;
             color: #888;
             display: none;
         }
-
         .no-results h3 {
-            color: #f9c80e;
+            color: #f05a28;
             margin-bottom: 10px;
         }
-
-        .show-item {
-            display: grid;
-        }
-
-        .show-item.hidden {
+        .show-card.hidden {
             display: none;
         }
-
-        /* Price badge */
-        .price-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 15px;
-            font-size: 0.8rem;
-            font-weight: bold;
-            margin-left: 10px;
+        .show-date-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
         }
-
-        .price-badge.free {
-            background: transparent;
-            border: 3px solid #e74c3c;
-            color: #e74c3c;
-            font-weight: bold;
-            text-transform: uppercase;
-            transform: rotate(-10deg);
-            padding: 5px 10px;
-            border-radius: 8px;
-        }
-
-        .price-badge.paid {
-            background: #ff6b6b;
+        .date-text {
             color: #fff;
+            font-size: 0.9rem;
+            font-weight: 500;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
         }
-
-        /* Location badge */
-        .location-badge {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 10px;
-            font-size: 0.75rem;
+        .show-time {
+            color: #f05a28;
+            font-size: 0.9rem;
+            font-weight: 600;
             margin-left: 8px;
-            background: rgba(255, 255, 255, 0.15);
-            color: #aaa;
         }
-
+        .show-card.is-free::after {
+            content: 'FREE';
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: #e74c3c;
+            color: #fff;
+            font-size: 1.1rem;
+            font-weight: 900;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: rotate(-15deg);
+            border: 4px solid #fff;
+            box-shadow: 0 4px 20px rgba(231, 76, 60, 0.6);
+            z-index: 10;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+        }
+        .show-card.is-sold-out::before {
+            content: 'SOLD OUT';
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #333;
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 900;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            transform: rotate(15deg);
+            border: 4px solid #ff0000;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
+            z-index: 10;
+            letter-spacing: 1px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            line-height: 1.1;
+        }
+        .show-card.is-sold-out {
+            opacity: 0.7;
+        }
+        .show-card.no-image {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+        }
         @media (max-width: 768px) {
             .filter-options {
                 gap: 8px;
@@ -148,44 +212,62 @@
                 padding: 8px 14px;
                 font-size: 0.85rem;
             }
+            .show-card.is-free::after {
+                width: 60px;
+                height: 60px;
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- SVG Filter for wavy border effect -->
+    <svg style="position: absolute; width: 0; height: 0;">
+        <defs>
+            <filter id="wavy">
+                <feTurbulence type="turbulence" baseFrequency="0.02 0.05" numOctaves="2" result="turbulence">
+                    <animate attributeName="baseFrequency" dur="3s" values="0.02 0.05;0.03 0.06;0.02 0.05" repeatCount="indefinite"/>
+                </feTurbulence>
+                <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="8" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+        </defs>
+    </svg>
     <header>
         <nav>
-            <a href="index.html" class="logo">ATX <span>Comedy</span></a>
+            <a href="index.html" class="logo">
+                <img src="images/logo.jpg" alt="Funny Over Everything" class="logo-img">
+                <div class="logo-text">
+                    <span class="logo-main">Funny Over Everything</span>
+                    <span class="logo-atx">ATX</span>
+                </div>
+            </a>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="shows.html" class="active">Shows</a></li>
-                <li><a href="upcoming.html">Upcoming</a></li>
-                <li><a href="merch.html">Merch</a></li>
             </ul>
         </nav>
     </header>
 
-    <section class="hero">
+    <section class="hero-animated">
+        <div class="hero-wavy-bg"></div>
+        <div class="hero-wavy-bg hero-wavy-bg-2"></div>
+        <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h1>Weekly <span>Shows</span></h1>
-            <p>Austin's best recurring comedy shows. Mark your calendar and never miss a laugh!</p>
+            <h1>Find Your Show Here!</h1>
         </div>
     </section>
 
-    <section>
-        <h2>Recurring Shows in ATX</h2>
+    <section class="featured-section">
+        <h2 class="ribbon-title">Shows in ATX</h2>
 
-        <!-- Filters -->
         <div class="filters">
             <h3>Filter Shows</h3>
-
             <div class="filter-group">
                 <label class="group-label">Price</label>
                 <div class="filter-options" id="price-filters">
-                    <button class="filter-btn active" data-filter="price" data-value="all">All</button>
-                    <button class="filter-btn" data-filter="price" data-value="free">Free</button>
+                    <button class="filter-btn" data-filter="price" data-value="free">Free Shows</button>
                 </div>
             </div>
-
             <div class="filter-group">
                 <label class="group-label">Day of Week</label>
                 <div class="filter-options" id="day-filters">
@@ -198,16 +280,20 @@
                     <button class="filter-btn" data-filter="day" data-value="sun">Sun</button>
                 </div>
             </div>
-
             <div class="filter-group">
-                <label class="group-label">Location</label>
-                <div class="filter-options" id="location-filters">
-                    <button class="filter-btn" data-filter="location" data-value="dirty6th">Dirty 6th</button>
-                    <button class="filter-btn" data-filter="location" data-value="east">East Austin</button>
-                    <button class="filter-btn" data-filter="location" data-value="other">Other</button>
+                <label class="group-label">Venue</label>
+                <div class="filter-options" id="venue-filters">
+                                        <button class="filter-btn venue-btn" data-filter="venue" data-value="black-rabbit-comedy" title="Underground comedy in Austin">Black Rabbit Comedy</button>
+                    <button class="filter-btn venue-btn" data-filter="venue" data-value="cap-city-comedy" title="Austin's premier comedy club since 1986">Cap City Comedy</button>
+                    <button class="filter-btn venue-btn" data-filter="venue" data-value="comedy-mothership" title="&quot;the house that DMT built&quot; - Kyle Kinane">Comedy Mothership</button>
+                    <button class="filter-btn venue-btn" data-filter="venue" data-value="creek-and-the-cave" title="Located just off Dirty 6th.. Beware of bears">Creek and the Cave</button>
+                    <button class="filter-btn venue-btn" data-filter="venue" data-value="east-austin-comedy-club" title="BYOB comedy on East 6th - non-stop laughs!">East Austin Comedy Club</button>
+                    <button class="filter-btn venue-btn popup-btn" data-filter="venue" data-value="pop-up" title="Every bar's a comedy club in ATX">Pop Up</button>
+                    <button class="filter-btn venue-btn" data-filter="venue" data-value="rozcos-comedy" title="East Austin's neighborhood comedy spot">Rozco's Comedy</button>
+                    <button class="filter-btn venue-btn" data-filter="venue" data-value="the-velveeta-room" title="Historic club next door to Esther's Follies on 6th">The Velveeta Room</button>
+                    <button class="filter-btn venue-btn" data-filter="venue" data-value="vulcan-gas-company" title="Historic 6th Street venue - comedy, music &amp; more">Vulcan Gas Company</button>
                 </div>
             </div>
-
             <button class="clear-filters" onclick="clearAllFilters()">Clear All Filters</button>
         </div>
 
@@ -217,724 +303,654 @@
         </div>
 
         <div class="show-list" id="show-list">
-            
-<div class="show-item" data-day="" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day"></span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Cocktails and Comedy</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 The Velveeta Room</p>
-        <p class="description">Cocktails and Comedy</p>
-    </div>
-    <a href="https://www.thevelveetaroom.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="wed" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">WED</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>The Hump</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 The Velveeta Room</p>
-        <p class="description">The Hump</p>
-    </div>
-    <a href="https://www.thevelveetaroom.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="fri" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">FRI</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>The Joke of Painting</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 The Velveeta Room</p>
-        <p class="description">The Joke of Painting</p>
-    </div>
-    <a href="https://www.thevelveetaroom.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="sat" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">SAT</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Velveeta Room Wrestling</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 The Velveeta Room</p>
-        <p class="description">Velveeta Room Wrestling</p>
-    </div>
-    <a href="https://www.thevelveetaroom.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="fri" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">FRI</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>The Christmas Hangover Comedy Show</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 The Velveeta Room</p>
-        <p class="description">The Christmas Hangover Comedy Show</p>
-    </div>
-    <a href="https://www.thevelveetaroom.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="thu" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">THU</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Timeless Comedy</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 The Velveeta Room</p>
-        <p class="description">Timeless Comedy</p>
-    </div>
-    <a href="https://www.thevelveetaroom.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="wed" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">WED</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>WEDNESDAY</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Comedy Mothership</p>
-        <p class="description">WEDNESDAY</p>
-    </div>
-    <a href="https://comedymothership.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="thu" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">THU</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>FRIDAY</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Comedy Mothership</p>
-        <p class="description">FRIDAY</p>
-    </div>
-    <a href="https://comedymothership.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="mon" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">MON</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>MONDAY</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Comedy Mothership</p>
-        <p class="description">MONDAY</p>
-    </div>
-    <a href="https://comedymothership.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="wed" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">WED</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>WEDNESDAY</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Comedy Mothership</p>
-        <p class="description">WEDNESDAY</p>
-    </div>
-    <a href="https://comedymothership.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="wed" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">WED</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>WEDNESDAY</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Comedy Mothership</p>
-        <p class="description">WEDNESDAY</p>
-    </div>
-    <a href="https://comedymothership.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="thu" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">THU</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>THURSDAY</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Comedy Mothership</p>
-        <p class="description">THURSDAY</p>
-    </div>
-    <a href="https://comedymothership.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="fri" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">FRI</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>FRIDAY</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Comedy Mothership</p>
-        <p class="description">FRIDAY</p>
-    </div>
-    <a href="https://comedymothership.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="tue" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">TUE</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>TUESDAY</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Comedy Mothership</p>
-        <p class="description">TUESDAY</p>
-    </div>
-    <a href="https://comedymothership.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="fri" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">FRI</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>FRIDAY</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Comedy Mothership</p>
-        <p class="description">FRIDAY</p>
-    </div>
-    <a href="https://comedymothership.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="fri" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">FRI</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Roast Battle: Austin</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Roast Battle: Austin</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="mon" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">MON</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Comedy Powered by BILT</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Comedy Powered by BILT</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="tue" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">TUE</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>The Roast of 2025</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">The Roast of 2025</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="wed" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">WED</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Lukas McCrary's NYE Comedy Spectacular</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Lukas McCrary's NYE Comedy Spectacular</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="wed" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">WED</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Absolute Show</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Absolute Show</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="wed" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">WED</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>The Forge</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">The Forge</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="wed" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">WED</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Wild West Wednesdays</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Wild West Wednesdays</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="thu" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">THU</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Bear Arms: Open Mic</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Bear Arms: Open Mic</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="thu" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">THU</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Gator Tales</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Gator Tales</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="thu" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">THU</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Unscripted: A Tag Team Comedy Show</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Unscripted: A Tag Team Comedy Show</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="thu" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">THU</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Word Up! Open mic</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Word Up! Open mic</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="fri" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">FRI</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Creek Featured</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Creek Featured</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="fri" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">FRI</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Show Us The Big Naturals</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Show Us The Big Naturals</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="sat" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">SAT</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>New Joke Saturday Open mic</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">New Joke Saturday Open mic</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="sat" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">SAT</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Christmas</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Christmas</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="sat" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">SAT</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Main Course Comedy</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Main Course Comedy</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="sat" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">SAT</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>FREAKY</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">FREAKY</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="mon" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">MON</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Laughs with the Staff</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Laughs with the Staff</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="tue" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">TUE</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Algonauts</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Algonauts</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="tue" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">TUE</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>The Roast of Santa</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">The Roast of Santa</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="wed" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">WED</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>King Of The Creek</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">King Of The Creek</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="sun" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">SUN</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Writers’ Room</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Writers’ Room</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="sun" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">SUN</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Comedians On The Rise</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Comedians On The Rise</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="sun" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">SUN</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>The Creek and The Cave Open Mic</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">The Creek and The Cave Open Mic</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="sun" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">SUN</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Banana Phone</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Banana Phone</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="mon" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">MON</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>The Monday Gamble Mic</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">The Monday Gamble Mic</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="mon" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">MON</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Clocked Out Comedy</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Clocked Out Comedy</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="mon" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">MON</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>New Joke Monday</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">New Joke Monday</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="mon" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">MON</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Monday Night Gimmick Mic</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Monday Night Gimmick Mic</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="tue" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">TUE</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Dunk Tank</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Dunk Tank</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="tue" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">TUE</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Optimum Noctis</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Optimum Noctis</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="tue" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">TUE</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Hood Therapy Tuesdays</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Hood Therapy Tuesdays</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
-
-<div class="show-item" data-day="wed" data-price="paid" data-location="east">
-    <div class="show-day">
-        <span class="day">WED</span>
-        <span class="time"></span>
-    </div>
-    <div class="show-info">
-        <h3>Off The Cuff</h3>
-        <p class="host">Weekly Showcase</p>
-        <p class="venue">📍 Creek and the Cave</p>
-        <p class="description">Off The Cuff</p>
-    </div>
-    <a href="https://www.creekandcave.com" class="btn btn-outline" target="_blank">Get Tickets</a>
-</div>
-
+            <a href="https://www.creekandcave.com/events/bear-arms-open-mic" class="show-card is-free" data-day="thu" data-price="free" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/2ac8d6d61297adce.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">THU</span><span class="date-text">Dec 18</span></div>
+                    <h3>Bear Arms: Open Mic</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">5:45 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.simpletix.com/e/12-18-best-of-austin-comedy-tickets-245375" class="show-card" data-day="thu" data-price="paid" data-venue="rozcos-comedy" style="background-image: url('images/rozcoscomedy/best_of_austin_comed_8ae0d256.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">THU</span><span class="date-text">Dec 18</span></div>
+                    <h3>Best of Austin Comedy</h3>
+                    <span class="venue">Rozco's Comedy<span class="show-time">7:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.capcitycomedy.com/shows/334918" class="show-card" data-day="thu" data-price="paid" data-venue="cap-city-comedy" style="background-image: url('images/cap_city_comedy/dylan_carlino_a92bfa0f.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">THU</span><span class="date-text">Dec 18</span></div>
+                    <h3>Dylan Carlino</h3>
+                    <span class="venue">Cap City Comedy<span class="show-time">7:30 PM</span></span>
+                </div>
+            </a>
+            <a href="https://comedymothership.com/shows" class="show-card" data-day="thu" data-price="paid" data-venue="comedy-mothership" style="background-image: url('images/comedy_mothership/8799465606221c60.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">THU</span><span class="date-text">Dec 18</span></div>
+                    <h3>MATT MCCUSKER AND FRIENDS</h3>
+                    <span class="venue">Comedy Mothership<span class="show-time">7:30 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.simpletix.com/e/10-16-your-new-favorite-comic-tickets-237530" class="show-card" data-day="thu" data-price="paid" data-venue="rozcos-comedy" style="background-image: url('images/rozcoscomedy/your_new_favorite_co_69956ede.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">THU</span><span class="date-text">Dec 18</span></div>
+                    <h3>Your New Favorite Comic</h3>
+                    <span class="venue">Rozco's Comedy<span class="show-time">7:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/gator-tales" class="show-card" data-day="thu" data-price="paid" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/f9dfeaae4d5b4fd9.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">THU</span><span class="date-text">Dec 18</span></div>
+                    <h3>Gator Tales</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.eventbrite.com/e/stand-up-comedy-show-bulls-pub-wedsthursat-at-830pm-tickets-1039732296287" class="show-card is-free" data-day="thu" data-price="free" data-venue="pop-up" style="background-image: url('images/bulls_pub/https___cdn.evbuc.com_images_1111179793_2360303401903_1_original.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">THU</span><span class="date-text">Dec 18</span></div>
+                    <h3>Stand Up Comedy Show</h3>
+                    <span class="venue">Bull's Pub<span class="show-time">8:30 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.capcitycomedy.com/events/125496" class="show-card" data-day="thu" data-price="paid" data-venue="cap-city-comedy" style="background-image: url('images/cap_city_comedy/the_red_room_at_cap_city_jack__1de58a5d.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">THU</span><span class="date-text">Dec 18</span></div>
+                    <h3>THE RED ROOM AT CAP CITY: JACK SHAW</h3>
+                    <span class="venue">Cap City Comedy<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://gnarbaratx.com/events" class="show-card" data-day="thu" data-price="paid" data-venue="pop-up" style="background-image: url('images/gnar_bar/gnarbar-logo.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">THU</span><span class="date-text">Dec 18</span></div>
+                    <h3>The Grind</h3>
+                    <span class="venue">Gnar Bar<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.eventbrite.com/e/the-thursday-special-tickets-1042163919337" class="show-card is-free" data-day="thu" data-price="free" data-venue="pop-up" style="background-image: url('images/speakeasy/thursday_special.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">THU</span><span class="date-text">FREE</span></div>
+                    <h3>The Thursday Special</h3>
+                    <span class="venue">Speakeasy<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.simpletix.com/e/12-18-candlelight-comedy-tickets-245384" class="show-card" data-day="thu" data-price="paid" data-venue="rozcos-comedy" style="background-image: url('images/rozcoscomedy/candlelight_comedy_b02dce30.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">THU</span><span class="date-text">Dec 18</span></div>
+                    <h3>Candlelight Comedy</h3>
+                    <span class="venue">Rozco's Comedy<span class="show-time">9:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.thevelveetaroom.com/velv/timeless-comedy1" class="show-card" data-day="thu" data-price="paid" data-venue="the-velveeta-room" style="background-image: url('images/the_velveeta_room/9c67e920336dfc15.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">THU</span><span class="date-text">Dec 18</span></div>
+                    <h3>Timeless Comedy at The Velveeta Room</h3>
+                    <span class="venue">The Velveeta Room<span class="show-time">10:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/unscripted-comedy" class="show-card" data-day="thu" data-price="paid" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/1c7cc3dd5e436735.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">THU</span><span class="date-text">Dec 18</span></div>
+                    <h3>Unscripted: A Tag Team Comedy Show</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">10:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/word-up-open-mic" class="show-card is-free" data-day="thu" data-price="free" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/0e26fcdf170fd615.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">THU</span><span class="date-text">Dec 18</span></div>
+                    <h3>Word Up! Open mic</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">11:55 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/creekfeat" class="show-card" data-day="fri" data-price="paid" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/6606a7c46b76854c.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">FRI</span><span class="date-text">Dec 19</span></div>
+                    <h3>Creek Featured</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">7:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.capcitycomedy.com/shows/334919" class="show-card" data-day="fri" data-price="paid" data-venue="cap-city-comedy" style="background-image: url('images/cap_city_comedy/dylan_carlino_a92bfa0f.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">FRI</span><span class="date-text">Dec 19</span></div>
+                    <h3>Dylan Carlino</h3>
+                    <span class="venue">Cap City Comedy<span class="show-time">7:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.simpletix.com/e/12-19-friday-night-laughs-7pm-tickets-249044" class="show-card" data-day="fri" data-price="paid" data-venue="rozcos-comedy" style="background-image: url('images/rozcoscomedy/friday_night_laughs_c75846c1.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">FRI</span><span class="date-text">Dec 19</span></div>
+                    <h3>Friday Night Laughs</h3>
+                    <span class="venue">Rozco's Comedy<span class="show-time">7:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.capcitycomedy.com/shows/348012" class="show-card" data-day="fri" data-price="paid" data-venue="cap-city-comedy" style="background-image: url('images/cap_city_comedy/sheryl_underwood_8492b6ed.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">FRI</span><span class="date-text">Dec 26</span></div>
+                    <h3>Sheryl Underwood</h3>
+                    <span class="venue">Cap City Comedy<span class="show-time">7:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.capcitycomedy.com/shows/341152" class="show-card" data-day="fri" data-price="paid" data-venue="cap-city-comedy" style="background-image: url('images/cap_city_comedy/the_red_room_at_cap_city_bryso_870ba306.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">FRI</span><span class="date-text">Dec 19</span></div>
+                    <h3>The Red Room at Cap City: Bryson Brown Album Recording</h3>
+                    <span class="venue">Cap City Comedy<span class="show-time">7:30 PM</span></span>
+                </div>
+            </a>
+            <a href="https://vulcanatx.ticketsauce.com/e/best-of-vulcan-standup-comedy-2" class="show-card" data-day="fri" data-price="paid" data-venue="vulcan-gas-company" style="background-image: url('images/vulcan_gas_company/best_of_vulcan_comedy_showcase_f600fd71.webp');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">FRI</span><span class="date-text">Dec 19</span></div>
+                    <h3>Best of Vulcan: Comedy Showcase</h3>
+                    <span class="venue">Vulcan Gas Company<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://vulcanatx.ticketsauce.com/e/laughs-on-repeat-13" class="show-card" data-day="fri" data-price="paid" data-venue="vulcan-gas-company" style="background-image: url('images/vulcan_gas_company/laughs_on_repeat_8c63c076.webp');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">FRI</span><span class="date-text">Dec 26</span></div>
+                    <h3>Laughs On Repeat</h3>
+                    <span class="venue">Vulcan Gas Company<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://gnarbaratx.com/events" class="show-card" data-day="fri" data-price="paid" data-venue="pop-up" style="background-image: url('images/gnar_bar/gnarbar-logo.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">FRI</span><span class="date-text">Dec 19</span></div>
+                    <h3>SHRED</h3>
+                    <span class="venue">Gnar Bar<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.thevelveetaroom.com/velv/the-christmas-hangover2" class="show-card" data-day="fri" data-price="paid" data-venue="the-velveeta-room" style="background-image: url('images/the_velveeta_room/f273952067699ad0.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">FRI</span><span class="date-text">Dec 19</span></div>
+                    <h3>The Christmas Hangover Comedy Show at The Velveeta Room</h3>
+                    <span class="venue">The Velveeta Room<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.thevelveetaroom.com/velv/the-joke-of-painting" class="show-card" data-day="fri" data-price="paid" data-venue="the-velveeta-room" style="background-image: url('images/the_velveeta_room/798124e5abe11b70.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">FRI</span><span class="date-text">Dec 19</span></div>
+                    <h3>The Joke of Painting  at The Velveeta Room</h3>
+                    <span class="venue">The Velveeta Room<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.capcitycomedy.com/shows/334920" class="show-card" data-day="fri" data-price="paid" data-venue="cap-city-comedy" style="background-image: url('images/cap_city_comedy/dylan_carlino_a92bfa0f.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">FRI</span><span class="date-text">Dec 19</span></div>
+                    <h3>Dylan Carlino</h3>
+                    <span class="venue">Cap City Comedy<span class="show-time">9:15 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.capcitycomedy.com/shows/348013" class="show-card" data-day="fri" data-price="paid" data-venue="cap-city-comedy" style="background-image: url('images/cap_city_comedy/sheryl_underwood_8492b6ed.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">FRI</span><span class="date-text">Dec 26</span></div>
+                    <h3>Sheryl Underwood</h3>
+                    <span class="venue">Cap City Comedy<span class="show-time">9:15 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.capcitycomedy.com/shows/341153" class="show-card" data-day="fri" data-price="paid" data-venue="cap-city-comedy" style="background-image: url('images/cap_city_comedy/the_red_room_at_cap_city_bryso_870ba306.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">FRI</span><span class="date-text">Dec 19</span></div>
+                    <h3>The Red Room at Cap City: Bryson Brown Album Recording</h3>
+                    <span class="venue">Cap City Comedy<span class="show-time">9:45 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/roast-battle-austin" class="show-card" data-day="fri" data-price="paid" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/7f3d7e2a6fb9854a.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">FRI</span><span class="date-text">Dec 26</span></div>
+                    <h3>Roast Battle: Austin</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">11:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/show-us-the-big-naturals" class="show-card" data-day="fri" data-price="paid" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/72f74a5ffbc4cab9.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">FRI</span><span class="date-text">Dec 19</span></div>
+                    <h3>Show Us The Big Naturals</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">11:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/new-joke-saturday" class="show-card is-free" data-day="sat" data-price="free" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/ef52061259475545.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SAT</span><span class="date-text">Dec 20</span></div>
+                    <h3>New Joke Saturday Open mic</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">4:15 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/christmas-at-the-creek" class="show-card" data-day="sat" data-price="paid" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/ecea26c7e3698c36.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SAT</span><span class="date-text">Dec 20</span></div>
+                    <h3>Christmas at The Creek!</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">7:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.capcitycomedy.com/shows/334921" class="show-card" data-day="sat" data-price="paid" data-venue="cap-city-comedy" style="background-image: url('images/cap_city_comedy/dylan_carlino_a92bfa0f.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SAT</span><span class="date-text">Dec 20</span></div>
+                    <h3>Dylan Carlino</h3>
+                    <span class="venue">Cap City Comedy<span class="show-time">7:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://vulcanatx.ticketsauce.com/e/heavy-hitters-showcase" class="show-card" data-day="sat" data-price="paid" data-venue="vulcan-gas-company" style="background-image: url('images/vulcan_gas_company/heavy_hitters_showcase_193d89dd.webp');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SAT</span><span class="date-text">Dec 27</span></div>
+                    <h3>Heavy Hitters Showcase</h3>
+                    <span class="venue">Vulcan Gas Company<span class="show-time">7:30 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.capcitycomedy.com/shows/348014" class="show-card" data-day="sat" data-price="paid" data-venue="cap-city-comedy" style="background-image: url('images/cap_city_comedy/sheryl_underwood_8492b6ed.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SAT</span><span class="date-text">Dec 27</span></div>
+                    <h3>Sheryl Underwood</h3>
+                    <span class="venue">Cap City Comedy<span class="show-time">7:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.capcitycomedy.com/shows/341154" class="show-card" data-day="sat" data-price="paid" data-venue="cap-city-comedy" style="background-image: url('images/cap_city_comedy/the_red_room_at_cap_city_bryso_870ba306.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SAT</span><span class="date-text">Dec 20</span></div>
+                    <h3>The Red Room at Cap City: Bryson Brown Album Recording</h3>
+                    <span class="venue">Cap City Comedy<span class="show-time">7:30 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.simpletix.com/e/austin-all-star-comedy-tickets-249886" class="show-card" data-day="sat" data-price="paid" data-venue="rozcos-comedy" style="background-image: url('images/rozcoscomedy/austin_all-star_come_ab37eb30.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SAT</span><span class="date-text">Dec 20</span></div>
+                    <h3>Austin All-Star Comedy</h3>
+                    <span class="venue">Rozco's Comedy<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://gnarbaratx.com/events" class="show-card" data-day="sat" data-price="paid" data-venue="pop-up" style="background-image: url('images/gnar_bar/gnarbar-logo.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SAT</span><span class="date-text">Dec 20</span></div>
+                    <h3>SHRED</h3>
+                    <span class="venue">Gnar Bar<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.eventbrite.com/e/stand-up-comedy-show-bulls-pub-wedsthursat-at-830pm-tickets-1039732296287" class="show-card is-free" data-day="sat" data-price="free" data-venue="pop-up" style="background-image: url('images/bulls_pub/https___cdn.evbuc.com_images_1111179793_2360303401903_1_original.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SAT</span><span class="date-text">Dec 20</span></div>
+                    <h3>Stand Up Comedy Show</h3>
+                    <span class="venue">Bull's Pub<span class="show-time">8:30 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.capcitycomedy.com/shows/334922" class="show-card" data-day="sat" data-price="paid" data-venue="cap-city-comedy" style="background-image: url('images/cap_city_comedy/dylan_carlino_a92bfa0f.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SAT</span><span class="date-text">Dec 20</span></div>
+                    <h3>Dylan Carlino</h3>
+                    <span class="venue">Cap City Comedy<span class="show-time">9:30 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/main-course-comedy" class="show-card" data-day="sat" data-price="paid" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/7d1203e6e9eca2eb.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SAT</span><span class="date-text">Dec 20</span></div>
+                    <h3>Main Course Comedy</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">9:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.capcitycomedy.com/shows/348015" class="show-card" data-day="sat" data-price="paid" data-venue="cap-city-comedy" style="background-image: url('images/cap_city_comedy/sheryl_underwood_8492b6ed.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SAT</span><span class="date-text">Dec 27</span></div>
+                    <h3>Sheryl Underwood</h3>
+                    <span class="venue">Cap City Comedy<span class="show-time">9:30 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.capcitycomedy.com/shows/341155" class="show-card" data-day="sat" data-price="paid" data-venue="cap-city-comedy" style="background-image: url('images/cap_city_comedy/the_red_room_at_cap_city_bryso_870ba306.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SAT</span><span class="date-text">Dec 20</span></div>
+                    <h3>The Red Room at Cap City: Bryson Brown Album Recording</h3>
+                    <span class="venue">Cap City Comedy<span class="show-time">9:45 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.simpletix.com/e/dressed-to-kill-halloween-party-tickets-238205" class="show-card" data-day="sat" data-price="paid" data-venue="rozcos-comedy" style="background-image: url('images/rozcoscomedy/dressed_to_kill_3f3251fc.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SAT</span><span class="date-text">Dec 20</span></div>
+                    <h3>Dressed to Kill</h3>
+                    <span class="venue">Rozco's Comedy<span class="show-time">10:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.thevelveetaroom.com/velv/vrw-comedy-championship" class="show-card" data-day="sat" data-price="paid" data-venue="the-velveeta-room" style="background-image: url('images/the_velveeta_room/4d1704ba8ada7712.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SAT</span><span class="date-text">Dec 20</span></div>
+                    <h3>Velveeta Room Wrestling</h3>
+                    <span class="venue">The Velveeta Room<span class="show-time">10:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/freaky-comedy" class="show-card" data-day="sat" data-price="paid" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/20892c1bcfbd990e.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SAT</span><span class="date-text">Dec 20</span></div>
+                    <h3>FREAKY</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">11:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.simpletix.com/e/the-filthy-show-tickets-246504" class="show-card" data-day="sat" data-price="paid" data-venue="rozcos-comedy" style="background-image: url('images/rozcoscomedy/the_filthy_show_6381f526.jpeg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SAT</span><span class="date-text">Dec 20</span></div>
+                    <h3>The Filthy Show</h3>
+                    <span class="venue">Rozco's Comedy<span class="show-time">11:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/writers-room" class="show-card" data-day="sun" data-price="paid" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/74748bb48501cc97.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SUN</span><span class="date-text">Dec 21</span></div>
+                    <h3>Writers’ Room</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">5:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/comedians-on-the-rise" class="show-card" data-day="sun" data-price="paid" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/d85a03ac623eb04f.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SUN</span><span class="date-text">Dec 28</span></div>
+                    <h3>Comedians On The Rise</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">6:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.capcitycomedy.com/events/121577" class="show-card" data-day="sun" data-price="paid" data-venue="cap-city-comedy" style="background-image: url('images/cap_city_comedy/and_then_we_had_sex_68b643cf.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SUN</span><span class="date-text">Dec 21</span></div>
+                    <h3>AND THEN WE HAD SEX</h3>
+                    <span class="venue">Cap City Comedy<span class="show-time">7:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.capcitycomedy.com/shows/348016" class="show-card" data-day="sun" data-price="paid" data-venue="cap-city-comedy" style="background-image: url('images/cap_city_comedy/sheryl_underwood_8492b6ed.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SUN</span><span class="date-text">Dec 28</span></div>
+                    <h3>Sheryl Underwood</h3>
+                    <span class="venue">Cap City Comedy<span class="show-time">7:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.capcitycomedy.com/shows/341156" class="show-card" data-day="sun" data-price="paid" data-venue="cap-city-comedy" style="background-image: url('images/cap_city_comedy/the_red_room_at_cap_city_bryso_870ba306.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SUN</span><span class="date-text">Dec 21</span></div>
+                    <h3>The Red Room at Cap City: Bryson Brown Album Recording</h3>
+                    <span class="venue">Cap City Comedy<span class="show-time">7:30 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.thevelveetaroom.com/velv/cocktails-and-comedy7" class="show-card" data-day="sun" data-price="paid" data-venue="the-velveeta-room" style="background-image: url('images/the_velveeta_room/e82b52a8dc3808ba.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SUN</span><span class="date-text">Dec 21</span></div>
+                    <h3>Cocktails and Comedy</h3>
+                    <span class="venue">The Velveeta Room<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.eventbrite.com/e/sunday-service-stand-up-comedy-show-tickets-1308986797749" class="show-card is-free" data-day="sun" data-price="free" data-venue="pop-up" style="background-image: url('images/speakeasy/sunday_service.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SUN</span><span class="date-text">FREE</span></div>
+                    <h3>Sunday Service</h3>
+                    <span class="venue">Speakeasy<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.capcitycomedy.com/events/125516" class="show-card" data-day="sun" data-price="paid" data-venue="cap-city-comedy" style="background-image: url('images/cap_city_comedy/the_red_room_at_cap_city_heliu_8d67bc2c.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SUN</span><span class="date-text">Dec 28</span></div>
+                    <h3>THE RED ROOM AT CAP CITY: HELIUM TRACK STARS ALBUM RECORDING "YOU'RE ADOPTED"</h3>
+                    <span class="venue">Cap City Comedy<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/creek-mic" class="show-card is-free" data-day="sun" data-price="free" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/cdb67ed758b6e0ab.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SUN</span><span class="date-text">Dec 21</span></div>
+                    <h3>The Creek and The Cave Open Mic</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://gnarbaratx.com/events" class="show-card" data-day="sun" data-price="paid" data-venue="pop-up" style="background-image: url('images/gnar_bar/gnarbar-logo.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SUN</span><span class="date-text">Dec 21</span></div>
+                    <h3>The Grind</h3>
+                    <span class="venue">Gnar Bar<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/banana-phone" class="show-card is-free" data-day="sun" data-price="free" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/a774aa29aa41e9fc.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SUN</span><span class="date-text">Dec 21</span></div>
+                    <h3>Banana Phone</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">10:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://comedymothership.com/shows" class="show-card" data-day="sun" data-price="paid" data-venue="comedy-mothership" style="background-image: url('images/comedy_mothership/af10681cbad28551.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SUN</span><span class="date-text">Dec 21</span></div>
+                    <h3>JESSIMAE PELUSO</h3>
+                    <span class="venue">Comedy Mothership</span>
+                </div>
+            </a>
+            <a href="https://comedymothership.com/shows" class="show-card" data-day="sun" data-price="paid" data-venue="comedy-mothership" style="background-image: url('images/comedy_mothership/42bca1b8ed67d907.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SUN</span><span class="date-text">Dec 28</span></div>
+                    <h3>STEVE BYRNE</h3>
+                    <span class="venue">Comedy Mothership</span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/the-monday-gamble-mic" class="show-card is-free" data-day="mon" data-price="free" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/8086f45342dba4b6.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">MON</span><span class="date-text">Dec 22</span></div>
+                    <h3>The Monday Gamble Mic</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">6:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.simpletix.com/e/12-9-kill-or-spill-tickets-240508" class="show-card" data-day="mon" data-price="paid" data-venue="rozcos-comedy" style="background-image: url('images/rozcoscomedy/kill_or_spill_ad38a511.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">MON</span><span class="date-text">Dec 22</span></div>
+                    <h3>Kill or Spill</h3>
+                    <span class="venue">Rozco's Comedy<span class="show-time">7:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.simpletix.com/e/12-2-lez-be-friends-comedy-blind-dating-sh-tickets-244863" class="show-card" data-day="mon" data-price="paid" data-venue="rozcos-comedy" style="background-image: url('images/rozcoscomedy/lez_be_friends_462d9414.jpeg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">MON</span><span class="date-text">Dec 22</span></div>
+                    <h3>Lez Be Friends</h3>
+                    <span class="venue">Rozco's Comedy<span class="show-time">7:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://gnarbaratx.com/events" class="show-card is-free" data-day="mon" data-price="free" data-venue="pop-up" style="background-image: url('images/gnar_bar/gnarbar-logo.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">MON</span><span class="date-text">Dec 22</span></div>
+                    <h3>Crowd Control</h3>
+                    <span class="venue">Gnar Bar<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/laughs-with-the-staff" class="show-card" data-day="mon" data-price="paid" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/67f5e682a305cf8f.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">MON</span><span class="date-text">Dec 22</span></div>
+                    <h3>Laughs with the Staff</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/new-joke-monday" class="show-card is-free" data-day="mon" data-price="free" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/b7c93abf922950ed.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">MON</span><span class="date-text">Dec 22</span></div>
+                    <h3>New Joke Monday</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">10:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/monday-night-gimmick-mic" class="show-card is-free" data-day="mon" data-price="free" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/11cc29492675da5e.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">MON</span><span class="date-text">Dec 22</span></div>
+                    <h3>Monday Night Gimmick Mic</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">11:30 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.capcitycomedy.com/events/121740" class="show-card is-free" data-day="tue" data-price="free" data-venue="cap-city-comedy" style="background-image: url('images/cap_city_comedy/open_mic_night_d801caf3.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">TUE</span><span class="date-text">Dec 23</span></div>
+                    <h3>OPEN MIC NIGHT</h3>
+                    <span class="venue">Cap City Comedy<span class="show-time">7:30 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/algonauts" class="show-card" data-day="tue" data-price="paid" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/9ac0ab6187deb872.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">TUE</span><span class="date-text">Dec 23</span></div>
+                    <h3>Algonauts</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://gnarbaratx.com/events" class="show-card" data-day="tue" data-price="paid" data-venue="pop-up" style="background-image: url('images/gnar_bar/gnarbar-logo.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">TUE</span><span class="date-text">Dec 23</span></div>
+                    <h3>The Grind</h3>
+                    <span class="venue">Gnar Bar<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://vulcanatx.ticketsauce.com/e/the-kill-tony-regulars-22" class="show-card" data-day="tue" data-price="paid" data-venue="vulcan-gas-company" style="background-image: url('images/vulcan_gas_company/the_kill_tony_regulars_d7f6080a.webp');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">TUE</span><span class="date-text">Dec 23</span></div>
+                    <h3>The Kill Tony Regulars</h3>
+                    <span class="venue">Vulcan Gas Company<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.simpletix.com/e/tuesday-gigante-tickets-248656" class="show-card" data-day="tue" data-price="paid" data-venue="rozcos-comedy" style="background-image: url('images/rozcoscomedy/tuesday_gigante_aba4fa2f.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">TUE</span><span class="date-text">Dec 23</span></div>
+                    <h3>Tuesday Gigante</h3>
+                    <span class="venue">Rozco's Comedy<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/the-roast-of-santa" class="show-card" data-day="tue" data-price="paid" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/3d6650cf7dbacd70.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">TUE</span><span class="date-text">Dec 23</span></div>
+                    <h3>The Roast of Santa</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">10:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://comedymothership.com/shows" class="show-card" data-day="tue" data-price="paid" data-venue="comedy-mothership" style="background-image: url('');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">TUE</span><span class="date-text">Dec 23</span></div>
+                    <h3>JOE ROGAN AND FRIENDS</h3>
+                    <span class="venue">Comedy Mothership</span>
+                </div>
+            </a>
+            <a href="https://gnarbaratx.com/events" class="show-card is-free" data-day="wed" data-price="free" data-venue="pop-up" style="background-image: url('images/gnar_bar/gnarbar-logo.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">WED</span><span class="date-text">Dec 24</span></div>
+                    <h3>Crowd Control</h3>
+                    <span class="venue">Gnar Bar<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/king-of-the-creek" class="show-card" data-day="wed" data-price="paid" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/ad1a35cc05b267ee.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">WED</span><span class="date-text">Dec 24</span></div>
+                    <h3>King Of The Creek</h3>
+                    <span class="venue">Creek and the Cave<span class="show-time">8:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.eventbrite.com/e/stand-up-comedy-show-bulls-pub-wedsthursat-at-830pm-tickets-1039732296287" class="show-card is-free" data-day="wed" data-price="free" data-venue="pop-up" style="background-image: url('images/bulls_pub/https___cdn.evbuc.com_images_1111179793_2360303401903_1_original.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">WED</span><span class="date-text">Dec 24</span></div>
+                    <h3>Stand Up Comedy Show</h3>
+                    <span class="venue">Bull's Pub<span class="show-time">8:30 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.thevelveetaroom.com/velv/the-hump5" class="show-card" data-day="wed" data-price="paid" data-venue="the-velveeta-room" style="background-image: url('images/the_velveeta_room/7686e725d8ac91cc.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">WED</span><span class="date-text">Dec 24</span></div>
+                    <h3>The Hump</h3>
+                    <span class="venue">The Velveeta Room<span class="show-time">9:00 PM</span></span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/high-score-game-arcade-presents-realm-of-larp" class="show-card" data-day="dec" data-price="paid" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/75097a8657fc3cc2.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">DEC</span><span class="date-text">Dec 26</span></div>
+                    <h3>High Score Game Arcade Presents: Realm of LARP</h3>
+                    <span class="venue">Creek and the Cave</span>
+                </div>
+            </a>
+            <a href="https://www.creekandcave.com/events/josh-potter" class="show-card" data-day="dec" data-price="paid" data-venue="creek-and-the-cave" style="background-image: url('images/creek_and_the_cave/d8c90566e99b64a9.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">DEC</span><span class="date-text">Dec 21</span></div>
+                    <h3>Josh Potter</h3>
+                    <span class="venue">Creek and the Cave</span>
+                </div>
+            </a>
+            <a href="https://comedymothership.com/shows" class="show-card" data-day="sol" data-price="paid" data-venue="comedy-mothership" style="background-image: url('images/comedy_mothership/db5d677d8b779cb4.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">SOL</span><span class="date-text">SOLD OUT</span></div>
+                    <h3>KILL TONY</h3>
+                    <span class="venue">Comedy Mothership</span>
+                </div>
+            </a>
+            <a href="https://www.eventbrite.com/e/black-rabbit-underground-comedy-tickets-1442073413399" class="show-card" data-day="mul" data-price="paid" data-venue="black-rabbit-comedy" style="background-image: url('images/black_rabbit/black_rabbit_comedy.jpg');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">ALL</span><span class="date-text">Multiple Dates</span></div>
+                    <h3>See All Shows!</h3>
+                    <span class="venue">Black Rabbit Comedy</span>
+                </div>
+            </a>
+            <a href="https://eastaustincomedy.com/events-2-1" class="show-card" data-day="mul" data-price="paid" data-venue="east-austin-comedy-club" style="background-image: url('images/east_austin_comedy/east_austin_logo.png');" target="_blank">
+                <div class="show-card-content">
+                    <div class="show-date-info"><span class="day-badge">ALL</span><span class="date-text">Multiple Dates</span></div>
+                    <h3>See All Shows!</h3>
+                    <span class="venue">East Austin Comedy Club</span>
+                </div>
+            </a>
         </div>
+    </section>
+
+    <section class="add-show-cta">
+        <p>Want to add your show to this page? Shoot me an email!</p>
+        <a href="mailto:foeatx@gmail.com" class="btn email-btn">foeatx@gmail.com</a>
+    </section>
+
+    <footer>
+        <p>Funny Over Everything</p>
+        <p style="margin-top: 20px; font-size: 0.9rem;">&copy; 2024 Funny Over Everything. All rights reserved.</p>
+    </footer>
+
+    <script>
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const showCards = document.querySelectorAll('.show-card');
+        const noResults = document.getElementById('no-results');
+        // Multi-select arrays for day and venue, single value for price
+        let activeFilters = { day: [], price: null, venue: [] };
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const filterType = btn.dataset.filter;
+                const filterValue = btn.dataset.value;
+
+                if (filterType === 'price') {
+                    // Price stays single-select
+                    if (btn.classList.contains('active')) {
+                        btn.classList.remove('active');
+                        activeFilters.price = null;
+                    } else {
+                        btn.parentElement.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        activeFilters.price = filterValue;
+                    }
+                } else {
+                    // Day and venue are multi-select
+                    if (btn.classList.contains('active')) {
+                        btn.classList.remove('active');
+                        activeFilters[filterType] = activeFilters[filterType].filter(v => v !== filterValue);
+                    } else {
+                        btn.classList.add('active');
+                        activeFilters[filterType].push(filterValue);
+                    }
+                }
+                applyFilters();
+            });
+        });
+
+        function applyFilters() {
+            let visibleCount = 0;
+            showCards.forEach(card => {
+                let show = true;
+                // Day filter - show if no days selected OR card's day is in selected days
+                if (activeFilters.day.length > 0 && !activeFilters.day.includes(card.dataset.day)) show = false;
+                // Price filter - single select
+                if (activeFilters.price && card.dataset.price !== activeFilters.price) show = false;
+                // Venue filter - show if no venues selected OR card's venue is in selected venues
+                if (activeFilters.venue.length > 0 && !activeFilters.venue.includes(card.dataset.venue)) show = false;
+                if (show) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        function clearAllFilters() {
+            filterBtns.forEach(btn => btn.classList.remove('active'));
+            activeFilters = { day: [], price: null, venue: [] };
+            applyFilters();
+        }
+    </script>
+</body>
+</html>

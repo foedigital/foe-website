@@ -71,6 +71,18 @@ VENUES = {
         "event_name_selector": ".event-title, h2, h3",
         "event_date_selector": ".event-date, time",
     },
+    "vulcan": {
+        "name": "Vulcan Gas Company",
+        "url": "https://www.vulcanatx.com",
+        "events_url": "https://www.vulcanatx.com/",
+        "image_selectors": [
+            ".event img",
+            "[class*='event'] img",
+            ".w-dyn-item img",
+        ],
+        "event_name_selector": "h2, h3, h4, .event-title",
+        "event_date_selector": ".event-date, time",
+    },
 }
 
 MIN_IMAGE_WIDTH = 200

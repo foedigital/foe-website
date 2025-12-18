@@ -3,277 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ATX Comedy - Austin's Home for Stand-Up</title>
+    <title>Funny Over Everything - Austin Comedy Shows</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+    <!-- SVG Filter for wavy border effect -->
+    <svg style="position: absolute; width: 0; height: 0;">
+        <defs>
+            <filter id="wavy">
+                <feTurbulence type="turbulence" baseFrequency="0.02 0.05" numOctaves="2" result="turbulence">
+                    <animate attributeName="baseFrequency" dur="3s" values="0.02 0.05;0.03 0.06;0.02 0.05" repeatCount="indefinite"/>
+                </feTurbulence>
+                <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="8" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+        </defs>
+    </svg>
     <header>
         <nav>
-            <a href="index.html" class="logo">ATX <span>Comedy</span></a>
+            <a href="index.html" class="logo">
+                <img src="images/logo.jpg" alt="Funny Over Everything" class="logo-img">
+                <div class="logo-text">
+                    <span class="logo-main">Funny Over Everything</span>
+                    <span class="logo-atx">ATX</span>
+                </div>
+            </a>
             <ul class="nav-links">
                 <li><a href="index.html" class="active">Home</a></li>
                 <li><a href="shows.html">Shows</a></li>
-                <li><a href="upcoming.html">Upcoming</a></li>
-                <li><a href="merch.html">Merch</a></li>
             </ul>
         </nav>
     </header>
 
-    <section class="hero-video">
-        <video playsinline autoplay muted loop poster="placeholder.jpg" id="bgvid">
-            <source src="videos/placeholder.mp4" type="video/mp4">
-        </video>
-        <div class="hero-video-overlay"></div>
+    <section class="hero-animated">
+        <div class="hero-wavy-bg"></div>
+        <div class="hero-wavy-bg hero-wavy-bg-2"></div>
+        <div class="hero-overlay"></div>
         <div class="hero-content">
-            <h1>find shows and support local comedians!</h1>
+            <h1>Find a comedy show in Austin, TX - Big or small we got 'em all!</h1>
         </div>
     </section>
 
     
     
-<section class="featured-show-section">
-    <h2>Featured Show</h2>
-    <div class="featured-show-card">
-        <img src="images/the_velveeta_room/e82b52a8dc3808ba.jpg" alt="Cocktails and Comedy" class="featured-show-image">
+<section class="featured-show-section top-pick-section">
+    <h2>Top Pick</h2>
+    <div class="featured-show-card top-pick-card">
+        <img src="images/creek_and_the_cave/a774aa29aa41e9fc.jpg" alt="Banana Phone" class="featured-show-image">
         <div class="featured-show-info">
-            <h3>Cocktails and Comedy</h3>
-            <p class="venue">📍 The Velveeta Room</p>
-            <p class="description">Cocktails and Comedy</p>
-            <a href="https://www.thevelveetaroom.com" class="btn" target="_blank">Get Tickets</a>
+            <h3>Banana Phone</h3>
+            <p class="venue">📍 Creek and the Cave</p>
+            <p class="show-meta"><span class="day-badge">SUN</span> <span class="time-text">10:00 PM</span></p>
+            <p class="description">Every Sunday at Creek and the Cave - a hilarious weekly showcase you won't want to miss!</p>
+            <a href="https://www.showclix.com/event/banana-phone" class="btn" target="_blank">Get Tickets</a>
         </div>
     </div>
 </section>
 
 
-    <section>
-        <h2>Top Picks</h2>
-        <div class="show-list">
-            
-<div class="show-item-v2" style="background-image: url('images/the_velveeta_room/7686e725d8ac91cc.png');">
+    <section class="featured-section">
+        <h2 class="ribbon-title">Featured Shows</h2>
+        <div class="featured-shows-wrapper">
+            <div class="show-list">
+
+<div class="show-item-v2" style="background-image: url('images/cap_city_comedy/dylan_carlino_a92bfa0f.jpg');">
     <div class="show-overlay">
-        <h3>The Hump</h3>
-        <span class="venue">The Velveeta Room</span>
+        <div class="show-date-info"><span class="day-badge">THU</span><span class="date-text">Dec 18</span></div>
+        <h3>Dylan Carlino</h3>
+        <span class="venue">Cap City Comedy <span class="time-text">7:30 PM</span></span>
         <div class="show-details">
-            <span class="show-time"></span>
-            <a href="https://www.thevelveetaroom.com" class="btn-v2" target="_blank">Tickets</a>
+            <a href="https://www.capcitycomedy.com/shows/334918" class="btn-v2" target="_blank">Tickets</a>
         </div>
     </div>
 </div>
 
-
-<div class="show-item-v2" style="background-image: url('images/the_velveeta_room/798124e5abe11b70.png');">
+<div class="show-item-v2" style="background-image: url('images/comedy_mothership/af10681cbad28551.jpg');">
     <div class="show-overlay">
-        <h3>The Joke of Painting</h3>
-        <span class="venue">The Velveeta Room</span>
-        <div class="show-details">
-            <span class="show-time"></span>
-            <a href="https://www.thevelveetaroom.com" class="btn-v2" target="_blank">Tickets</a>
-        </div>
-    </div>
-</div>
-
-
-<div class="show-item-v2" style="background-image: url('images/the_velveeta_room/4d1704ba8ada7712.png');">
-    <div class="show-overlay">
-        <h3>Velveeta Room Wrestling</h3>
-        <span class="venue">The Velveeta Room</span>
-        <div class="show-details">
-            <span class="show-time"></span>
-            <a href="https://www.thevelveetaroom.com" class="btn-v2" target="_blank">Tickets</a>
-        </div>
-    </div>
-</div>
-
-
-<div class="show-item-v2" style="background-image: url('images/the_velveeta_room/f273952067699ad0.png');">
-    <div class="show-overlay">
-        <h3>The Christmas Hangover Comedy Show</h3>
-        <span class="venue">The Velveeta Room</span>
-        <div class="show-details">
-            <span class="show-time"></span>
-            <a href="https://www.thevelveetaroom.com" class="btn-v2" target="_blank">Tickets</a>
-        </div>
-    </div>
-</div>
-
-
-<div class="show-item-v2" style="background-image: url('images/the_velveeta_room/9c67e920336dfc15.png');">
-    <div class="show-overlay">
-        <h3>Timeless Comedy</h3>
-        <span class="venue">The Velveeta Room</span>
-        <div class="show-details">
-            <span class="show-time"></span>
-            <a href="https://www.thevelveetaroom.com" class="btn-v2" target="_blank">Tickets</a>
-        </div>
-    </div>
-</div>
-
-
-<div class="show-item-v2" style="background-image: url('images/comedy_mothership/fc857aa7b2d25e89.jpg');">
-    <div class="show-overlay">
-        <h3>WEDNESDAY</h3>
+        <div class="show-date-info"><span class="day-badge">FRI</span><span class="date-text">Dec 19</span></div>
+        <h3>Jessimae Peluso</h3>
         <span class="venue">Comedy Mothership</span>
         <div class="show-details">
-            <span class="show-time"></span>
-            <a href="https://comedymothership.com" class="btn-v2" target="_blank">Tickets</a>
+            <a href="https://comedymothership.com/shows" class="btn-v2" target="_blank">Tickets</a>
         </div>
     </div>
 </div>
 
-
-<div class="show-item-v2" style="background-image: url('images/comedy_mothership/91c4988a838808ba.jpg');">
+<div class="show-item-v2" style="background-image: url('images/creek_and_the_cave/ecea26c7e3698c36.jpg');">
     <div class="show-overlay">
-        <h3>FRIDAY</h3>
-        <span class="venue">Comedy Mothership</span>
+        <div class="show-date-info"><span class="day-badge">SAT</span><span class="date-text">Dec 20</span></div>
+        <h3>Christmas at The Creek!</h3>
+        <span class="venue">Creek and the Cave <span class="time-text">7:00 PM</span></span>
         <div class="show-details">
-            <span class="show-time"></span>
-            <a href="https://comedymothership.com" class="btn-v2" target="_blank">Tickets</a>
+            <a href="https://www.creekandcave.com/events/christmas-at-the-creek" class="btn-v2" target="_blank">Tickets</a>
         </div>
     </div>
 </div>
 
-
-<div class="show-item-v2" style="background-image: url('images/comedy_mothership/db5d677d8b779cb4.jpg');">
+<div class="show-item-v2" style="background-image: url('images/creek_and_the_cave/d8c90566e99b64a9.jpg');">
     <div class="show-overlay">
-        <h3>MONDAY</h3>
-        <span class="venue">Comedy Mothership</span>
+        <div class="show-date-info"><span class="day-badge">SUN</span><span class="date-text">Dec 21</span></div>
+        <h3>Josh Potter</h3>
+        <span class="venue">Creek and the Cave</span>
         <div class="show-details">
-            <span class="show-time"></span>
-            <a href="https://comedymothership.com" class="btn-v2" target="_blank">Tickets</a>
+            <a href="https://www.creekandcave.com/events/josh-potter" class="btn-v2" target="_blank">Tickets</a>
         </div>
     </div>
 </div>
 
-
-<div class="show-item-v2" style="background-image: url('images/comedy_mothership/236204d3b79140ad.jpg');">
+<div class="show-item-v2" style="background-image: url('images/creek_and_the_cave/3d6650cf7dbacd70.png');">
     <div class="show-overlay">
-        <h3>WEDNESDAY</h3>
-        <span class="venue">Comedy Mothership</span>
+        <div class="show-date-info"><span class="day-badge">TUE</span><span class="date-text">Dec 23</span></div>
+        <h3>The Roast of Santa</h3>
+        <span class="venue">Creek and the Cave <span class="time-text">10:00 PM</span></span>
         <div class="show-details">
-            <span class="show-time"></span>
-            <a href="https://comedymothership.com" class="btn-v2" target="_blank">Tickets</a>
+            <a href="https://www.creekandcave.com/events/the-roast-of-santa" class="btn-v2" target="_blank">Tickets</a>
         </div>
     </div>
 </div>
 
-
-<div class="show-item-v2" style="background-image: url('images/comedy_mothership/97ee34f2d7c3299f.jpg');">
-    <div class="show-overlay">
-        <h3>WEDNESDAY</h3>
-        <span class="venue">Comedy Mothership</span>
-        <div class="show-details">
-            <span class="show-time"></span>
-            <a href="https://comedymothership.com" class="btn-v2" target="_blank">Tickets</a>
-        </div>
-    </div>
-</div>
-
+            </div>
         </div>
     </section>
 
-    <section>
-        <h2>Merch</h2>
-        <div class="cards-grid">
-            <div class="card">
-                <div class="card-image" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">👕</div>
-                <div class="card-content">
-                    <h3>"Keep Austin Weird... Like My Jokes" Tee</h3>
-                    <p>Classic black tee with neon print. 100% cotton, 100% funny.</p>
-                    <div class="card-meta">
-                        <span class="venue">Danny "The Duke" Martinez</span>
-                        <span class="price">$28</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-image" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">🏷️</div>
-                <div class="card-content">
-                    <h3>ATX Comedy Sticker Pack</h3>
-                    <p>6 vinyl stickers featuring local comedy club logos and catchphrases.</p>
-                    <div class="card-meta">
-                        <span class="venue">Various Artists</span>
-                        <span class="price">$12</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-image" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">🍺</div>
-                <div class="card-content">
-                    <h3>"I Survived Open Mic Night" Coozie</h3>
-                    <p>Keep your drink cold while reliving the trauma of amateur hour.</p>
-                    <div class="card-meta">
-                        <span class="venue">Jess "The Mess" Thompson</span>
-                        <span class="price">$8</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card">
-                <div class="card-image" style="background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);">🧢</div>
-                <div class="card-content">
-                    <h3>"Punch Line Pending" Dad Hat</h3>
-                    <p>For when you're still working on the joke. Adjustable strap.</p>
-                    <div class="card-meta">
-                        <span class="venue">Marcus "Big Laugh" Williams</span>
-                        <span class="price">$24</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div style="text-align: center; margin-top: 40px;">
-            <a href="merch.html" class="btn">Browse All Merch</a>
-        </div>
-    </section>
-    
-    <section class="email-subscribe">
-        <h2>Stay in the loop!</h2>
-        <p>Sign up for our updates and get the latest on shows and special promotions.</p>
-        <form class="subscribe-form">
-            <input type="email" placeholder="Email Address">
-            <button type="submit" class="btn">Sign Up</button>
-        </form>
-    </section>
-
-    <section class="belly-laughs">
-        <h2>Belly Laughs</h2>
-        <p>This room is intimate. Dim lights, velvet curtains draped against black walls and no matter where you sit you'll be just steps away from the performer. With just 82 seats, expect to purchase tickets early. — BYOB!</p>
-    </section>
-
-    <section class="faq-section">
-        <h2>FAQs</h2>
-        <div class="faq-item">
-            <h4>What's the age requirement?</h4>
-            <p>The show is 18+ to enter and 21+ to order drinks.</p>
-        </div>
-        <div class="faq-item">
-            <h4>How do I find out the names of the comics who played when I was there?</h4>
-            <p>We're glad you found a new favorite! We post stories on our Instagram each night with the lineup. Follow us at @atxcomedy</p>
-        </div>
-        <div class="faq-item">
-            <h4>I'm running late, when do doors close?</h4>
-            <p>Doors are open 15 minutes after the show starts. After 15 minutes your seats are forfeited to the waitlist. If you show up after 15 minutes and there are still seats available, then we can happily seat you.</p>
+    <section class="faq-section got-questions">
+        <h2>Any Questions?</h2>
+        <ul class="questions-list">
+            <li>Got a show you'd like to add?</li>
+            <li>Need help building a website?</li>
+            <li>Got Milk?</li>
+        </ul>
+        <p class="questions-text">Reach out to us here:</p>
+        <div class="contact-cta">
+            <a href="mailto:foeatx@gmail.com" class="btn email-btn">foeatx@gmail.com</a>
+            <a href="https://www.instagram.com/willmuss87/" class="btn instagram-btn" target="_blank">@willmuss87</a>
         </div>
     </section>
 
     <section class="visit-us">
         <div class="visit-us-content">
             <h2>Visit Us</h2>
-            <p>2505 East 6th St. Suite D<br>Austin, TX 78702</p>
+            <p><a href="https://ymhstudios.com/" target="_blank" class="ymh-link">ur mom's house</a></p>
             <h3>Hours</h3>
-            <p>Mon - Tues - 7pm-9pm<br>Wed - Thur - 7pm-11pm<br>Fri - Sat - 6pm-12am<br>Sun - 6pm-11pm</p>
+            <p>it's every day bro</p>
         </div>
     </section>
 
     <footer>
-        <p>ATX Comedy - Funny Over Everything</p>
-        <div class="social-links">
-            <a href="#">📸</a>
-            <a href="#">🐦</a>
-            <a href="#">📘</a>
-        </div>
-        <p style="margin-top: 20px; font-size: 0.9rem;">&copy; 2024 ATX Comedy. All rights reserved.</p>
+        <p>Funny Over Everything</p>
+        <p style="margin-top: 20px; font-size: 0.9rem;">&copy; 2024 Funny Over Everything. All rights reserved.</p>
     </footer>
 </body>
 </html>

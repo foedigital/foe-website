@@ -435,6 +435,13 @@ nav {
     gap: 20px;
 }
 
+/* Smaller ribbon for h3 elements */
+h3.ribbon-title::before,
+h3.ribbon-title::after {
+    max-width: 100px;
+    height: 20px;
+}
+
 .ribbon-title::before,
 .ribbon-title::after {
     content: '';
@@ -446,8 +453,8 @@ nav {
             90deg,
             transparent,
             transparent 4px,
-            #f05a28 4px,
-            #f05a28 8px,
+            var(--foe-orange) 4px,
+            var(--foe-orange) 8px,
             transparent 8px,
             transparent 12px,
             #fff 12px,

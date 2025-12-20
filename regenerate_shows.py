@@ -945,6 +945,12 @@ html = f'''<!DOCTYPE html>
     </style>
 </head>
 <body>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scroll-progress"></div>
+
+    <!-- Custom Cursor (desktop only) -->
+    <div class="custom-cursor" id="custom-cursor"></div>
+
     <!-- SVG Filter for wavy border effect -->
     <svg style="position: absolute; width: 0; height: 0;">
         <defs>
@@ -968,6 +974,7 @@ html = f'''<!DOCTYPE html>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="shows.html" class="active">Shows</a></li>
+                <li><a href="mission.html">Our Mission</a></li>
             </ul>
         </nav>
     </header>
@@ -980,6 +987,28 @@ html = f'''<!DOCTYPE html>
             <h1>Find Your Show Here!</h1>
         </div>
     </section>
+
+    <!-- Infinite Marquee -->
+    <div class="marquee-container">
+        <div class="marquee-content">
+            <span class="highlight">COMEDY</span><span>&#8734;</span>
+            <span class="highlight">AUSTIN</span><span>&#8734;</span>
+            <span class="highlight">LAUGHS</span><span>&#8734;</span>
+            <span>CREEK & CAVE</span><span>&#8734;</span>
+            <span>MOTHERSHIP</span><span>&#8734;</span>
+            <span>CAP CITY</span><span>&#8734;</span>
+            <span>VELVEETA ROOM</span><span>&#8734;</span>
+            <span>VULCAN</span><span>&#8734;</span>
+            <span class="highlight">COMEDY</span><span>&#8734;</span>
+            <span class="highlight">AUSTIN</span><span>&#8734;</span>
+            <span class="highlight">LAUGHS</span><span>&#8734;</span>
+            <span>CREEK & CAVE</span><span>&#8734;</span>
+            <span>MOTHERSHIP</span><span>&#8734;</span>
+            <span>CAP CITY</span><span>&#8734;</span>
+            <span>VELVEETA ROOM</span><span>&#8734;</span>
+            <span>VULCAN</span><span>&#8734;</span>
+        </div>
+    </div>
 
     <section class="featured-section">
         <h2 class="ribbon-title">Shows in ATX</h2>
@@ -1095,6 +1124,60 @@ html = f'''<!DOCTYPE html>
             applyFilters();
         }}
     </script>
+
+    <!-- CDN Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
+    <script>
+    // Initialize Lenis Smooth Scrolling
+    const lenis = new Lenis({{
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smooth: true,
+        smoothTouch: false,
+    }});
+
+    function raf(time) {{
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+    }}
+    requestAnimationFrame(raf);
+
+    // Scroll Progress Bar
+    const scrollProgressBar = document.getElementById('scroll-progress');
+    window.addEventListener('scroll', () => {{
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = (scrollTop / docHeight) * 100;
+        scrollProgressBar.style.width = scrollPercent + '%';
+    }});
+
+    // Custom Cursor (Desktop Only)
+    const customCursor = document.getElementById('custom-cursor');
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {{
+        document.addEventListener('mousemove', (e) => {{
+            customCursor.style.left = e.clientX + 'px';
+            customCursor.style.top = e.clientY + 'px';
+            customCursor.classList.add('visible');
+        }});
+
+        document.addEventListener('mouseleave', () => {{
+            customCursor.classList.remove('visible');
+        }});
+
+        const interactiveElements = document.querySelectorAll('a, button, .show-card, .btn, .filter-btn');
+        interactiveElements.forEach(el => {{
+            el.addEventListener('mouseenter', () => customCursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => customCursor.classList.remove('hover'));
+        }});
+    }}
+
+    // Add glow-hover and card-lift to show cards
+    document.querySelectorAll('.show-card').forEach(card => {{
+        card.classList.add('glow-hover', 'card-lift');
+    }});
+    </script>
 </body>
 </html>'''
 
@@ -1105,3 +1188,85 @@ print(f"Created shows.html with {len(shows)} shows!")
 print(f"Venues: {', '.join(sorted(venues))}")
 print(f"Free shows: {sum(1 for s in shows if s['is_free'])}")
 print(f"Paid shows: {sum(1 for s in shows if not s['is_free'])}")
+
+# ============================================
+# UPDATE INDEX.HTML FEATURED SHOWS
+# ============================================
+
+def generate_featured_show_card(show):
+    """Generate a show-item-v2 card for the homepage."""
+    day_abbr = show['day'].upper() if show['day'] else ''
+
+    # Get date part
+    event_date = show['date'] or ''
+    date_part = ''
+    if ', ' in event_date:
+        parts = event_date.split(', ', 1)
+        date_part = parts[1] if len(parts) > 1 else ''
+    elif event_date and event_date not in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']:
+        date_part = event_date
+    if not date_part and day_abbr:
+        date_part = get_next_date_for_day(day_abbr)
+
+    time_html = f' <span class="time-text">{show["time"]}</span>' if show['time'] else ''
+    bg_style = f"background-image: url('{show['image']}');" if show['has_image'] else ''
+
+    return f'''<div class="show-item-v2 card-lift glow-hover" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" style="{bg_style}">
+    <div class="show-overlay">
+        <div class="show-date-info"><span class="day-badge">{day_abbr}</span><span class="date-text">{date_part}</span></div>
+        <h3>{show['name']}</h3>
+        <span class="venue">{show['venue']}{time_html}</span>
+        <div class="show-details">
+            <a href="{show['url']}" class="btn-v2 magnetic-btn btn-ripple" target="_blank">Tickets</a>
+        </div>
+    </div>
+</div>'''
+
+# Get top 5 shows with images for featured section (prioritize variety of venues)
+featured_shows = []
+venues_used = set()
+for show in shows:
+    if show['has_image'] and 'see all' not in show['name'].lower():
+        # Try to get variety of venues
+        if show['venue'] not in venues_used or len(featured_shows) < 5:
+            featured_shows.append(show)
+            venues_used.add(show['venue'])
+        if len(featured_shows) >= 5:
+            break
+
+# If we don't have 5 yet, fill with any shows that have images
+if len(featured_shows) < 5:
+    for show in shows:
+        if show['has_image'] and show not in featured_shows and 'see all' not in show['name'].lower():
+            featured_shows.append(show)
+            if len(featured_shows) >= 5:
+                break
+
+# Generate featured show cards HTML
+featured_cards = [generate_featured_show_card(show) for show in featured_shows[:5]]
+featured_html = '\n\n'.join(featured_cards)
+
+# Read current index.html
+try:
+    with open('index.html', 'r', encoding='utf-8') as f:
+        index_content = f.read()
+
+    # Find and replace the featured shows section
+    # Pattern: from '<div class="show-list stagger-children">' to the closing '</div>' before '</div></div></section>'
+    import re
+    pattern = r'(<div class="show-list stagger-children">)\s*(.*?)\s*(</div>\s*</div>\s*</section>\s*<section class="faq-section)'
+
+    replacement = f'''\\1
+
+{featured_html}
+
+            \\3'''
+
+    new_content = re.sub(pattern, replacement, index_content, flags=re.DOTALL)
+
+    with open('index.html', 'w', encoding='utf-8') as f:
+        f.write(new_content)
+
+    print(f"Updated index.html with {len(featured_shows[:5])} featured shows!")
+except Exception as e:
+    print(f"Warning: Could not update index.html - {e}")

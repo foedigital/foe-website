@@ -195,6 +195,15 @@
     </style>
 </head>
 <body>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scroll-progress"></div>
+
+    <!-- Custom Cursor (desktop only) -->
+    <div class="custom-cursor" id="custom-cursor"></div>
+
+    <!-- Noise Overlay -->
+    <div class="noise-overlay"></div>
+
     <!-- SVG Filter for wavy border effect -->
     <svg style="position: absolute; width: 0; height: 0;">
         <defs>
@@ -232,9 +241,31 @@
         </div>
     </section>
 
+    <!-- Infinite Marquee -->
+    <div class="marquee-container">
+        <div class="marquee-content">
+            <span class="highlight">COMEDY</span><span>&#8734;</span>
+            <span class="highlight">AUSTIN</span><span>&#8734;</span>
+            <span class="highlight">LAUGHS</span><span>&#8734;</span>
+            <span>CREEK & CAVE</span><span>&#8734;</span>
+            <span>MOTHERSHIP</span><span>&#8734;</span>
+            <span>CAP CITY</span><span>&#8734;</span>
+            <span>VELVEETA ROOM</span><span>&#8734;</span>
+            <span>VULCAN</span><span>&#8734;</span>
+            <span class="highlight">COMEDY</span><span>&#8734;</span>
+            <span class="highlight">AUSTIN</span><span>&#8734;</span>
+            <span class="highlight">LAUGHS</span><span>&#8734;</span>
+            <span>CREEK & CAVE</span><span>&#8734;</span>
+            <span>MOTHERSHIP</span><span>&#8734;</span>
+            <span>CAP CITY</span><span>&#8734;</span>
+            <span>VELVEETA ROOM</span><span>&#8734;</span>
+            <span>VULCAN</span><span>&#8734;</span>
+        </div>
+    </div>
+
     <section class="featured-section">
         <!-- About the Founder -->
-        <div class="mission-section">
+        <div class="mission-section animate-fade-up">
             <h3><span class="icon">&#127908;</span> Meet the Founder</h3>
             <div class="founder-section">
                 <div class="founder-placeholder">WM</div>
@@ -247,7 +278,7 @@
         </div>
 
         <!-- Our Mission Statement -->
-        <div class="mission-section">
+        <div class="mission-section animate-fade-up">
             <h3><span class="icon">&#127919;</span> What We're About</h3>
             <p>Our mission is simple: <strong style="color: var(--teal-accent);">Create more resources for comedians and comedy fans to better engage in the world of stand-up comedy.</strong></p>
             <p>We believe comedy should be accessible. Fans should be able to easily find shows happening in their city. Comedians should have the tools to build their brand and reach new audiences. That's what we're building here.</p>
@@ -260,7 +291,7 @@
         </div>
 
         <!-- Services for Comedians -->
-        <div class="mission-section">
+        <div class="mission-section animate-fade-up">
             <h3><span class="icon">&#128187;</span> Website Building for Comedians</h3>
             <p>Need help building your online brand? I help comedians create professional websites that showcase their work and boost their online presence. Here's what I can help with:</p>
 
@@ -300,7 +331,7 @@
         </div>
 
         <!-- Build Process -->
-        <div class="mission-section">
+        <div class="mission-section animate-fade-up">
             <h3><span class="icon">&#128736;</span> How We Build</h3>
             <p>We follow a proven, phased development process to ensure your website is built right:</p>
             <ul>
@@ -318,7 +349,7 @@
         </div>
 
         <!-- Get Involved -->
-        <div class="cta-section">
+        <div class="cta-section animate-fade-up">
             <h3>Want to Get Involved?</h3>
             <p>We're always looking to make this site better and more useful for the Austin comedy community.</p>
 
@@ -346,13 +377,13 @@
             <p style="margin-bottom: 25px;"><strong style="color: var(--primary-orange);">Reach out!</strong> I'm open to suggestions and always looking for ways to support the comedy community.</p>
 
             <div class="contact-cta">
-                <a href="mailto:foeatx@gmail.com" class="btn email-btn">foeatx@gmail.com</a>
-                <a href="https://www.instagram.com/willmuss87/" class="btn instagram-btn" target="_blank">@willmuss87</a>
+                <a href="mailto:foeatx@gmail.com" class="btn email-btn magnetic-btn btn-ripple btn-glow">foeatx@gmail.com</a>
+                <a href="https://www.instagram.com/willmuss87/" class="btn instagram-btn magnetic-btn btn-ripple btn-glow" target="_blank">@willmuss87</a>
             </div>
         </div>
     </section>
 
-    <section class="visit-us">
+    <section class="visit-us animate-fade-up">
         <div class="visit-us-content">
             <h2>Visit Us</h2>
             <p><a href="https://ymhstudios.com/" target="_blank" class="ymh-link">ur mom's house</a></p>
@@ -365,5 +396,141 @@
         <p>Funny Over Everything</p>
         <p style="margin-top: 20px; font-size: 0.9rem;">&copy; 2024 Funny Over Everything. All rights reserved.</p>
     </footer>
+
+    <!-- CDN Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://unpkg.com/lenis@1.0.42/dist/lenis.min.js"></script>
+    <script src="https://unpkg.com/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"></script>
+
+    <script>
+    // ============================================
+    // FOE PREMIUM FEATURES - JAVASCRIPT
+    // ============================================
+
+    // Initialize Lenis Smooth Scrolling
+    const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        direction: 'vertical',
+        gestureDirection: 'vertical',
+        smooth: true,
+        smoothTouch: false,
+        touchMultiplier: 2,
+    });
+
+    function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    // Scroll Progress Bar
+    const scrollProgress = document.getElementById('scroll-progress');
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = (scrollTop / docHeight) * 100;
+        scrollProgress.style.width = scrollPercent + '%';
+    });
+
+    // Custom Cursor (Desktop Only)
+    const cursor = document.getElementById('custom-cursor');
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            cursor.classList.add('visible');
+        });
+
+        document.addEventListener('mouseleave', () => {
+            cursor.classList.remove('visible');
+        });
+
+        // Hover effect on interactive elements
+        const interactiveElements = document.querySelectorAll('a, button, .service-card, .btn, .tech-badge');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+    }
+
+    // Scroll Animations - Fade Up on Scroll
+    const observerOptions = {
+        root: null,
+        rootMargin: '0px',
+        threshold: 0.1
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('is-visible');
+            }
+        });
+    }, observerOptions);
+
+    document.querySelectorAll('.animate-fade-up').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Add glow-hover to service cards
+    document.querySelectorAll('.service-card').forEach(card => {
+        card.classList.add('glow-hover', 'card-lift');
+    });
+
+    // Magnetic Buttons
+    const magneticBtns = document.querySelectorAll('.magnetic-btn');
+    magneticBtns.forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+            const rect = btn.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+        });
+
+        btn.addEventListener('mouseleave', () => {
+            btn.style.transform = 'translate(0, 0)';
+        });
+    });
+
+    // GSAP ScrollTrigger Animations
+    gsap.registerPlugin(ScrollTrigger);
+
+    // Animate mission sections on scroll
+    gsap.utils.toArray('.mission-section').forEach((section, i) => {
+        gsap.fromTo(section,
+            { opacity: 0, y: 60 },
+            {
+                opacity: 1,
+                y: 0,
+                duration: 0.8,
+                ease: 'power2.out',
+                scrollTrigger: {
+                    trigger: section,
+                    start: 'top 80%',
+                    toggleActions: 'play none none none'
+                }
+            }
+        );
+    });
+
+    // Animate service cards with stagger
+    gsap.fromTo('.service-card',
+        { opacity: 0, y: 40 },
+        {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            stagger: 0.15,
+            ease: 'power2.out',
+            scrollTrigger: {
+                trigger: '.services-grid',
+                start: 'top 80%',
+                toggleActions: 'play none none none'
+            }
+        }
+    );
+    </script>
 </body>
 </html>

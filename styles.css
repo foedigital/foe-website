@@ -8,17 +8,27 @@
 }
 
 :root {
-    --primary-orange: #f05a28;
+    /* FOE Brand Colors */
+    --foe-orange: #FF6B35;
+    --foe-orange-glow: rgba(255, 107, 53, 0.4);
+    --foe-black: #0A0A0A;
+    --foe-dark: #121212;
+    --foe-card: #1A1A1A;
+    --foe-white: #FFFFFF;
+    --foe-gray: #888888;
+
+    /* Legacy variables mapped to new palette */
+    --primary-orange: #FF6B35;
     --primary-orange-hover: #ff7043;
     --teal-accent: #00d4aa;
-    --dark-bg: #0a0a0a;
-    --card-bg: #141414;
+    --dark-bg: #0A0A0A;
+    --card-bg: #1A1A1A;
     --card-bg-hover: #1a1a1a;
     --border-color: #2a2a2a;
     --text-primary: #ffffff;
     --text-secondary: #b0b0b0;
     --text-muted: #707070;
-    --gradient-orange: linear-gradient(135deg, #f05a28 0%, #ff7043 100%);
+    --gradient-orange: linear-gradient(135deg, #FF6B35 0%, #ff7043 100%);
     --gradient-teal: linear-gradient(135deg, #00d4aa 0%, #00f5c4 100%);
 }
 
@@ -1232,5 +1242,264 @@ footer p {
 
     .show-card-content {
         padding: 20px;
+    }
+}
+
+/* ============================================
+   PREMIUM FEATURES - FOE WEBSITE UPGRADE
+   ============================================ */
+
+/* Scroll Progress Bar */
+.scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 0%;
+    height: 3px;
+    background: linear-gradient(90deg, var(--foe-orange), #ff7043);
+    z-index: 9999;
+    transition: width 0.1s ease-out;
+    box-shadow: 0 0 10px var(--foe-orange-glow);
+}
+
+/* Scroll Fade Up Animations */
+.animate-fade-up {
+    opacity: 0;
+    transform: translateY(60px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.animate-fade-up.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Stagger animation delays for grid children */
+.stagger-children > *:nth-child(1) { transition-delay: 0s; }
+.stagger-children > *:nth-child(2) { transition-delay: 0.1s; }
+.stagger-children > *:nth-child(3) { transition-delay: 0.2s; }
+.stagger-children > *:nth-child(4) { transition-delay: 0.3s; }
+.stagger-children > *:nth-child(5) { transition-delay: 0.4s; }
+.stagger-children > *:nth-child(6) { transition-delay: 0.5s; }
+.stagger-children > *:nth-child(7) { transition-delay: 0.6s; }
+.stagger-children > *:nth-child(8) { transition-delay: 0.7s; }
+.stagger-children > *:nth-child(9) { transition-delay: 0.8s; }
+.stagger-children > *:nth-child(10) { transition-delay: 0.9s; }
+.stagger-children > *:nth-child(n+11) { transition-delay: 1s; }
+
+/* Card Lift Effect */
+.card-lift {
+    transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1),
+                box-shadow 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.card-lift:hover {
+    transform: translateY(-12px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Glow Effects */
+.glow-hover {
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.glow-hover:hover {
+    box-shadow: 0 0 30px var(--foe-orange-glow);
+    border-color: var(--foe-orange) !important;
+}
+
+/* Image Zoom on Hover */
+.image-zoom {
+    overflow: hidden;
+}
+
+.image-zoom::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-size: cover;
+    background-position: center;
+    background-image: inherit;
+    transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+    z-index: -1;
+}
+
+.show-card.image-zoom {
+    background-size: cover;
+    background-position: center;
+    transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.show-card.image-zoom:hover {
+    transform: translateY(-12px) scale(1.02);
+}
+
+/* Custom Cursor */
+.custom-cursor {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    background: var(--foe-orange);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99999;
+    mix-blend-mode: difference;
+    transform: translate(-50%, -50%);
+    transition: transform 0.15s ease, width 0.2s ease, height 0.2s ease;
+    opacity: 0;
+}
+
+.custom-cursor.visible {
+    opacity: 1;
+}
+
+.custom-cursor.hover {
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 107, 53, 0.5);
+}
+
+/* Noise Overlay */
+.noise-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9998;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+}
+
+/* Infinite Marquee */
+.marquee-container {
+    overflow: hidden;
+    background: var(--foe-dark);
+    padding: 15px 0;
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.marquee-content {
+    display: flex;
+    animation: marquee 30s linear infinite;
+    width: max-content;
+}
+
+.marquee-content span {
+    color: var(--foe-gray);
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    white-space: nowrap;
+    padding: 0 30px;
+}
+
+.marquee-content span.highlight {
+    color: var(--foe-orange);
+}
+
+@keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+/* Magnetic Button */
+.magnetic-btn {
+    position: relative;
+    display: inline-block;
+    transition: transform 0.3s ease;
+}
+
+/* Button Ripple Effect */
+.btn-ripple {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn-ripple::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    transition: width 0.6s ease, height 0.6s ease, opacity 0.6s ease;
+    opacity: 0;
+}
+
+.btn-ripple:active::after {
+    width: 300px;
+    height: 300px;
+    opacity: 1;
+    transition: 0s;
+}
+
+/* Enhanced Button Glow */
+.btn-glow {
+    transition: all 0.3s ease;
+}
+
+.btn-glow:hover {
+    box-shadow: 0 0 30px var(--foe-orange-glow), 0 8px 30px rgba(0, 0, 0, 0.3);
+}
+
+/* Enhanced Wavy Ribbon Glow */
+.hero-wavy-bg {
+    animation: heroWavyFlow 5.2s linear infinite, wavyGlow 3s ease-in-out infinite alternate;
+}
+
+@keyframes wavyGlow {
+    0% { filter: url(#wavy) brightness(1); }
+    100% { filter: url(#wavy) brightness(1.1); }
+}
+
+/* 3D Tilt Card Styles */
+.tilt-card {
+    transform-style: preserve-3d;
+    transform: perspective(1000px);
+}
+
+.tilt-card .show-card-content {
+    transform: translateZ(30px);
+}
+
+/* Show card enhanced hover with glow border */
+.show-card.glow-hover:hover {
+    border: 1px solid var(--foe-orange);
+}
+
+/* Smooth scroll body class for Lenis */
+html.lenis {
+    height: auto;
+}
+
+.lenis.lenis-smooth {
+    scroll-behavior: auto;
+}
+
+/* Hide custom cursor on mobile/touch devices */
+@media (hover: none) and (pointer: coarse) {
+    .custom-cursor {
+        display: none !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .custom-cursor {
+        display: none !important;
+    }
+
+    .marquee-content span {
+        font-size: 0.85rem;
+        padding: 0 20px;
     }
 }

@@ -201,9 +201,6 @@
     <!-- Custom Cursor (desktop only) -->
     <div class="custom-cursor" id="custom-cursor"></div>
 
-    <!-- Noise Overlay -->
-    <div class="noise-overlay"></div>
-
     <!-- SVG Filter for wavy border effect -->
     <svg style="position: absolute; width: 0; height: 0;">
         <defs>
@@ -265,7 +262,7 @@
 
     <section class="featured-section">
         <!-- About the Founder -->
-        <div class="mission-section animate-fade-up">
+        <div class="mission-section">
             <h3><span class="icon">&#127908;</span> Meet the Founder</h3>
             <div class="founder-section">
                 <div class="founder-placeholder">WM</div>
@@ -278,7 +275,7 @@
         </div>
 
         <!-- Our Mission Statement -->
-        <div class="mission-section animate-fade-up">
+        <div class="mission-section">
             <h3><span class="icon">&#127919;</span> What We're About</h3>
             <p>Our mission is simple: <strong style="color: var(--teal-accent);">Create more resources for comedians and comedy fans to better engage in the world of stand-up comedy.</strong></p>
             <p>We believe comedy should be accessible. Fans should be able to easily find shows happening in their city. Comedians should have the tools to build their brand and reach new audiences. That's what we're building here.</p>
@@ -291,7 +288,7 @@
         </div>
 
         <!-- Services for Comedians -->
-        <div class="mission-section animate-fade-up">
+        <div class="mission-section">
             <h3><span class="icon">&#128187;</span> Website Building for Comedians</h3>
             <p>Need help building your online brand? I help comedians create professional websites that showcase their work and boost their online presence. Here's what I can help with:</p>
 
@@ -331,7 +328,7 @@
         </div>
 
         <!-- Build Process -->
-        <div class="mission-section animate-fade-up">
+        <div class="mission-section">
             <h3><span class="icon">&#128736;</span> How We Build</h3>
             <p>We follow a proven, phased development process to ensure your website is built right:</p>
             <ul>
@@ -349,7 +346,7 @@
         </div>
 
         <!-- Get Involved -->
-        <div class="cta-section animate-fade-up">
+        <div class="cta-section">
             <h3>Want to Get Involved?</h3>
             <p>We're always looking to make this site better and more useful for the Austin comedy community.</p>
 
@@ -383,7 +380,7 @@
         </div>
     </section>
 
-    <section class="visit-us animate-fade-up">
+    <section class="visit-us">
         <div class="visit-us-content">
             <h2>Visit Us</h2>
             <p><a href="https://ymhstudios.com/" target="_blank" class="ymh-link">ur mom's house</a></p>
@@ -455,25 +452,6 @@
         });
     }
 
-    // Scroll Animations - Fade Up on Scroll
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible');
-            }
-        });
-    }, observerOptions);
-
-    document.querySelectorAll('.animate-fade-up').forEach(el => {
-        observer.observe(el);
-    });
-
     // Add glow-hover to service cards
     document.querySelectorAll('.service-card').forEach(card => {
         card.classList.add('glow-hover', 'card-lift');
@@ -494,43 +472,8 @@
         });
     });
 
-    // GSAP ScrollTrigger Animations
+    // GSAP registered for potential future use
     gsap.registerPlugin(ScrollTrigger);
-
-    // Animate mission sections on scroll
-    gsap.utils.toArray('.mission-section').forEach((section, i) => {
-        gsap.fromTo(section,
-            { opacity: 0, y: 60 },
-            {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                ease: 'power2.out',
-                scrollTrigger: {
-                    trigger: section,
-                    start: 'top 80%',
-                    toggleActions: 'play none none none'
-                }
-            }
-        );
-    });
-
-    // Animate service cards with stagger
-    gsap.fromTo('.service-card',
-        { opacity: 0, y: 40 },
-        {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            stagger: 0.15,
-            ease: 'power2.out',
-            scrollTrigger: {
-                trigger: '.services-grid',
-                start: 'top 80%',
-                toggleActions: 'play none none none'
-            }
-        }
-    );
     </script>
 </body>
 </html>

@@ -41,7 +41,11 @@
       "Bash(git commit -m \"$\\(cat <<''EOF''\nfeat: Add multi-venue comedy show scraping and dynamic page generation\n\n- Add scrapers for Vulcan Gas Company, Cap City, Mothership, East Austin, Creek and Cave\n- Add regenerate_shows.py for dynamic HTML generation from database\n- Add contact email \\(foeatx@gmail.com\\) with styled buttons\n- Add \"See All Shows\" icons for East Austin and Black Rabbit venues\n- Update logo and match orange color to site theme \\(#f05a28\\)\n- Add 10-day date filter for upcoming shows\n- Store show images and data in SQLite database\n\n🤖 Generated with [Claude Code]\\(https://claude.com/claude-code\\)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
       "Bash(git remote add:*)",
       "Bash(git branch:*)",
-      "Bash(git push:*)"
+      "Bash(git push:*)",
+      "Bash(dir:*)",
+      "Bash(git commit:*)",
+      "Bash(git pull:*)",
+      "Bash(git stash:*)"
     ]
   }
 }

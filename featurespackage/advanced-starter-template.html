@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Starter Template</title>
+  
+  <!-- Fonts - Using distinctive choices, not generic -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Satoshi:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Libraries -->
+  <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+  
+  <style>
+    /* ==========================================
+       CSS VARIABLES
+       ========================================== */
+    :root {
+      /* Color System */
+      --bg-primary: #0c0c0c;
+      --bg-elevated: #161616;
+      --bg-card: #1c1c1c;
+      --text-primary: #f5f5f5;
+      --text-secondary: #8a8a8a;
+      --text-muted: #4a4a4a;
+      --accent: #c9ff00; /* Lime green - distinctive */
+      --accent-secondary: #ff3366;
+      
+      /* Typography */
+      --font-display: 'Instrument Serif', serif;
+      --font-body: 'Satoshi', sans-serif;
+      
+      /* Spacing */
+      --space-xs: 0.5rem;
+      --space-sm: 1rem;
+      --space-md: 2rem;
+      --space-lg: 4rem;
+      --space-xl: 8rem;
+      
+      /* Animation */
+      --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-in-out-expo: cubic-bezier(0.87, 0, 0.13, 1);
+    }
+
+    /* ==========================================
+       RESET & BASE
+       ========================================== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+    }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* Hide default cursor on desktop */
+    @media (hover: hover) {
+      * { cursor: none !important; }
+    }
+
+    ::selection {
+      background: var(--accent);
+      color: var(--bg-primary);
+    }
+
+    a { color: inherit; text-decoration: none; }
+    img { max-width: 100%; display: block; }
+
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 var(--space-md);
+    }
+
+    /* ==========================================
+       PRELOADER
+       ========================================== */
+    .preloader {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-primary);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--space-md);
+    }
+
+    .preloader-logo {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 4rem);
+      font-style: italic;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .preloader-counter {
+      font-family: var(--font-body);
+      font-size: 0.875rem;
+      letter-spacing: 0.2em;
+      color: var(--text-secondary);
+      opacity: 0;
+    }
+
+    .preloader-bar {
+      width: 200px;
+      height: 1px;
+      background: var(--text-muted);
+      overflow: hidden;
+      opacity: 0;
+    }
+
+    .preloader-bar-fill {
+      width: 0%;
+      height: 100%;
+      background: var(--accent);
+    }
+
+    .preloader.hidden {
+      pointer-events: none;
+    }
+
+    /* ==========================================
+       CUSTOM CURSOR
+       ========================================== */
+    .cursor {
+      position: fixed;
+      width: 12px;
+      height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      mix-blend-mode: difference;
+      transition: transform 0.15s var(--ease-out-expo);
+    }
+
+    .cursor-follower {
+      position: fixed;
+      width: 48px;
+      height: 48px;
+      border: 1px solid var(--text-muted);
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9998;
+      transform: translate(-50%, -50%);
+      transition: width 0.3s var(--ease-out-expo), 
+                  height 0.3s var(--ease-out-expo),
+                  border-color 0.3s ease;
+    }
+
+    .cursor-follower.active {
+      width: 80px;
+      height: 80px;
+      border-color: var(--accent);
+    }
+
+    .cursor-text {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      font-size: 0.625rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--bg-primary);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .cursor-text.visible {
+      opacity: 1;
+    }
+
+    @media (hover: none) {
+      .cursor, .cursor-follower, .cursor-text { display: none; }
+    }
+
+    /* ==========================================
+       NOISE OVERLAY
+       ========================================== */
+    .noise {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 9000;
+      opacity: 0.03;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    }
+
+    /* ==========================================
+       PROGRESS BAR
+       ========================================== */
+    .progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 2px;
+      background: var(--accent);
+      transform-origin: left;
+      transform: scaleX(0);
+      z-index: 9001;
+    }
+
+    /* ==========================================
+       NAVIGATION
+       ========================================== */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      padding: var(--space-md) var(--space-lg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      mix-blend-mode: difference;
+    }
+
+    .nav-logo {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-style: italic;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: var(--space-lg);
+    }
+
+    .nav-link {
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .nav-link span {
+      display: block;
+      transition: transform 0.4s var(--ease-out-expo);
+    }
+
+    .nav-link::after {
+      content: attr(data-text);
+      position: absolute;
+      top: 100%;
+      left: 0;
+      font-size: inherit;
+      transition: transform 0.4s var(--ease-out-expo);
+    }
+
+    .nav-link:hover span {
+      transform: translateY(-100%);
+    }
+
+    .nav-link:hover::after {
+      transform: translateY(-100%);
+    }
+
+    /* ==========================================
+       HERO SECTION
+       ========================================== */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute;
+      inset: 0;
+      z-index: -1;
+    }
+
+    .hero-gradient {
+      position: absolute;
+      width: 150%;
+      height: 150%;
+      top: -25%;
+      left: -25%;
+      background: radial-gradient(
+        ellipse at 30% 50%,
+        rgba(201, 255, 0, 0.08) 0%,
+        transparent 50%
+      );
+      animation: gradientFloat 20s ease-in-out infinite;
+    }
+
+    @keyframes gradientFloat {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(5%, 5%) rotate(5deg); }
+      50% { transform: translate(-5%, 10%) rotate(-5deg); }
+      75% { transform: translate(10%, -5%) rotate(3deg); }
+    }
+
+    .hero-content {
+      text-align: center;
+      padding: var(--space-xl) var(--space-md);
+    }
+
+    .hero-tag {
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: var(--accent);
+      margin-bottom: var(--space-md);
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .hero-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 12vw, 12rem);
+      font-weight: 400;
+      line-height: 0.9;
+      margin-bottom: var(--space-md);
+    }
+
+    .hero-title .line {
+      display: block;
+      overflow: hidden;
+    }
+
+    .hero-title .line-inner {
+      display: block;
+      transform: translateY(110%);
+    }
+
+    .hero-title .line:nth-child(2) {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    .hero-subtitle {
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      color: var(--text-secondary);
+      max-width: 500px;
+      margin: 0 auto var(--space-lg);
+      opacity: 0;
+      transform: translateY(30px);
+    }
+
+    .hero-cta {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-sm);
+      padding: var(--space-sm) var(--space-md);
+      background: var(--accent);
+      color: var(--bg-primary);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      border-radius: 100px;
+      opacity: 0;
+      transform: translateY(30px);
+      transition: transform 0.3s var(--ease-out-expo), 
+                  box-shadow 0.3s ease;
+    }
+
+    .hero-cta:hover {
+      box-shadow: 0 0 40px rgba(201, 255, 0, 0.4);
+    }
+
+    .hero-cta svg {
+      transition: transform 0.3s ease;
+    }
+
+    .hero-cta:hover svg {
+      transform: translateX(4px);
+    }
+
+    /* Scroll Indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: var(--space-lg);
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-sm);
+      opacity: 0;
+    }
+
+    .scroll-indicator span {
+      font-size: 0.625rem;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: var(--text-muted);
+    }
+
+    .scroll-line {
+      width: 1px;
+      height: 80px;
+      background: linear-gradient(to bottom, var(--text-muted) 50%, transparent);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scroll-line::after {
+      content: '';
+      position: absolute;
+      top: -100%;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background: var(--accent);
+      animation: scrollPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes scrollPulse {
+      0% { top: -50%; }
+      100% { top: 150%; }
+    }
+
+    /* ==========================================
+       MARQUEE SECTION
+       ========================================== */
+    .marquee-section {
+      padding: var(--space-lg) 0;
+      border-top: 1px solid var(--text-muted);
+      border-bottom: 1px solid var(--text-muted);
+      overflow: hidden;
+    }
+
+    .marquee {
+      display: flex;
+      gap: var(--space-lg);
+      animation: marquee 30s linear infinite;
+    }
+
+    .marquee:hover {
+      animation-play-state: paused;
+    }
+
+    .marquee-item {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 4rem);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: var(--space-md);
+    }
+
+    .marquee-item::after {
+      content: '✦';
+      color: var(--accent);
+    }
+
+    @keyframes marquee {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ==========================================
+       FEATURES SECTION - BENTO GRID
+       ========================================== */
+    .features {
+      padding: var(--space-xl) 0;
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: var(--space-xl);
+    }
+
+    .section-tag {
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.3em;
+      color: var(--accent);
+      margin-bottom: var(--space-sm);
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 4rem);
+      font-weight: 400;
+    }
+
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-rows: repeat(2, 300px);
+      gap: var(--space-sm);
+    }
+
+    .bento-item {
+      background: var(--bg-card);
+      border-radius: 16px;
+      padding: var(--space-md);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      transition: transform 0.5s var(--ease-out-expo);
+    }
+
+    .bento-item:hover {
+      transform: translateY(-8px);
+    }
+
+    .bento-item:nth-child(1) {
+      grid-column: span 2;
+      grid-row: span 2;
+    }
+
+    .bento-item:nth-child(2) {
+      grid-column: span 2;
+    }
+
+    .bento-item h3 {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .bento-item p {
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+
+    .bento-item .bento-icon {
+      position: absolute;
+      top: var(--space-md);
+      right: var(--space-md);
+      width: 40px;
+      height: 40px;
+      background: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .bento-item .bento-icon svg {
+      color: var(--bg-primary);
+    }
+
+    @media (max-width: 968px) {
+      .bento-grid {
+        grid-template-columns: repeat(2, 1fr);
+        grid-template-rows: auto;
+      }
+      .bento-item:nth-child(1) {
+        grid-column: span 2;
+        grid-row: span 1;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .bento-grid {
+        grid-template-columns: 1fr;
+      }
+      .bento-item:nth-child(1) {
+        grid-column: span 1;
+      }
+    }
+
+    /* ==========================================
+       HORIZONTAL SCROLL SECTION
+       ========================================== */
+    .horizontal-section {
+      height: 300vh;
+      position: relative;
+    }
+
+    .horizontal-container {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+
+    .horizontal-wrapper {
+      display: flex;
+      gap: var(--space-md);
+      padding: 0 var(--space-lg);
+    }
+
+    .horizontal-panel {
+      flex-shrink: 0;
+      width: 80vw;
+      max-width: 600px;
+      height: 60vh;
+      background: var(--bg-card);
+      border-radius: 24px;
+      padding: var(--space-lg);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+    }
+
+    .horizontal-panel h3 {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      margin-bottom: var(--space-sm);
+    }
+
+    .horizontal-panel p {
+      color: var(--text-secondary);
+    }
+
+    /* ==========================================
+       CTA SECTION
+       ========================================== */
+    .cta-section {
+      padding: var(--space-xl) 0;
+      text-align: center;
+    }
+
+    .cta-title {
+      font-family: var(--font-display);
+      font-size: clamp(3rem, 10vw, 8rem);
+      line-height: 1;
+      margin-bottom: var(--space-lg);
+    }
+
+    .cta-title .highlight {
+      color: var(--accent);
+      font-style: italic;
+    }
+
+    /* ==========================================
+       FOOTER
+       ========================================== */
+    .footer {
+      padding: var(--space-xl) 0 var(--space-lg);
+      border-top: 1px solid var(--text-muted);
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-logo {
+      font-family: var(--font-display);
+      font-size: 1.25rem;
+      font-style: italic;
+    }
+
+    .footer-copy {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+  <!-- Noise Overlay -->
+  <div class="noise"></div>
+
+  <!-- Progress Bar -->
+  <div class="progress-bar" id="progress-bar"></div>
+
+  <!-- Preloader -->
+  <div class="preloader" id="preloader">
+    <div class="preloader-logo">Loading</div>
+    <div class="preloader-bar">
+      <div class="preloader-bar-fill" id="preloader-bar-fill"></div>
+    </div>
+    <div class="preloader-counter"><span id="preloader-counter">0</span>%</div>
+  </div>
+
+  <!-- Custom Cursor -->
+  <div class="cursor" id="cursor"></div>
+  <div class="cursor-follower" id="cursor-follower"></div>
+  <div class="cursor-text" id="cursor-text"></div>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <a href="#" class="nav-logo">Studio</a>
+    <div class="nav-links">
+      <a href="#" class="nav-link" data-text="Work"><span>Work</span></a>
+      <a href="#" class="nav-link" data-text="About"><span>About</span></a>
+      <a href="#" class="nav-link" data-text="Contact"><span>Contact</span></a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="hero-gradient"></div>
+    </div>
+    
+    <div class="hero-content">
+      <div class="hero-tag">Creative Studio</div>
+      <h1 class="hero-title">
+        <span class="line"><span class="line-inner">We Create</span></span>
+        <span class="line"><span class="line-inner">Experiences</span></span>
+      </h1>
+      <p class="hero-subtitle">A digital studio crafting immersive web experiences through design, motion, and technology.</p>
+      <a href="#" class="hero-cta" data-cursor-text="View">
+        <span>View Our Work</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+
+    <div class="scroll-indicator" id="scroll-indicator">
+      <span>Scroll</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Marquee Section -->
+  <section class="marquee-section">
+    <div class="marquee">
+      <span class="marquee-item">Design</span>
+      <span class="marquee-item">Development</span>
+      <span class="marquee-item">Motion</span>
+      <span class="marquee-item">Branding</span>
+      <span class="marquee-item">Strategy</span>
+      <span class="marquee-item">Design</span>
+      <span class="marquee-item">Development</span>
+      <span class="marquee-item">Motion</span>
+      <span class="marquee-item">Branding</span>
+      <span class="marquee-item">Strategy</span>
+    </div>
+  </section>
+
+  <!-- Features Section - Bento Grid -->
+  <section class="features">
+    <div class="container">
+      <div class="section-header" data-aos="fade-up">
+        <div class="section-tag">Services</div>
+        <h2 class="section-title">What We Do</h2>
+      </div>
+
+      <div class="bento-grid">
+        <div class="bento-item" data-aos="fade-up" data-tilt>
+          <div class="bento-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <path d="M3 9h18"/>
+            </svg>
+          </div>
+          <h3>Web Development</h3>
+          <p>Custom websites and applications built with modern technologies and best practices.</p>
+        </div>
+
+        <div class="bento-item" data-aos="fade-up" data-aos-delay="100" data-tilt>
+          <div class="bento-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"/>
+              <path d="M12 6v6l4 2"/>
+            </svg>
+          </div>
+          <h3>Motion Design</h3>
+          <p>Engaging animations that bring interfaces to life.</p>
+        </div>
+
+        <div class="bento-item" data-aos="fade-up" data-aos-delay="150" data-tilt>
+          <div class="bento-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+              <path d="M2 17l10 5 10-5"/>
+              <path d="M2 12l10 5 10-5"/>
+            </svg>
+          </div>
+          <h3>Branding</h3>
+          <p>Strategic identity systems that resonate.</p>
+        </div>
+
+        <div class="bento-item" data-aos="fade-up" data-aos-delay="200" data-tilt>
+          <div class="bento-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+            </svg>
+          </div>
+          <h3>Consulting</h3>
+          <p>Expert guidance for digital transformation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Horizontal Scroll Section -->
+  <section class="horizontal-section" id="horizontal-section">
+    <div class="horizontal-container">
+      <div class="horizontal-wrapper" id="horizontal-wrapper">
+        <div class="horizontal-panel">
+          <h3>Project One</h3>
+          <p>A comprehensive rebrand for a leading tech company.</p>
+        </div>
+        <div class="horizontal-panel">
+          <h3>Project Two</h3>
+          <p>E-commerce platform with 3D product visualization.</p>
+        </div>
+        <div class="horizontal-panel">
+          <h3>Project Three</h3>
+          <p>Interactive annual report with data visualizations.</p>
+        </div>
+        <div class="horizontal-panel">
+          <h3>Project Four</h3>
+          <p>Award-winning portfolio for a creative agency.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta-section">
+    <div class="container">
+      <h2 class="cta-title" data-aos="fade-up">
+        Let's Build<br>
+        <span class="highlight">Something Great</span>
+      </h2>
+      <a href="#" class="hero-cta" data-aos="fade-up" data-aos-delay="100" data-cursor-text="Contact">
+        <span>Start a Project</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-logo">Studio</div>
+        <p class="footer-copy">© 2024 All rights reserved</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+  <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+  <script src="https://unpkg.com/lenis@1.0.42/dist/lenis.min.js"></script>
+  <script src="https://unpkg.com/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"></script>
+
+  <script>
+    // Register GSAP plugins
+    gsap.registerPlugin(ScrollTrigger);
+
+    // ==========================================
+    // SMOOTH SCROLLING (LENIS)
+    // ==========================================
+    const lenis = new Lenis({
+      duration: 1.2,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      smooth: true,
+    });
+
+    lenis.on('scroll', ScrollTrigger.update);
+    gsap.ticker.add((time) => lenis.raf(time * 1000));
+    gsap.ticker.lagSmoothing(0);
+
+    // ==========================================
+    // PRELOADER
+    // ==========================================
+    const preloader = document.getElementById('preloader');
+    const preloaderBarFill = document.getElementById('preloader-bar-fill');
+    const preloaderCounter = document.getElementById('preloader-counter');
+    const preloaderLogo = document.querySelector('.preloader-logo');
+    const preloaderBar = document.querySelector('.preloader-bar');
+
+    // Animate preloader elements in
+    const preloaderTL = gsap.timeline();
+    
+    preloaderTL
+      .to(preloaderLogo, { opacity: 1, y: 0, duration: 0.6, ease: 'power3.out' })
+      .to(preloaderBar, { opacity: 1, duration: 0.4 }, '-=0.2')
+      .to('.preloader-counter', { opacity: 1, duration: 0.4 }, '-=0.2')
+      .to(preloaderBarFill, { width: '100%', duration: 1.5, ease: 'power2.inOut' })
+      .to({ val: 0 }, {
+        val: 100,
+        duration: 1.5,
+        ease: 'power2.inOut',
+        onUpdate: function() {
+          preloaderCounter.textContent = Math.round(this.targets()[0].val);
+        }
+      }, '<')
+      .to(preloader, {
+        yPercent: -100,
+        duration: 0.8,
+        ease: 'power4.inOut',
+        onComplete: () => {
+          preloader.classList.add('hidden');
+          animateHero();
+        }
+      }, '+=0.3');
+
+    // ==========================================
+    // HERO ANIMATION
+    // ==========================================
+    function animateHero() {
+      const heroTL = gsap.timeline();
+
+      heroTL
+        .to('.hero-tag', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' })
+        .to('.line-inner', { 
+          y: 0, 
+          duration: 1.2, 
+          stagger: 0.1, 
+          ease: 'power4.out' 
+        }, '-=0.4')
+        .to('.hero-subtitle', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.6')
+        .to('.hero-cta', { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' }, '-=0.4')
+        .to('#scroll-indicator', { opacity: 1, duration: 0.8 }, '-=0.2');
+    }
+
+    // ==========================================
+    // CUSTOM CURSOR
+    // ==========================================
+    const cursor = document.getElementById('cursor');
+    const cursorFollower = document.getElementById('cursor-follower');
+    const cursorText = document.getElementById('cursor-text');
+
+    let mouseX = 0, mouseY = 0;
+    let cursorX = 0, cursorY = 0;
+    let followerX = 0, followerY = 0;
+
+    document.addEventListener('mousemove', (e) => {
+      mouseX = e.clientX;
+      mouseY = e.clientY;
+    });
+
+    function animateCursor() {
+      cursorX += (mouseX - cursorX) * 0.5;
+      cursorY += (mouseY - cursorY) * 0.5;
+      cursor.style.left = cursorX + 'px';
+      cursor.style.top = cursorY + 'px';
+      cursorText.style.left = cursorX + 'px';
+      cursorText.style.top = cursorY + 'px';
+
+      followerX += (mouseX - followerX) * 0.15;
+      followerY += (mouseY - followerY) * 0.15;
+      cursorFollower.style.left = followerX + 'px';
+      cursorFollower.style.top = followerY + 'px';
+
+      requestAnimationFrame(animateCursor);
+    }
+    animateCursor();
+
+    // Cursor hover effects
+    document.querySelectorAll('a, button, [data-cursor-text]').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursorFollower.classList.add('active');
+        
+        const text = el.dataset.cursorText;
+        if (text) {
+          cursorText.textContent = text;
+          cursorText.classList.add('visible');
+        }
+      });
+      
+      el.addEventListener('mouseleave', () => {
+        cursorFollower.classList.remove('active');
+        cursorText.classList.remove('visible');
+      });
+    });
+
+    // ==========================================
+    // SCROLL PROGRESS BAR
+    // ==========================================
+    gsap.to('#progress-bar', {
+      scaleX: 1,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: document.body,
+        start: 'top top',
+        end: 'bottom bottom',
+        scrub: 0.3
+      }
+    });
+
+    // ==========================================
+    // SCROLL INDICATOR FADE
+    // ==========================================
+    gsap.to('#scroll-indicator', {
+      opacity: 0,
+      scrollTrigger: {
+        trigger: '.hero',
+        start: 'top top',
+        end: '+=300',
+        scrub: true
+      }
+    });
+
+    // ==========================================
+    // HORIZONTAL SCROLL
+    // ==========================================
+    const horizontalWrapper = document.getElementById('horizontal-wrapper');
+    const panels = gsap.utils.toArray('.horizontal-panel');
+
+    gsap.to(horizontalWrapper, {
+      x: () => -(horizontalWrapper.scrollWidth - window.innerWidth + 100),
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '#horizontal-section',
+        start: 'top top',
+        end: () => '+=' + (horizontalWrapper.scrollWidth - window.innerWidth),
+        scrub: 1,
+        pin: true,
+        anticipatePin: 1
+      }
+    });
+
+    // ==========================================
+    // VANILLA TILT
+    // ==========================================
+    VanillaTilt.init(document.querySelectorAll('[data-tilt]'), {
+      max: 8,
+      speed: 400,
+      scale: 1.02,
+      glare: true,
+      'max-glare': 0.1
+    });
+
+    // ==========================================
+    // AOS INIT
+    // ==========================================
+    AOS.init({
+      duration: 800,
+      easing: 'ease-out-cubic',
+      once: true,
+      offset: 50
+    });
+
+    // ==========================================
+    // MAGNETIC BUTTONS
+    // ==========================================
+    document.querySelectorAll('.hero-cta').forEach(btn => {
+      btn.addEventListener('mousemove', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const x = e.clientX - rect.left - rect.width / 2;
+        const y = e.clientY - rect.top - rect.height / 2;
+        
+        gsap.to(btn, { x: x * 0.2, y: y * 0.2, duration: 0.3, ease: 'power2.out' });
+      });
+
+      btn.addEventListener('mouseleave', () => {
+        gsap.to(btn, { x: 0, y: 0, duration: 0.3, ease: 'power2.out' });
+      });
+    });
+  </script>
+</body>
+</html>

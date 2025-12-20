@@ -13,9 +13,6 @@
     <!-- Custom Cursor (desktop only) -->
     <div class="custom-cursor" id="custom-cursor"></div>
 
-    <!-- Noise Overlay -->
-    <div class="noise-overlay"></div>
-
     <!-- SVG Filter for wavy border effect -->
     <svg style="position: absolute; width: 0; height: 0;">
         <defs>
@@ -75,7 +72,7 @@
         </div>
     </div>
 
-<section class="featured-show-section top-pick-section animate-fade-up">
+<section class="featured-show-section top-pick-section">
     <h2>Top Pick</h2>
     <div class="featured-show-card top-pick-card">
         <img src="images/creek_and_the_cave/a774aa29aa41e9fc.jpg" alt="Banana Phone" class="featured-show-image">
@@ -90,12 +87,12 @@
 </section>
 
 
-    <section class="featured-section animate-fade-up">
+    <section class="featured-section">
         <h2 class="ribbon-title">Featured Shows</h2>
         <div class="featured-shows-wrapper">
             <div class="show-list stagger-children">
 
-<div class="show-item-v2 card-lift glow-hover animate-fade-up" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" style="background-image: url('images/cap_city_comedy/dylan_carlino_a92bfa0f.jpg');">
+<div class="show-item-v2 card-lift glow-hover" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" style="background-image: url('images/cap_city_comedy/dylan_carlino_a92bfa0f.jpg');">
     <div class="show-overlay">
         <div class="show-date-info"><span class="day-badge">THU</span><span class="date-text">Dec 18</span></div>
         <h3>Dylan Carlino</h3>
@@ -106,7 +103,7 @@
     </div>
 </div>
 
-<div class="show-item-v2 card-lift glow-hover animate-fade-up" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" style="background-image: url('images/comedy_mothership/af10681cbad28551.jpg');">
+<div class="show-item-v2 card-lift glow-hover" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" style="background-image: url('images/comedy_mothership/af10681cbad28551.jpg');">
     <div class="show-overlay">
         <div class="show-date-info"><span class="day-badge">FRI</span><span class="date-text">Dec 19</span></div>
         <h3>Jessimae Peluso</h3>
@@ -117,7 +114,7 @@
     </div>
 </div>
 
-<div class="show-item-v2 card-lift glow-hover animate-fade-up" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" style="background-image: url('images/creek_and_the_cave/ecea26c7e3698c36.jpg');">
+<div class="show-item-v2 card-lift glow-hover" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" style="background-image: url('images/creek_and_the_cave/ecea26c7e3698c36.jpg');">
     <div class="show-overlay">
         <div class="show-date-info"><span class="day-badge">SAT</span><span class="date-text">Dec 20</span></div>
         <h3>Christmas at The Creek!</h3>
@@ -128,7 +125,7 @@
     </div>
 </div>
 
-<div class="show-item-v2 card-lift glow-hover animate-fade-up" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" style="background-image: url('images/creek_and_the_cave/d8c90566e99b64a9.jpg');">
+<div class="show-item-v2 card-lift glow-hover" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" style="background-image: url('images/creek_and_the_cave/d8c90566e99b64a9.jpg');">
     <div class="show-overlay">
         <div class="show-date-info"><span class="day-badge">SUN</span><span class="date-text">Dec 21</span></div>
         <h3>Josh Potter</h3>
@@ -139,7 +136,7 @@
     </div>
 </div>
 
-<div class="show-item-v2 card-lift glow-hover animate-fade-up" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" style="background-image: url('images/creek_and_the_cave/3d6650cf7dbacd70.png');">
+<div class="show-item-v2 card-lift glow-hover" data-tilt data-tilt-max="8" data-tilt-speed="400" data-tilt-glare data-tilt-max-glare="0.2" style="background-image: url('images/creek_and_the_cave/3d6650cf7dbacd70.png');">
     <div class="show-overlay">
         <div class="show-date-info"><span class="day-badge">TUE</span><span class="date-text">Dec 23</span></div>
         <h3>The Roast of Santa</h3>
@@ -154,7 +151,7 @@
         </div>
     </section>
 
-    <section class="faq-section got-questions animate-fade-up">
+    <section class="faq-section got-questions">
         <h2>Any Questions?</h2>
         <ul class="questions-list">
             <li>Got a show you'd like to add?</li>
@@ -168,7 +165,7 @@
         </div>
     </section>
 
-    <section class="visit-us animate-fade-up">
+    <section class="visit-us">
         <div class="visit-us-content">
             <h2>Visit Us</h2>
             <p><a href="https://ymhstudios.com/" target="_blank" class="ymh-link">ur mom's house</a></p>
@@ -240,24 +237,6 @@
         });
     }
 
-    // Scroll Animations - Fade Up on Scroll
-    const observerOptions = {
-        root: null,
-        rootMargin: '0px',
-        threshold: 0.1
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('is-visible');
-            }
-        });
-    }, observerOptions);
-
-    document.querySelectorAll('.animate-fade-up').forEach(el => {
-        observer.observe(el);
-    });
 
     // Initialize Vanilla Tilt for 3D Card Effect
     VanillaTilt.init(document.querySelectorAll("[data-tilt]"), {
@@ -282,27 +261,8 @@
         });
     });
 
-    // GSAP ScrollTrigger Animations for staggered children
+    // GSAP registered for potential future use
     gsap.registerPlugin(ScrollTrigger);
-
-    gsap.utils.toArray('.stagger-children').forEach(container => {
-        const children = container.children;
-        gsap.fromTo(children,
-            { opacity: 0, y: 60 },
-            {
-                opacity: 1,
-                y: 0,
-                duration: 0.8,
-                stagger: 0.15,
-                ease: 'power2.out',
-                scrollTrigger: {
-                    trigger: container,
-                    start: 'top 80%',
-                    toggleActions: 'play none none none'
-                }
-            }
-        );
-    });
     </script>
 </body>
 </html>

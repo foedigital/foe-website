@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Mission - Funny Over Everything ATX</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .mission-hero {
+            padding-top: 120px;
+        }
+
+        .mission-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 50px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border-color);
+            max-width: 1000px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .mission-section h3 {
+            color: var(--primary-orange);
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .mission-section h3 .icon {
+            font-size: 2rem;
+        }
+
+        .mission-section p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .mission-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .mission-section ul li {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            padding: 12px 0;
+            padding-left: 30px;
+            position: relative;
+            line-height: 1.6;
+        }
+
+        .mission-section ul li::before {
+            content: "\2713";
+            color: var(--teal-accent);
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .founder-section {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .founder-image {
+            width: 100%;
+            max-width: 250px;
+            border-radius: 15px;
+            border: 3px solid var(--primary-orange);
+            box-shadow: 0 10px 40px rgba(240, 90, 40, 0.2);
+        }
+
+        .founder-placeholder {
+            width: 100%;
+            max-width: 250px;
+            height: 250px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, var(--primary-orange), #ff7043);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 4rem;
+            color: #fff;
+            box-shadow: 0 10px 40px rgba(240, 90, 40, 0.3);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .service-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 15px;
+            padding: 30px;
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover {
+            border-color: var(--primary-orange);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(240, 90, 40, 0.15);
+        }
+
+        .service-card h4 {
+            color: var(--teal-accent);
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+        }
+
+        .service-card p {
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        .features-highlight {
+            background: linear-gradient(135deg, rgba(240, 90, 40, 0.1), rgba(0, 212, 170, 0.05));
+            border-left: 4px solid var(--primary-orange);
+            padding: 25px 30px;
+            margin: 30px 0;
+            border-radius: 0 15px 15px 0;
+        }
+
+        .features-highlight h4 {
+            color: var(--primary-orange);
+            margin-bottom: 15px;
+        }
+
+        .cta-section {
+            text-align: center;
+            padding: 60px 40px;
+            background: linear-gradient(135deg, #141414 0%, #1a1a1a 100%);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            max-width: 900px;
+            margin: 40px auto;
+        }
+
+        .cta-section h3 {
+            color: var(--text-primary);
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .cta-section p {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            margin-bottom: 30px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .tech-badge {
+            display: inline-block;
+            background: rgba(0, 212, 170, 0.15);
+            color: var(--teal-accent);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .founder-section {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .founder-placeholder {
+                margin: 0 auto 30px;
+            }
+
+            .mission-section {
+                padding: 30px 25px;
+            }
+
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- SVG Filter for wavy border effect -->
+    <svg style="position: absolute; width: 0; height: 0;">
+        <defs>
+            <filter id="wavy">
+                <feTurbulence type="turbulence" baseFrequency="0.02 0.05" numOctaves="2" result="turbulence">
+                    <animate attributeName="baseFrequency" dur="3s" values="0.02 0.05;0.03 0.06;0.02 0.05" repeatCount="indefinite"/>
+                </feTurbulence>
+                <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="8" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+        </defs>
+    </svg>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">
+                <img src="images/logo.jpg" alt="Funny Over Everything" class="logo-img">
+                <div class="logo-text">
+                    <span class="logo-main">Funny Over Everything</span>
+                    <span class="logo-atx">ATX</span>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shows.html">Shows</a></li>
+                <li><a href="mission.html" class="active">Our Mission</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero-animated mission-hero">
+        <div class="hero-wavy-bg"></div>
+        <div class="hero-wavy-bg hero-wavy-bg-2"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Our Mission</h1>
+        </div>
+    </section>
+
+    <section class="featured-section">
+        <!-- About the Founder -->
+        <div class="mission-section">
+            <h3><span class="icon">&#127908;</span> Meet the Founder</h3>
+            <div class="founder-section">
+                <div class="founder-placeholder">WM</div>
+                <div>
+                    <p>Hey there! I'm <strong style="color: var(--primary-orange);">Will Musselman</strong>, and I started Funny Over Everything because I wanted to do one simple thing: <strong>highlight the best comedians and shows here in Austin, TX.</strong></p>
+                    <p>Austin has an incredible comedy scene - from legendary clubs like Cap City and the Mothership to underground gems like Creek and the Cave and East Austin Comedy Club. But finding all these shows in one place? That was a nightmare. So I built this.</p>
+                    <p>Whether you're a comedy fan looking for your next night out or a comedian trying to get your name out there, this site is for you.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Our Mission Statement -->
+        <div class="mission-section">
+            <h3><span class="icon">&#127919;</span> What We're About</h3>
+            <p>Our mission is simple: <strong style="color: var(--teal-accent);">Create more resources for comedians and comedy fans to better engage in the world of stand-up comedy.</strong></p>
+            <p>We believe comedy should be accessible. Fans should be able to easily find shows happening in their city. Comedians should have the tools to build their brand and reach new audiences. That's what we're building here.</p>
+            <ul>
+                <li>Comprehensive listings of comedy shows across Austin venues</li>
+                <li>Free resources for fans to discover new comedians and shows</li>
+                <li>Tools and services to help comedians grow their online presence</li>
+                <li>A community hub for Austin's thriving comedy scene</li>
+            </ul>
+        </div>
+
+        <!-- Services for Comedians -->
+        <div class="mission-section">
+            <h3><span class="icon">&#128187;</span> Website Building for Comedians</h3>
+            <p>Need help building your online brand? I help comedians create professional websites that showcase their work and boost their online presence. Here's what I can help with:</p>
+
+            <div class="services-grid">
+                <div class="service-card">
+                    <h4>Custom Websites</h4>
+                    <p>Professional, mobile-friendly websites designed specifically for comedians. Showcase your bio, tour dates, clips, and merch all in one place.</p>
+                </div>
+                <div class="service-card">
+                    <h4>Content Centralization</h4>
+                    <p>Upload and organize all your content - videos, podcasts, photos - in one central hub instead of scattered across platforms.</p>
+                </div>
+                <div class="service-card">
+                    <h4>Brand Development</h4>
+                    <p>Develop a cohesive online brand that stands out. Logo design, color schemes, and messaging that captures your comedy style.</p>
+                </div>
+                <div class="service-card">
+                    <h4>SEO & Visibility</h4>
+                    <p>Get found on Google. Optimize your site so fans can discover you when searching for comedy in your area.</p>
+                </div>
+            </div>
+
+            <div class="features-highlight">
+                <h4>Advanced Features Available</h4>
+                <p style="margin-bottom: 15px;">Looking for something extra? We can implement cutting-edge web features including:</p>
+                <span class="tech-badge">Scroll Animations</span>
+                <span class="tech-badge">Custom Cursors</span>
+                <span class="tech-badge">Parallax Effects</span>
+                <span class="tech-badge">Video Backgrounds</span>
+                <span class="tech-badge">Dynamic Show Calendars</span>
+                <span class="tech-badge">Newsletter Integration</span>
+                <span class="tech-badge">Merch Store Setup</span>
+                <span class="tech-badge">Podcast Players</span>
+                <span class="tech-badge">Social Media Integration</span>
+                <span class="tech-badge">Mobile-First Design</span>
+            </div>
+        </div>
+
+        <!-- Build Process -->
+        <div class="mission-section">
+            <h3><span class="icon">&#128736;</span> How We Build</h3>
+            <p>We follow a proven, phased development process to ensure your website is built right:</p>
+            <ul>
+                <li><strong>Phase 1 - Foundation:</strong> Set up the technical infrastructure with modern frameworks and responsive design</li>
+                <li><strong>Phase 2 - Layout:</strong> Build navigation, headers, footers, and the core structure of your site</li>
+                <li><strong>Phase 3 - Content:</strong> Create your homepage with hero sections, featured content, and calls to action</li>
+                <li><strong>Phase 4 - Features:</strong> Add tour dates, ticket links, video embeds, and interactive elements</li>
+                <li><strong>Phase 5 - Media:</strong> Integrate podcasts, clips, and platform links (Spotify, Apple, YouTube)</li>
+                <li><strong>Phase 6 - About:</strong> Craft your bio, showcase credits, and press photos</li>
+                <li><strong>Phase 7 - Contact:</strong> Set up contact forms, booking info, and email integration</li>
+                <li><strong>Phase 8 - Testing:</strong> Cross-browser testing, mobile responsiveness, performance optimization</li>
+                <li><strong>Phase 9 - Polish:</strong> Final touches - animations, SEO, favicon, and launch prep</li>
+            </ul>
+            <p>Every phase is tested before moving forward. You get visibility into the process every step of the way.</p>
+        </div>
+
+        <!-- Get Involved -->
+        <div class="cta-section">
+            <h3>Want to Get Involved?</h3>
+            <p>We're always looking to make this site better and more useful for the Austin comedy community.</p>
+
+            <div class="questions-list" style="text-align: left; max-width: 500px; margin: 30px auto;">
+                <ul style="list-style: none; padding: 0;">
+                    <li style="color: var(--text-secondary); font-size: 1.1rem; padding: 10px 0; padding-left: 25px; position: relative;">
+                        <span style="color: var(--primary-orange); font-size: 1.4rem; position: absolute; left: 0;">&bull;</span>
+                        Got a show you want listed on the site?
+                    </li>
+                    <li style="color: var(--text-secondary); font-size: 1.1rem; padding: 10px 0; padding-left: 25px; position: relative;">
+                        <span style="color: var(--primary-orange); font-size: 1.4rem; position: absolute; left: 0;">&bull;</span>
+                        Need help building your own website?
+                    </li>
+                    <li style="color: var(--text-secondary); font-size: 1.1rem; padding: 10px 0; padding-left: 25px; position: relative;">
+                        <span style="color: var(--primary-orange); font-size: 1.4rem; position: absolute; left: 0;">&bull;</span>
+                        Have merch you want to sell? We can add links to the site!
+                    </li>
+                    <li style="color: var(--text-secondary); font-size: 1.1rem; padding: 10px 0; padding-left: 25px; position: relative;">
+                        <span style="color: var(--primary-orange); font-size: 1.4rem; position: absolute; left: 0;">&bull;</span>
+                        Ideas on how to make the site better?
+                    </li>
+                </ul>
+            </div>
+
+            <p style="margin-bottom: 25px;"><strong style="color: var(--primary-orange);">Reach out!</strong> I'm open to suggestions and always looking for ways to support the comedy community.</p>
+
+            <div class="contact-cta">
+                <a href="mailto:foeatx@gmail.com" class="btn email-btn">foeatx@gmail.com</a>
+                <a href="https://www.instagram.com/willmuss87/" class="btn instagram-btn" target="_blank">@willmuss87</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="visit-us">
+        <div class="visit-us-content">
+            <h2>Visit Us</h2>
+            <p><a href="https://ymhstudios.com/" target="_blank" class="ymh-link">ur mom's house</a></p>
+            <h3>Hours</h3>
+            <p>it's every day bro</p>
+        </div>
+    </section>
+
+    <footer>
+        <p>Funny Over Everything</p>
+        <p style="margin-top: 20px; font-size: 0.9rem;">&copy; 2024 Funny Over Everything. All rights reserved.</p>
+    </footer>
+</body>
+</html>

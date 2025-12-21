@@ -1,22 +1,10 @@
 name: Update Comedy Shows
 
-# HOW TO CONTROL THIS WORKFLOW:
-# =============================
-# - Currently set to MANUAL ONLY (workflow_dispatch)
-# - To enable automatic updates every 6 hours, uncomment the 'schedule' lines below
-# - To disable completely, go to GitHub repo > Actions > Select this workflow > Disable workflow
-
+# Runs daily at 3am CST (9am UTC) and can be triggered manually
 on:
-  # Manual trigger - click "Run workflow" button in GitHub Actions tab
-  workflow_dispatch:
-
-  # UNCOMMENT THESE LINES TO ENABLE AUTO-UPDATES EVERY 6 HOURS:
-  # schedule:
-  #   - cron: '0 */6 * * *'  # Runs at minute 0 every 6 hours (12am, 6am, 12pm, 6pm UTC)
-
-  # Optional: Also run when pushing to main branch
-  # push:
-  #   branches: [ main ]
+  schedule:
+    - cron: '0 9 * * *'  # 9am UTC = 3am CST
+  workflow_dispatch:  # Manual trigger via GitHub Actions UI
 
 jobs:
   update-shows:
@@ -30,25 +18,36 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+          cache: 'pip'
 
-      - name: Install dependencies
+      - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
 
-      - name: Run scraper
-        run: python scraper.py
+      - name: Install Playwright browsers
+        run: playwright install chromium
+
+      - name: Run all scrapers and regenerate HTML
+        run: python run_all_scrapers.py
 
       - name: Check for changes
         id: git-check
         run: |
           git diff --exit-code || echo "changes=true" >> $GITHUB_OUTPUT
 
-      - name: Commit and push if changes
+      - name: Commit and push changes
         if: steps.git-check.outputs.changes == 'true'
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add -A
-          git commit -m "Auto-update shows - $(date +'%Y-%m-%d %H:%M')"
+          git commit -m "Auto-update shows - $(date +'%Y-%m-%d %H:%M UTC')"
           git push
+
+      - name: Trigger Vercel redeploy
+        if: steps.git-check.outputs.changes == 'true'
+        run: |
+          curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
+        env:
+          VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}

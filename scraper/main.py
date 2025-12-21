@@ -77,9 +77,13 @@ async def scrape_venue(venue_key: str, browser) -> dict:
                 if existing_path:
                     continue
 
+                # Use ticket_url as source_url if available (for proper ticket linking)
+                # Otherwise fall back to image URL
+                stored_url = img.get("ticket_url") or url
+
                 add_image(
                     venue_id=venue_id,
-                    source_url=url,
+                    source_url=stored_url,
                     local_path=local_path,
                     image_hash=image_hash,
                     event_name=img.get("event_name"),

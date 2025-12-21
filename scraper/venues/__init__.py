@@ -5,6 +5,7 @@ from .sunset_strip import SunsetStripScraper
 from .east_austin import EastAustinScraper
 from .rozcos import RozcosScraper
 from .vulcan import VulcanScraper
+from .paramount import ParamountScraper
 
 SCRAPERS = {
     "creek_cave": CreekCaveScraper,
@@ -14,6 +15,7 @@ SCRAPERS = {
     "east_austin": EastAustinScraper,
     "rozcos": RozcosScraper,
     "vulcan": VulcanScraper,
+    "paramount": ParamountScraper,
 }
 
 __all__ = [
@@ -24,5 +26,6 @@ __all__ = [
     "EastAustinScraper",
     "RozcosScraper",
     "VulcanScraper",
+    "ParamountScraper",
     "SCRAPERS",
 ]

@@ -502,6 +502,12 @@ def get_event_url(show_name, venue_name, venue_base_url, source_url=''):
             return clean_url
         return VULCAN_URL
 
+    elif 'paramount' in venue_name.lower():
+        # Use the source_url from scraper (specific ticket page)
+        if source_url:
+            return source_url
+        return 'https://tickets.austintheatre.org/events?kid=4'
+
     elif 'black rabbit' in venue_name.lower():
         return BLACK_RABBIT_URL
 

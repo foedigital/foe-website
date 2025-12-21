@@ -83,6 +83,17 @@ VENUES = {
         "event_name_selector": "h2, h3, h4, .event-title",
         "event_date_selector": ".event-date, time",
     },
+    "paramount": {
+        "name": "Paramount Theatre",
+        "url": "https://tickets.austintheatre.org",
+        "events_url": "https://tickets.austintheatre.org/events?kid=4",
+        "image_selectors": [
+            ".tn-event-listing-item img",
+            ".tn-event-listing-item__image img",
+        ],
+        "event_name_selector": ".tn-event-listing-item__name, .tn-name",
+        "event_date_selector": ".tn-event-listing-item__date, .tn-date-time",
+    },
 }
 
 MIN_IMAGE_WIDTH = 200

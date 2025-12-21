@@ -1,0 +1,11 @@
+# Robots.txt for Funny Over Everything
+# https://funnyovereverything.com
+
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://funnyovereverything.com/sitemap.xml
+
+# Crawl-delay for polite crawling
+Crawl-delay: 1

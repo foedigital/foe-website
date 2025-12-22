@@ -45,9 +45,42 @@ jobs:
           git commit -m "Auto-update shows - $(date +'%Y-%m-%d %H:%M UTC')"
           git push
 
+      - name: Capture update summary
+        if: steps.git-check.outputs.changes == 'true'
+        id: summary
+        run: |
+          echo "summary<<EOF" >> $GITHUB_OUTPUT
+          echo "Comedy shows were automatically updated on $(date +'%Y-%m-%d at %H:%M UTC')." >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "Changed files:" >> $GITHUB_OUTPUT
+          git diff --name-only HEAD~1 >> $GITHUB_OUTPUT
+          echo "" >> $GITHUB_OUTPUT
+          echo "View the site: https://funnyoveratx.com" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
       - name: Trigger Vercel redeploy
         if: steps.git-check.outputs.changes == 'true'
         run: |
           curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK }}"
         env:
           VERCEL_DEPLOY_HOOK: ${{ secrets.VERCEL_DEPLOY_HOOK }}
+
+      - name: Send email notification
+        if: steps.git-check.outputs.changes == 'true'
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "✅ Comedy Shows Updated - ${{ github.event.repository.name }}"
+          to: foeatx@gmail.com
+          from: Funny Over Everything <${{ secrets.EMAIL_USERNAME }}>
+          body: |
+            ${{ steps.summary.outputs.summary }}
+
+            ---
+            This is an automated message from GitHub Actions.
+            Workflow: ${{ github.workflow }}
+            Run: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

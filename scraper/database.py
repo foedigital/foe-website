@@ -121,16 +121,17 @@ def add_image(
     local_path: str,
     image_hash: str,
     event_name: Optional[str] = None,
-    event_date: Optional[str] = None
+    event_date: Optional[str] = None,
+    show_time: Optional[str] = None
 ) -> int:
     """Add a new image record to the database."""
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         """INSERT INTO images
-           (venue_id, source_url, local_path, image_hash, event_name, event_date)
-           VALUES (?, ?, ?, ?, ?, ?)""",
-        (venue_id, source_url, local_path, image_hash, event_name, event_date)
+           (venue_id, source_url, local_path, image_hash, event_name, event_date, show_time)
+           VALUES (?, ?, ?, ?, ?, ?, ?)""",
+        (venue_id, source_url, local_path, image_hash, event_name, event_date, show_time)
     )
     image_id = cursor.lastrowid
     conn.commit()

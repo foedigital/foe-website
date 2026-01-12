@@ -63,34 +63,53 @@ async def scrape_venue(venue_key: str, browser) -> dict:
         async with aiohttp.ClientSession() as session:
             for img in images:
                 url = img["url"]
+                event_name = img.get("event_name")
+                event_date = img.get("event_date")
+                show_time = img.get("show_time")
+                ticket_url = img.get("ticket_url")
 
-                if image_exists(url):
+                # Use ticket_url as source_url for uniqueness
+                stored_url = ticket_url or url
+
+                # Skip if this exact source_url already exists
+                if image_exists(stored_url):
                     continue
 
-                result = await download_and_save(url, config["name"], session)
-                if result is None:
-                    continue
+                # Handle events with images
+                if url and url.strip():
+                    result = await download_and_save(url, config["name"], session)
+                    if result is None:
+                        continue
 
-                local_path, image_hash = result
+                    local_path, image_hash = result
 
-                existing_path = hash_exists(image_hash)
-                if existing_path:
-                    continue
-
-                # Use ticket_url as source_url if available (for proper ticket linking)
-                # Otherwise fall back to image URL
-                stored_url = img.get("ticket_url") or url
+                    existing_path = hash_exists(image_hash)
+                    if existing_path:
+                        continue
+                else:
+                    # Handle events without images (but with valid data)
+                    if not event_name or not event_date:
+                        continue
+                    local_path = ""
+                    # Generate unique hash from event details
+                    import hashlib
+                    unique_str = f"{event_name}|{event_date}|{show_time}"
+                    image_hash = f"no-image-{hashlib.md5(unique_str.encode()).hexdigest()[:12]}"
 
                 add_image(
                     venue_id=venue_id,
                     source_url=stored_url,
                     local_path=local_path,
                     image_hash=image_hash,
-                    event_name=img.get("event_name"),
-                    event_date=img.get("event_date"),
+                    event_name=event_name,
+                    event_date=event_date,
+                    show_time=show_time,
                 )
                 images_new += 1
-                print(f"  + New: {img.get('event_name') or url[:50]}...")
+                if local_path:
+                    print(f"  + New: {event_name or url[:50]}...")
+                else:
+                    print(f"  + New (no image): {event_name} | {event_date} @ {show_time}")
 
         await context.close()
         update_venue_last_scraped(venue_id)

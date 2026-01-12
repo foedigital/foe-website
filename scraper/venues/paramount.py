@@ -1,6 +1,7 @@
 """Scraper for Paramount Theatre / Austin Theatre - comedy shows only."""
 
-from typing import List, Dict
+import re
+from typing import List, Dict, Optional
 from playwright.async_api import Page
 from .base import BaseScraper
 from ..config import VENUES
@@ -19,6 +20,27 @@ class ParamountScraper(BaseScraper):
 
     def __init__(self):
         super().__init__(VENUES[self.venue_key])
+
+    def parse_time(self, text: str) -> Optional[str]:
+        """Extract time from text. Format: '7:30 PM' or '8:00 pm'."""
+        if not text:
+            return None
+        match = re.search(r'(\d{1,2}:\d{2})\s*(AM|PM|am|pm)', text)
+        if match:
+            time_part = match.group(1)
+            ampm = match.group(2).upper()
+            return f"{time_part} {ampm}"
+        return None
+
+    def clean_name(self, name: str) -> str:
+        """Clean up event name by removing extra whitespace and trailing punctuation."""
+        if not name:
+            return ""
+        # Replace multiple whitespace with single space
+        name = " ".join(name.split())
+        # Remove trailing commas, periods
+        name = name.rstrip(",. ")
+        return name
 
     async def scrape(self, page: Page) -> List[Dict]:
         """Scrape comedy events from Paramount Theatre."""
@@ -53,7 +75,7 @@ class ParamountScraper(BaseScraper):
                 if title_el:
                     event_name = await title_el.inner_text()
                     if event_name:
-                        event_name = event_name.strip()
+                        event_name = self.clean_name(event_name)
 
                 if not event_name:
                     continue
@@ -68,6 +90,19 @@ class ParamountScraper(BaseScraper):
                         # Clean up multi-line dates
                         event_date = " ".join(event_date.split())
 
+                # Get event time - try multiple selectors
+                show_time = None
+                # Try dedicated time element first
+                time_el = await event.query_selector(".tn-prod-list-item__perf-time, .tn-perf-time, .tn-event-time")
+                if time_el:
+                    time_text = await time_el.inner_text()
+                    show_time = self.parse_time(time_text)
+
+                # If no dedicated time element, try to extract from the full card text
+                if not show_time:
+                    card_text = await event.inner_text()
+                    show_time = self.parse_time(card_text)
+
                 # Get ticket URL
                 ticket_url = ""
                 link_el = await event.query_selector("a")
@@ -75,6 +110,8 @@ class ParamountScraper(BaseScraper):
                     href = await link_el.get_attribute("href")
                     if href:
                         ticket_url = href
+                        if not ticket_url.startswith("http"):
+                            ticket_url = f"https://tickets.austintheatre.org{ticket_url}"
 
                 # Get event image
                 img_url = ""
@@ -90,9 +127,10 @@ class ParamountScraper(BaseScraper):
                     "url": img_url,
                     "event_name": event_name,
                     "event_date": event_date,
+                    "show_time": show_time,
                     "ticket_url": ticket_url,
                 })
-                print(f"      + {event_name} ({event_date})")
+                print(f"      + {event_name} | {event_date} @ {show_time or 'NO TIME'}")
 
             except Exception as e:
                 print(f"    Error processing event: {e}")

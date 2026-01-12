@@ -5,6 +5,7 @@ from pathlib import Path
 
 # Date filtering - only include shows within the next 10 days
 TODAY = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+CURRENT_YEAR = TODAY.year
 TWO_WEEKS_FROM_NOW = TODAY + timedelta(days=10)
 
 def parse_show_date(event_date):
@@ -21,17 +22,23 @@ def parse_show_date(event_date):
     if date_str in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']:
         return None
 
-    # Try to parse "Dec 15" or "Dec 16" format
+    # Try to parse with full year already included (e.g., "January 15, 2026")
     try:
-        # Try current year first
-        date_obj = datetime.strptime(f"2025 {date_str}", "%Y %b %d")
+        date_obj = datetime.strptime(date_str, "%B %d, %Y")
+        return date_obj
+    except ValueError:
+        pass
+
+    # Try to parse "Dec 15" or "Dec 16" format with current year
+    try:
+        date_obj = datetime.strptime(f"{CURRENT_YEAR} {date_str}", "%Y %b %d")
         return date_obj
     except ValueError:
         pass
 
     # Try with full month name
     try:
-        date_obj = datetime.strptime(f"2025 {date_str}", "%Y %B %d")
+        date_obj = datetime.strptime(f"{CURRENT_YEAR} {date_str}", "%Y %B %d")
         return date_obj
     except ValueError:
         pass
@@ -129,15 +136,32 @@ CREEK_CAVE_DAYS = {
     "lukas mccrary's nye comedy spectacular": 'Wednesday',
 }
 
-# Velveeta Room day mappings
+# Velveeta Room day mappings (for recurring shows without specific dates)
 VELVEETA_DAYS = {
+    # Weekly recurring shows
     'cocktails and comedy': 'Sunday',
+    'cocktails and comedy!': 'Sunday',
     'the hump': 'Wednesday',
+    'the hump!': 'Wednesday',
+    'power bomb': 'Monday',
+    'power bomb!': 'Monday',
+    'powerbomb': 'Monday',
+    'powerbomb!': 'Monday',
+    'ladies night': 'Wednesday',
+    'ladies night!': 'Wednesday',
+    'austin all-stars': 'Thursday',
+    'austin all-stars!': 'Thursday',
+    'all-star weekend': 'Friday',
+    'all-star weekend!': 'Friday',
+    'timeless comedy': 'Friday',
+    # Other shows
     'the joke of painting': 'Friday',
     'velveeta room wrestling': 'Saturday',
     'the christmas hangover comedy show': 'Friday',
-    'timeless comedy': 'Thursday',
-    'powerbomb': 'Saturday',
+    'arielle isaac norman': 'Saturday',
+    'joe begley': 'Saturday',
+    'mike macrae': 'Friday',
+    'doug mellard': 'Saturday',
 }
 
 # Creek and Cave event URL mappings
@@ -455,6 +479,10 @@ def get_event_url(show_name, venue_name, venue_base_url, source_url=''):
         return MOTHERSHIP_URL
 
     elif 'velveeta' in venue_name.lower():
+        # Use the SeatEngine ticket URL from the scraper
+        if source_url and 'seatengine.com' in source_url:
+            return source_url
+        # Fallback to hardcoded URLs
         if name_lower in VELVEETA_URLS:
             return 'https://www.thevelveetaroom.com' + VELVEETA_URLS[name_lower]
         for key, path in VELVEETA_URLS.items():
@@ -501,6 +529,12 @@ def get_event_url(show_name, venue_name, venue_base_url, source_url=''):
             clean_url = source_url.split('#')[0]
             return clean_url
         return VULCAN_URL
+
+    elif 'sunset' in venue_name.lower():
+        # Use the source_url from scraper (SquadUP event-id ticket page)
+        if source_url and 'event-id=' in source_url:
+            return source_url
+        return 'https://www.sunsetstripatx.com/events'
 
     elif 'paramount' in venue_name.lower():
         # Use the source_url from scraper (specific ticket page)

@@ -1,5 +1,4 @@
 import re
-import hashlib
 from datetime import datetime
 from typing import List, Dict, Optional
 from playwright.async_api import Page
@@ -9,8 +8,18 @@ from ..config import VENUES
 
 # Month name mapping
 MONTH_MAP = {
-    'jan': 1, 'feb': 2, 'mar': 3, 'apr': 4, 'may': 5, 'jun': 6,
-    'jul': 7, 'aug': 8, 'sep': 9, 'oct': 10, 'nov': 11, 'dec': 12
+    'jan': 1, 'january': 1,
+    'feb': 2, 'february': 2,
+    'mar': 3, 'march': 3,
+    'apr': 4, 'april': 4,
+    'may': 5,
+    'jun': 6, 'june': 6,
+    'jul': 7, 'july': 7,
+    'aug': 8, 'august': 8,
+    'sep': 9, 'september': 9,
+    'oct': 10, 'october': 10,
+    'nov': 11, 'november': 11,
+    'dec': 12, 'december': 12
 }
 
 DAY_NAMES = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
@@ -25,42 +34,47 @@ class VelveetaScraper(BaseScraper):
     def __init__(self):
         super().__init__(VENUES[self.venue_key])
 
-    def parse_date_with_day(self, date_str: str) -> Optional[str]:
+    def parse_date_from_text(self, text: str) -> Optional[str]:
         """
-        Convert various date formats to 'Saturday, Jan 11' format.
-        Handles: 'Jan 11', 'January 11', 'Sat, Jan 11', etc.
+        Parse date from various formats and return 'Day, Mon DD' format.
+        Handles: '01/16/2026', 'January 16, 2026', 'Jan 16', etc.
         """
-        if not date_str:
+        if not text:
             return None
 
-        # Remove day names if present
-        date_str = re.sub(r'^(Mon|Tue|Wed|Thu|Fri|Sat|Sun)[a-z]*,?\s*', '', date_str, flags=re.I)
+        # Try MM/DD/YYYY format
+        match = re.search(r'(\d{1,2})/(\d{1,2})/(\d{4})', text)
+        if match:
+            month = int(match.group(1))
+            day = int(match.group(2))
+            year = int(match.group(3))
+            try:
+                date_obj = datetime(year, month, day)
+                day_name = DAY_NAMES[date_obj.weekday()]
+                month_abbrev = date_obj.strftime('%b')
+                return f"{day_name}, {month_abbrev} {day}"
+            except ValueError:
+                pass
 
-        # Try to extract month and day
-        match = re.search(r'([A-Za-z]{3,9})\s+(\d{1,2})', date_str.strip())
-        if not match:
-            return None
+        # Try "Month DD, YYYY" or "Month DD YYYY" format
+        match = re.search(r'([A-Za-z]+)\s+(\d{1,2}),?\s*(\d{4})', text)
+        if match:
+            month_str = match.group(1).lower()
+            day = int(match.group(2))
+            year = int(match.group(3))
+            month = MONTH_MAP.get(month_str[:3])
+            if month:
+                try:
+                    date_obj = datetime(year, month, day)
+                    day_name = DAY_NAMES[date_obj.weekday()]
+                    month_abbrev = date_obj.strftime('%b')
+                    return f"{day_name}, {month_abbrev} {day}"
+                except ValueError:
+                    pass
 
-        month_str = match.group(1)[:3].lower()
-        day = int(match.group(2))
-        month = MONTH_MAP.get(month_str)
+        return None
 
-        if not month:
-            return None
-
-        year = datetime.now().year
-        try:
-            date_obj = datetime(year, month, day)
-            # If date is in the past, try next year
-            if date_obj < datetime.now().replace(hour=0, minute=0, second=0, microsecond=0):
-                date_obj = datetime(year + 1, month, day)
-            day_name = DAY_NAMES[date_obj.weekday()]
-            month_abbrev = month_str.capitalize()
-            return f"{day_name}, {month_abbrev} {day}"
-        except ValueError:
-            return None
-
-    def parse_time(self, text: str) -> Optional[str]:
+    def parse_time_from_text(self, text: str) -> Optional[str]:
         """Extract time from text. Format: '8:00 PM'."""
         if not text:
             return None
@@ -72,45 +86,69 @@ class VelveetaScraper(BaseScraper):
             return f"{time_part} {ampm}"
         return None
 
-    def parse_seatengine_date(self, text: str) -> tuple:
-        """
-        Parse SeatEngine date format like 'FRI JAN 16 2026, 8:00 PM' or just '8:00 PM'.
-        Returns (event_date, show_time) tuple.
-        """
-        if not text:
-            return None, None
+    async def fetch_show_details(self, page: Page, ticket_url: str) -> Dict:
+        """Fetch show details from the ticket page."""
+        try:
+            await page.goto(ticket_url, wait_until="networkidle", timeout=30000)
+            await page.wait_for_timeout(2000)
 
-        # Clean up the text
-        text = " ".join(text.split())
+            # Get page content for parsing
+            content = await page.content()
 
-        # Pattern for full date: "FRI JAN 16 2026, 8:00 PM"
-        full_match = re.search(
-            r'(MON|TUE|WED|THU|FRI|SAT|SUN)\s+([A-Z]{3})\s+(\d{1,2})\s+\d{4},?\s*(\d{1,2}:\d{2}\s*(?:AM|PM))',
-            text, re.I
-        )
-        if full_match:
-            day_abbrev = full_match.group(1).upper()
-            month_abbrev = full_match.group(2).capitalize()
-            day_num = full_match.group(3)
-            time_str = full_match.group(4).upper()
+            # Extract show name from h1 or title
+            show_name = None
+            h1 = await page.query_selector('h1')
+            if h1:
+                show_name = await h1.inner_text()
+                show_name = show_name.strip() if show_name else None
 
-            # Convert day abbreviation to full name
-            day_map = {'MON': 'Monday', 'TUE': 'Tuesday', 'WED': 'Wednesday',
-                       'THU': 'Thursday', 'FRI': 'Friday', 'SAT': 'Saturday', 'SUN': 'Sunday'}
-            day_name = day_map.get(day_abbrev, day_abbrev)
+            # If no h1, try the page title
+            if not show_name:
+                title = await page.title()
+                if title and 'Velveeta' not in title:
+                    show_name = title.split('|')[0].strip()
 
-            event_date = f"{day_name}, {month_abbrev} {day_num}"
-            # Normalize time format
-            time_str = re.sub(r'(\d{1,2}:\d{2})\s*(AM|PM)', r'\1 \2', time_str)
-            return event_date, time_str
+            # Extract date - look for common date patterns in the page
+            event_date = None
+            date_patterns = [
+                r'(\d{1,2}/\d{1,2}/\d{4})',  # MM/DD/YYYY
+                r'([A-Z][a-z]+ \d{1,2},? \d{4})',  # Month DD, YYYY
+            ]
 
-        # Pattern for just time
-        time_match = re.search(r'(\d{1,2}:\d{2})\s*(AM|PM)', text, re.I)
-        if time_match:
-            time_str = f"{time_match.group(1)} {time_match.group(2).upper()}"
-            return None, time_str
+            page_text = await page.evaluate('() => document.body.innerText')
+            for pattern in date_patterns:
+                match = re.search(pattern, page_text)
+                if match:
+                    event_date = self.parse_date_from_text(match.group(1))
+                    if event_date:
+                        break
 
-        return None, None
+            # Extract time
+            show_time = self.parse_time_from_text(page_text)
+
+            # Extract image
+            img_url = None
+            # Try og:image first
+            og_img = await page.query_selector('meta[property="og:image"]')
+            if og_img:
+                img_url = await og_img.get_attribute('content')
+
+            # Fallback to seatengine image
+            if not img_url:
+                img = await page.query_selector('img[src*="seatengine"]')
+                if img:
+                    img_url = await img.get_attribute('src')
+
+            return {
+                "event_name": show_name,
+                "event_date": event_date,
+                "show_time": show_time,
+                "img_url": img_url
+            }
+
+        except Exception as e:
+            print(f"      Error fetching {ticket_url}: {e}")
+            return {}
 
     async def scrape(self, page: Page) -> List[Dict]:
         """Scrape The Velveeta Room shows from SeatEngine."""
@@ -122,88 +160,46 @@ class VelveetaScraper(BaseScraper):
             await page.evaluate("window.scrollBy(0, window.innerHeight)")
             await page.wait_for_timeout(1000)
 
-        images = []
-
-        # Get all show links and extract data
+        # Get all unique show URLs
         links = await page.query_selector_all('a[href*="/shows/"]')
-        print(f"    Found {len(links)} show links")
+        print(f"    Found {len(links)} show links on listing page")
 
+        ticket_urls = set()
         for link in links:
-            try:
-                href = await link.get_attribute("href")
-                if not href:
-                    continue
-
-                # Get show title from nearest heading
-                show_title = await link.evaluate('''el => {
-                    let node = el;
-                    for (let i = 0; i < 10; i++) {
-                        if (!node.parentElement) break;
-                        node = node.parentElement;
-                        const heading = node.querySelector("h2, h3");
-                        if (heading) {
-                            return heading.innerText.trim();
-                        }
-                    }
-                    return null;
-                }''')
-
-                if not show_title:
-                    continue
-
-                # Skip phone number heading
-                if 'VELV' in show_title or len(show_title) < 3:
-                    continue
-
-                # Get date/time from parent text
-                date_text = await link.evaluate('el => el.parentElement ? el.parentElement.innerText.trim() : ""')
-
-                # Parse date and time
-                event_date, show_time = self.parse_seatengine_date(date_text)
-
-                # Get image from the section
-                img_url = await link.evaluate('''el => {
-                    let node = el;
-                    for (let i = 0; i < 10; i++) {
-                        if (!node.parentElement) break;
-                        node = node.parentElement;
-                        const img = node.querySelector("img");
-                        if (img && img.src && img.src.includes("seatengine")) {
-                            return img.src;
-                        }
-                    }
-                    return null;
-                }''')
-
-                # Build ticket URL
+            href = await link.get_attribute("href")
+            if href:
                 if href.startswith("/"):
-                    ticket_url = f"https://the-velveeta-room-the-velveeta-room.seatengine.com{href}"
-                else:
-                    ticket_url = href
+                    href = f"https://the-velveeta-room-the-velveeta-room.seatengine.com{href}"
+                ticket_urls.add(href)
 
-                images.append({
-                    "url": img_url or "",
-                    "event_name": show_title,
-                    "event_date": event_date,
-                    "show_time": show_time,
-                    "ticket_url": ticket_url,
-                })
+        print(f"    Found {len(ticket_urls)} unique ticket URLs")
+        print(f"    Fetching details from each ticket page...")
 
-            except Exception as e:
+        images = []
+        for i, ticket_url in enumerate(sorted(ticket_urls)):
+            details = await self.fetch_show_details(page, ticket_url)
+
+            if not details.get("event_name"):
                 continue
 
-        # Deduplicate by ticket URL (most reliable unique key)
-        seen_urls = set()
-        unique_images = []
-        for img in images:
-            url = img.get("ticket_url")
-            if url and url not in seen_urls:
-                seen_urls.add(url)
-                unique_images.append(img)
-                if img.get("event_date"):
-                    print(f"      + {img['event_name']} | {img['event_date']} @ {img['show_time']}")
-                else:
-                    print(f"      + {img['event_name']} (recurring) @ {img['show_time']}")
+            show_name = details["event_name"]
+            event_date = details.get("event_date")
+            show_time = details.get("show_time")
+            img_url = details.get("img_url", "")
 
-        print(f"    Found {len(unique_images)} unique shows")
-        return unique_images
+            # Skip if no date found (probably an error page)
+            if not event_date:
+                print(f"      [--] {show_name} - no date found")
+                continue
+
+            images.append({
+                "url": img_url or "",
+                "event_name": show_name,
+                "event_date": event_date,
+                "show_time": show_time,
+                "ticket_url": ticket_url,
+            })
+            print(f"      [OK] {show_name} | {event_date} @ {show_time}")
+
+        print(f"    Completed: {len(images)} shows with valid dates")
+        return images

@@ -624,25 +624,34 @@ for row in cursor.fetchall():
 
 conn.close()
 
-# Sort shows by day of the week, starting from today
-def get_day_order(day_abbr):
-    """Get sort order for a day, starting from today."""
-    days_order = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
-    today = datetime.now().weekday()  # 0 = Monday, 6 = Sunday
+# Sort shows chronologically by actual date
+def get_date_for_sort(show):
+    """Get a sortable date value from show data. Shows closest to today come first."""
+    event_date = show.get('date', '')
 
-    if not day_abbr:
-        return 99  # Shows without a day go to the end
+    # Try to parse the actual date
+    parsed = parse_show_date(event_date)
+    if parsed:
+        return parsed
 
-    day_abbr = day_abbr.lower()
-    if day_abbr not in days_order:
-        return 99
+    # If no specific date, use day of week mapping to estimate next occurrence
+    day_abbr = show.get('day', '')
+    if day_abbr:
+        days_order = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun']
+        day_abbr = day_abbr.lower()
+        if day_abbr in days_order:
+            target_day = days_order.index(day_abbr)
+            today = datetime.now()
+            current_day = today.weekday()
+            days_ahead = (target_day - current_day) % 7
+            if days_ahead == 0:
+                # If it's today, check if the show time has passed
+                days_ahead = 0
+            return today + timedelta(days=days_ahead)
 
-    day_index = days_order.index(day_abbr)
-    # Rotate so today is first
-    order = (day_index - today) % 7
-    return order
+    # Fallback: put shows without dates at the end
+    return datetime.max
 
-# Sort shows: first by day (starting from today), then by time, then by name
 def parse_time_for_sort(time_str):
     """Convert time string to sortable value."""
     if not time_str:
@@ -662,7 +671,8 @@ def parse_time_for_sort(time_str):
     except:
         return 99
 
-shows.sort(key=lambda s: (get_day_order(s['day']), parse_time_for_sort(s['time']), s['name']))
+# Sort shows chronologically: first by date, then by time, then by name
+shows.sort(key=lambda s: (get_date_for_sort(s), parse_time_for_sort(s['time']), s['name']))
 
 # Generate venue filter buttons (group Pop Up venues together)
 filter_venues = set()

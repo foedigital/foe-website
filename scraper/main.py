@@ -83,9 +83,15 @@ async def scrape_venue(venue_key: str, browser) -> dict:
 
                     local_path, image_hash = result
 
+                    # If same image exists, reuse its path but still create new entry
+                    # This allows recurring shows to share images but have separate listings
                     existing_path = hash_exists(image_hash)
                     if existing_path:
-                        continue
+                        local_path = existing_path
+                        # Generate unique hash for this specific show date
+                        import hashlib as hl
+                        unique_str = f"{event_name}|{event_date}|{show_time}|{ticket_url}"
+                        image_hash = f"shared-{hl.md5(unique_str.encode()).hexdigest()[:12]}"
                 else:
                     # Handle events without images (but with valid data)
                     if not event_name or not event_date:

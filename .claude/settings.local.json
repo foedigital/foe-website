@@ -45,7 +45,14 @@
       "Bash(dir:*)",
       "Bash(git commit:*)",
       "Bash(git pull:*)",
-      "Bash(git stash:*)"
+      "Bash(git stash:*)",
+      "Bash(git -C \"C:\\\\Users\\\\willm\\\\Projects\\\\FunnyOverEverything\" checkout --ours shows.html index.html)",
+      "Bash(git -C \"C:\\\\Users\\\\willm\\\\Projects\\\\FunnyOverEverything\" add shows.html index.html)",
+      "Bash(git -C \"C:\\\\Users\\\\willm\\\\Projects\\\\FunnyOverEverything\" commit -m \"Merge remote changes, keep local show updates\")",
+      "Bash(git -C \"C:\\\\Users\\\\willm\\\\Projects\\\\FunnyOverEverything\" push origin main)",
+      "Bash(git -C \"C:\\\\Users\\\\willm\\\\Projects\\\\FunnyOverEverything\" stash pop:*)",
+      "Bash(git -C \"C:\\\\Users\\\\willm\\\\Projects\\\\FunnyOverEverything\" stash drop)",
+      "Bash(git -C \"C:\\\\Users\\\\willm\\\\Projects\\\\FunnyOverEverything\" remote -v)"
     ]
   }
 }

@@ -1,11 +1,17 @@
 """Scraper for Vulcan Gas Company - filters for comedy shows only."""
 
 import re
-from typing import List, Dict
+from typing import List, Dict, Optional
 from playwright.async_api import Page
 from .base import BaseScraper
 from ..config import VENUES
 
+
+# Day abbreviation to full name mapping
+DAY_MAP = {
+    'mon': 'Monday', 'tue': 'Tuesday', 'wed': 'Wednesday',
+    'thu': 'Thursday', 'fri': 'Friday', 'sat': 'Saturday', 'sun': 'Sunday'
+}
 
 # Keywords to exclude (non-comedy events)
 EXCLUDED_KEYWORDS = [
@@ -47,6 +53,78 @@ class VulcanScraper(BaseScraper):
 
         return True
 
+    def format_time(self, time_str: str) -> Optional[str]:
+        """Format time string to standard format like '8:00 PM'."""
+        if not time_str:
+            return None
+        # Clean up and standardize
+        time_str = time_str.strip().upper()
+        # Handle formats like "8:00 pm" -> "8:00 PM"
+        match = re.match(r'(\d{1,2}:\d{2})\s*(AM|PM)', time_str, re.I)
+        if match:
+            return f"{match.group(1)} {match.group(2).upper()}"
+        return time_str
+
+    def format_date(self, day_abbrev: str, month: str, date: str) -> Optional[str]:
+        """Format date to standard format like 'Tuesday, Jan 13'."""
+        if not month or not date:
+            return None
+
+        # Convert day abbreviation to full name
+        day_lower = day_abbrev.lower().strip() if day_abbrev else ""
+        day_name = DAY_MAP.get(day_lower, day_abbrev)
+
+        # Capitalize month properly (JAN -> Jan)
+        month_cap = month.strip().capitalize()
+        date_num = date.strip()
+
+        if day_name:
+            return f"{day_name}, {month_cap} {date_num}"
+        return f"{month_cap} {date_num}"
+
+    async def fetch_image_from_ticket_page(self, page: Page, ticket_url: str) -> Optional[str]:
+        """Fetch the event poster image from the ticketsauce page."""
+        try:
+            await page.goto(ticket_url, wait_until="networkidle", timeout=30000)
+            await page.wait_for_timeout(2000)
+
+            # Try to find the main event image
+            # Check og:image meta tag first (most reliable)
+            og_image = await page.query_selector('meta[property="og:image"]')
+            if og_image:
+                img_url = await og_image.get_attribute("content")
+                if img_url:
+                    return img_url
+
+            # Try to find main event image
+            img_selectors = [
+                'img[alt*="Logo"]',
+                'img[alt*="logo"]',
+                '.event-image img',
+                '.poster img',
+                'main img',
+                'article img',
+            ]
+
+            for selector in img_selectors:
+                img = await page.query_selector(selector)
+                if img:
+                    src = await img.get_attribute("src")
+                    if src and "cloudinary" in src:
+                        return src
+
+            # Fallback: find any cloudinary image
+            all_imgs = await page.query_selector_all('img[src*="cloudinary"]')
+            if all_imgs:
+                src = await all_imgs[0].get_attribute("src")
+                if src:
+                    return src
+
+        except Exception as e:
+            print(f"      Error fetching image from {ticket_url}: {e}")
+
+        return None
+
     async def scrape(self, page: Page) -> List[Dict]:
         """Scrape comedy events from Vulcan Gas Company."""
         await page.goto(self.events_url, wait_until="networkidle", timeout=60000)
@@ -57,7 +135,7 @@ class VulcanScraper(BaseScraper):
             await page.evaluate("window.scrollTo(0, document.body.scrollHeight)")
             await page.wait_for_timeout(1500)
 
-        images = []
+        events_data = []
 
         # Find all event containers using the actual site structure
         event_elements = await page.query_selector_all(".w-dyn-item")
@@ -83,85 +161,64 @@ class VulcanScraper(BaseScraper):
                 if not self.is_comedy_show(event_name, ticket_url):
                     continue
 
-                # Get event month and date
-                event_date = None
+                # Get event month, date, day, and time separately
                 month_el = await event.query_selector(".event-month")
                 date_el = await event.query_selector(".event-date")
                 day_el = await event.query_selector(".event-day")
-
-                if month_el and date_el:
-                    month = await month_el.inner_text()
-                    date = await date_el.inner_text()
-                    if month and date:
-                        event_date = f"{month.strip()} {date.strip()}"
-
-                # Get event day and time
-                event_time = None
                 time_el = await event.query_selector(".event-time")
-                if time_el:
-                    event_time = await time_el.inner_text()
-                    if event_time:
-                        event_time = event_time.strip()
 
-                # Get day of week
-                day_of_week = None
-                if day_el:
-                    day_of_week = await day_el.inner_text()
-                    if day_of_week:
-                        day_of_week = day_of_week.strip()
+                month = await month_el.inner_text() if month_el else ""
+                date = await date_el.inner_text() if date_el else ""
+                day = await day_el.inner_text() if day_el else ""
+                time_raw = await time_el.inner_text() if time_el else ""
 
-                # Combine date info
-                if event_date:
-                    if day_of_week:
-                        event_date = f"{day_of_week}, {event_date}"
-                    if event_time:
-                        event_date = f"{event_date} @ {event_time}"
-
-                # Get event image
-                img_url = ""
-                img_el = await event.query_selector("img")
-                if img_el:
-                    img_url = await img_el.get_attribute("src") or ""
-                    if not img_url:
-                        img_url = await img_el.get_attribute("data-src") or ""
-
-                # Check for background-image on event wrapper
-                if not img_url:
-                    wrapper = await event.query_selector(".event-wrapper, [class*='image']")
-                    if wrapper:
-                        style = await wrapper.get_attribute("style") or ""
-                        match = re.search(r"url\(['\"]?([^'\"]+)['\"]?\)", style)
-                        if match:
-                            img_url = match.group(1)
-
-                # Ensure absolute URL
-                if img_url and img_url.startswith("/"):
-                    img_url = self.venue_url + img_url
+                # Format date and time properly
+                event_date = self.format_date(day, month, date)
+                show_time = self.format_time(time_raw)
 
                 if event_name:
-                    images.append({
-                        "url": img_url,
+                    events_data.append({
                         "event_name": event_name,
                         "event_date": event_date,
+                        "show_time": show_time,
                         "ticket_url": ticket_url,
                     })
-                    print(f"      + Comedy: {event_name} ({event_date})")
+                    print(f"      + Comedy: {event_name} | {event_date} @ {show_time}")
 
             except Exception as e:
                 print(f"    Error processing event: {e}")
                 continue
 
-        # Deduplicate by event name (keep unique shows, but allow recurring with diff dates)
+        # Deduplicate by event name + date + time
         seen_keys = set()
-        unique_images = []
-        for img in images:
-            # Use name + date as key to allow same show on different dates
-            name = img.get("event_name") or ""
-            date = img.get("event_date") or ""
-            key = f"{name.lower()}|{date}"
+        unique_events = []
+        for evt in events_data:
+            key = f"{(evt.get('event_name') or '').lower()}|{evt.get('event_date')}|{evt.get('show_time')}"
             if key not in seen_keys:
                 seen_keys.add(key)
-                unique_images.append(img)
+                unique_events.append(evt)
 
-        print(f"    Found {len(unique_images)} comedy shows")
-        return unique_images
+        print(f"    Found {len(unique_events)} unique comedy shows")
+
+        # Now fetch images from ticket pages
+        print(f"    Fetching poster images from ticket pages...")
+        images = []
+        for evt in unique_events:
+            ticket_url = evt.get("ticket_url", "")
+            img_url = await self.fetch_image_from_ticket_page(page, ticket_url)
+
+            images.append({
+                "url": img_url or "",
+                "event_name": evt["event_name"],
+                "event_date": evt["event_date"],
+                "show_time": evt["show_time"],
+                "ticket_url": ticket_url,
+            })
+
+            if img_url:
+                print(f"      [OK] Got image for {evt['event_name']}")
+            else:
+                print(f"      [--] No image for {evt['event_name']}")
+
+        print(f"    Completed: {len(images)} comedy shows with images")
+        return images

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resources - Austin Comedy Scene Guide | Funny Over Everything</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/favicon.svg">
+    <meta name="description" content="Resources for comedians navigating the Austin comedy scene. Open mics, booking contacts, tips and more.">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .coming-soon-container {
+            min-height: 60vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 60px 20px;
+        }
+        .coming-soon-icon {
+            font-size: 6rem;
+            margin-bottom: 30px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        .coming-soon-title {
+            font-size: 2.5rem;
+            color: #f05a28;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .coming-soon-text {
+            font-size: 1.2rem;
+            color: #ccc;
+            max-width: 600px;
+            line-height: 1.8;
+        }
+        .coming-soon-text strong {
+            color: #f05a28;
+        }
+    </style>
+</head>
+<body>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scroll-progress"></div>
+
+    <!-- Custom Cursor (desktop only) -->
+    <div class="custom-cursor" id="custom-cursor"></div>
+
+    <!-- SVG Filter for wavy border effect -->
+    <svg style="position: absolute; width: 0; height: 0;">
+        <defs>
+            <filter id="wavy">
+                <feTurbulence type="turbulence" baseFrequency="0.02 0.05" numOctaves="2" result="turbulence">
+                    <animate attributeName="baseFrequency" dur="3s" values="0.02 0.05;0.03 0.06;0.02 0.05" repeatCount="indefinite"/>
+                </feTurbulence>
+                <feDisplacementMap in="SourceGraphic" in2="turbulence" scale="8" xChannelSelector="R" yChannelSelector="G"/>
+            </filter>
+        </defs>
+    </svg>
+    <header>
+        <nav>
+            <a href="index.html" class="logo">
+                <img src="images/logo.jpg" alt="Funny Over Everything" class="logo-img">
+                <div class="logo-text">
+                    <span class="logo-main">Funny Over Everything</span>
+                    <span class="logo-atx">ATX</span>
+                </div>
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="shows.html">Shows</a></li>
+                <li><a href="resources.html" class="active">Resources</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <section class="hero-animated">
+        <div class="hero-wavy-bg"></div>
+        <div class="hero-wavy-bg hero-wavy-bg-2"></div>
+        <div class="hero-overlay"></div>
+        <div class="hero-content">
+            <h1>Comedian Resources</h1>
+        </div>
+    </section>
+
+    <!-- Infinite Marquee -->
+    <div class="marquee-container">
+        <div class="marquee-content">
+            <span class="highlight">COMEDY</span><span>&#8734;</span>
+            <span class="highlight">AUSTIN</span><span>&#8734;</span>
+            <span class="highlight">LAUGHS</span><span>&#8734;</span>
+            <span>CREEK & CAVE</span><span>&#8734;</span>
+            <span>MOTHERSHIP</span><span>&#8734;</span>
+            <span>CAP CITY</span><span>&#8734;</span>
+            <span>VELVEETA ROOM</span><span>&#8734;</span>
+            <span>VULCAN</span><span>&#8734;</span>
+            <span class="highlight">COMEDY</span><span>&#8734;</span>
+            <span class="highlight">AUSTIN</span><span>&#8734;</span>
+            <span class="highlight">LAUGHS</span><span>&#8734;</span>
+            <span>CREEK & CAVE</span><span>&#8734;</span>
+            <span>MOTHERSHIP</span><span>&#8734;</span>
+            <span>CAP CITY</span><span>&#8734;</span>
+            <span>VELVEETA ROOM</span><span>&#8734;</span>
+            <span>VULCAN</span><span>&#8734;</span>
+        </div>
+    </div>
+
+    <section class="coming-soon-container">
+        <div class="coming-soon-icon">🚧</div>
+        <h2 class="coming-soon-title">Working On It!</h2>
+        <p class="coming-soon-text">
+            We're building out a comprehensive guide to help comedians navigate the <strong>Austin comedy scene</strong>.
+            Open mics, booking tips, venue contacts, and more coming soon!
+        </p>
+    </section>
+
+    <section class="faq-section got-questions">
+        <h2 class="ribbon-title">Got Ideas?</h2>
+        <p class="questions-text">Have suggestions for resources we should include? Let us know!</p>
+        <div class="contact-cta">
+            <a href="mailto:foeatx@gmail.com" class="btn email-btn magnetic-btn btn-ripple btn-glow">foeatx@gmail.com</a>
+            <a href="https://www.instagram.com/willmuss87/" class="btn instagram-btn magnetic-btn btn-ripple btn-glow" target="_blank">@willmuss87</a>
+        </div>
+    </section>
+
+    <footer>
+        <p>Funny Over Everything</p>
+        <p style="margin-top: 20px; font-size: 0.9rem;">&copy; 2024 Funny Over Everything. All rights reserved.</p>
+    </footer>
+
+    <!-- CDN Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.42/dist/lenis.min.js"></script>
+
+    <script>
+    // Initialize Lenis Smooth Scrolling
+    const lenis = new Lenis({
+        duration: 1.2,
+        easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        smooth: true,
+        smoothTouch: false,
+    });
+
+    function raf(time) {
+        lenis.raf(time);
+        requestAnimationFrame(raf);
+    }
+    requestAnimationFrame(raf);
+
+    // Scroll Progress Bar
+    const scrollProgress = document.getElementById('scroll-progress');
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const scrollPercent = (scrollTop / docHeight) * 100;
+        scrollProgress.style.width = scrollPercent + '%';
+    });
+
+    // Custom Cursor (Desktop Only)
+    const cursor = document.getElementById('custom-cursor');
+    if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            cursor.classList.add('visible');
+        });
+
+        document.addEventListener('mouseleave', () => {
+            cursor.classList.remove('visible');
+        });
+
+        const interactiveElements = document.querySelectorAll('a, button, .btn');
+        interactiveElements.forEach(el => {
+            el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+            el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+        });
+    }
+
+    // Magnetic Buttons
+    const magneticBtns = document.querySelectorAll('.magnetic-btn');
+    magneticBtns.forEach(btn => {
+        btn.addEventListener('mousemove', (e) => {
+            const rect = btn.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width / 2;
+            const y = e.clientY - rect.top - rect.height / 2;
+            btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+        });
+
+        btn.addEventListener('mouseleave', () => {
+            btn.style.transform = 'translate(0, 0)';
+        });
+    });
+    </script>
+</body>
+</html>

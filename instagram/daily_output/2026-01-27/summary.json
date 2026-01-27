@@ -1,0 +1,69 @@
+{
+  "date": "2026-01-27T18:43:51.159426",
+  "date_display": "Tuesday, January 27, 2026",
+  "total_shows": 9,
+  "free_shows": 3,
+  "venues": [
+    "Creek and the Cave",
+    "Cap City Comedy",
+    "Vulcan Gas Company",
+    "Sunset Strip Comedy"
+  ],
+  "images_count": 8,
+  "shows": [
+    {
+      "name": "Dunk Tank",
+      "venue": "Creek and the Cave",
+      "time": "6:00 PM",
+      "is_free": true
+    },
+    {
+      "name": "The Drop In Stand-Up Comedy Show",
+      "venue": "Sunset Strip Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Open Mic Night",
+      "venue": "Cap City Comedy",
+      "time": "7:30 PM",
+      "is_free": true
+    },
+    {
+      "name": "The Kill Tony Regulars",
+      "venue": "Vulcan Gas Company",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Creek Cave Live",
+      "venue": "Creek and the Cave",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Austin Comedy Killers",
+      "venue": "Sunset Strip Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Estando con Francisco \u2013 Micr\u00f3fono Abierto",
+      "venue": "Creek and the Cave",
+      "time": "10:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Hood Therapy Tuesdays",
+      "venue": "Creek and the Cave",
+      "time": "11:55 PM",
+      "is_free": true
+    },
+    {
+      "name": "Estando con Francisco \u2013 Micr\u00f3fono Abierto",
+      "venue": "Creek and the Cave",
+      "time": "TBA",
+      "is_free": false
+    }
+  ]
+}

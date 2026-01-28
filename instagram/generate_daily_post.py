@@ -30,6 +30,9 @@ DB_PATH = PROJECT_ROOT / "comedy_images.db"
 IMAGES_DIR = PROJECT_ROOT / "images"
 OUTPUT_DIR = PROJECT_ROOT / "instagram" / "daily_output"
 
+# Base URL for deployed images
+WEBSITE_BASE_URL = "https://funnyovereverything.com"
+
 # Venue display names (cleaned up for Instagram)
 VENUE_DISPLAY_NAMES = {
     "creek-and-the-cave": "Creek and the Cave",
@@ -202,10 +205,10 @@ def generate_caption(shows: List[Dict], target_date: datetime) -> str:
     return caption
 
 
-def copy_images_to_output(shows: List[Dict], output_dir: Path) -> List[Path]:
+def copy_images_to_output(shows: List[Dict], output_dir: Path) -> Tuple[List[Path], List[str]]:
     """
     Copy show images to output directory, renamed for easy ordering.
-    Returns list of copied image paths.
+    Returns tuple of (local paths, web URLs).
     """
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -218,6 +221,7 @@ def copy_images_to_output(shows: List[Dict], output_dir: Path) -> List[Path]:
         f.unlink()
 
     copied_images = []
+    image_urls = []
     seen_hashes = set()
 
     for i, show in enumerate(shows):
@@ -244,15 +248,21 @@ def copy_images_to_output(shows: List[Dict], output_dir: Path) -> List[Path]:
         shutil.copy2(src_path, dest_path)
         copied_images.append(dest_path)
 
+        # Build web URL from original path (e.g., images/venue/hash.jpg)
+        # Convert backslashes to forward slashes for URL
+        web_path = show['image_path'].replace('\\', '/')
+        web_url = f"{WEBSITE_BASE_URL}/{web_path}"
+        image_urls.append(web_url)
+
         # Instagram carousel limit is 10
         if len(copied_images) >= 10:
             print(f"  Note: Limited to 10 images for carousel (had {len(shows)} shows)")
             break
 
-    return copied_images
+    return copied_images, image_urls
 
 
-def generate_summary(shows: List[Dict], images: List[Path], target_date: datetime) -> Dict:
+def generate_summary(shows: List[Dict], images: List[Path], image_urls: List[str], target_date: datetime) -> Dict:
     """Generate summary data for the daily post."""
     return {
         'date': target_date.isoformat(),
@@ -261,6 +271,7 @@ def generate_summary(shows: List[Dict], images: List[Path], target_date: datetim
         'free_shows': sum(1 for s in shows if s['is_free']),
         'venues': list(set(s['venue'] for s in shows)),
         'images_count': len(images),
+        'image_urls': image_urls,  # Public URLs for Instagram API
         'shows': [
             {
                 'name': s['name'],
@@ -314,11 +325,11 @@ def main():
 
     # Copy images
     print("\nCopying images...")
-    images = copy_images_to_output(shows, output_dir / "images")
+    images, image_urls = copy_images_to_output(shows, output_dir / "images")
     print(f"Copied {len(images)} images")
 
-    # Generate summary JSON
-    summary = generate_summary(shows, images, target_date)
+    # Generate summary JSON (includes public URLs for Instagram API)
+    summary = generate_summary(shows, images, image_urls, target_date)
     summary_path = output_dir / "summary.json"
     summary_path.write_text(json.dumps(summary, indent=2), encoding='utf-8')
     print(f"Summary saved to: {summary_path}")

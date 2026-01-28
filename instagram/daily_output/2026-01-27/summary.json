@@ -1,15 +1,25 @@
 {
-  "date": "2026-01-27T18:43:51.159426",
+  "date": "2026-01-27T19:02:56.692971",
   "date_display": "Tuesday, January 27, 2026",
   "total_shows": 9,
   "free_shows": 3,
   "venues": [
-    "Creek and the Cave",
-    "Cap City Comedy",
+    "Sunset Strip Comedy",
     "Vulcan Gas Company",
-    "Sunset Strip Comedy"
+    "Cap City Comedy",
+    "Creek and the Cave"
   ],
   "images_count": 8,
+  "image_urls": [
+    "https://funnyovereverything.com/images/creek_and_the_cave/d3918861bcb52e1b.jpg",
+    "https://funnyovereverything.com/images/sunset_strip_comedy/f933b5b1925b0c15.jpg",
+    "https://funnyovereverything.com/images/cap_city_comedy/open_mic_night_d801caf3.jpg",
+    "https://funnyovereverything.com/images/vulcan_gas_company/5fd5ace3b92a606a.jpg",
+    "https://funnyovereverything.com/images/creek_and_the_cave/3f13098f702bc97a.jpg",
+    "https://funnyovereverything.com/images/sunset_strip_comedy/276bc6221b8cb4b0.jpg",
+    "https://funnyovereverything.com/images/creek_and_the_cave/ab00d69cc18f7e85.jpg",
+    "https://funnyovereverything.com/images/creek_and_the_cave/ecb8c4915842ff33.jpg"
+  ],
   "shows": [
     {
       "name": "Dunk Tank",

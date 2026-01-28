@@ -73,7 +73,7 @@ FREE_SHOWS = [
     'new joke monday',
     'the creek and the cave open mic',
     'creek open mic',
-    'open mic',
+    # Note: removed generic 'open mic' - Cap City open mic is $5
     'banana phone',
     'writers room',
     # Gnar Bar - only Crowd Control is free (pay what you want)

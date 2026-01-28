@@ -410,15 +410,18 @@ def get_day_from_date(date_str):
     date_lower = date_str.lower()
     if date_lower in day_map:
         return day_map[date_lower]
+    # Try with current year first
     try:
-        date_obj = datetime.strptime(f"2024 {date_str}", "%Y %b %d")
+        date_obj = datetime.strptime(f"{CURRENT_YEAR} {date_str}", "%Y %b %d")
         return date_obj.strftime('%a').lower()
     except:
-        try:
-            date_obj = datetime.strptime(f"2025 {date_str}", "%Y %b %d")
-            return date_obj.strftime('%a').lower()
-        except:
-            return ''
+        pass
+    # Try with full month name
+    try:
+        date_obj = datetime.strptime(f"{CURRENT_YEAR} {date_str}", "%Y %B %d")
+        return date_obj.strftime('%a').lower()
+    except:
+        return ''
 
 def get_day_from_name(name):
     name_upper = name.upper()
@@ -596,10 +599,26 @@ for row in cursor.fetchall():
 
     # Use correct day mappings first, then fall back to date parsing
     correct_day = get_correct_day(clean_name, venue, event_date)
+    day = ''
     if correct_day:
-        day = correct_day[:3].lower()  # Convert to 'mon', 'tue', etc.
-    else:
+        # Check if correct_day is actually a day name (not a month)
+        day_names = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+        correct_day_lower = correct_day.lower()
+        if correct_day_lower in day_names or any(correct_day_lower.startswith(d) for d in day_names):
+            day = correct_day[:3].lower()  # Convert to 'mon', 'tue', etc.
+        else:
+            # correct_day is a date like "Jan 29", need to calculate the day
+            day = get_day_from_date(correct_day) or get_day_from_name(name)
+
+    # If still no day, try to parse from event_date or calculate from date
+    if not day:
         day = get_day_from_date(event_date) or get_day_from_name(name)
+
+    # Last resort: if we have a date like "Jan 29", calculate the day of week
+    if not day and event_date:
+        parsed = parse_show_date(event_date)
+        if parsed:
+            day = parsed.strftime('%a').lower()
     is_free = is_free_show(clean_name, venue)
     sold_out = is_sold_out(clean_name, venue)
     venues.add(venue)

@@ -200,3 +200,26 @@ def get_recent_syncs(venue_id: Optional[int] = None, limit: int = 10) -> list:
     rows = cursor.fetchall()
     conn.close()
     return [dict(row) for row in rows]
+
+
+def clear_venue_images(venue_name: str) -> int:
+    """Clear all images for a specific venue. Returns count of deleted rows."""
+    conn = get_connection()
+    cursor = conn.cursor()
+
+    # Get venue ID
+    cursor.execute("SELECT id FROM venues WHERE name LIKE ?", (f"%{venue_name}%",))
+    row = cursor.fetchone()
+    if not row:
+        conn.close()
+        return 0
+
+    venue_id = row["id"]
+
+    # Delete images for this venue
+    cursor.execute("DELETE FROM images WHERE venue_id = ?", (venue_id,))
+    deleted_count = cursor.rowcount
+
+    conn.commit()
+    conn.close()
+    return deleted_count

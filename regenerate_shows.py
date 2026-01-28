@@ -1045,7 +1045,7 @@ html = f'''<!DOCTYPE html>
             <ul class="nav-links">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="shows.html" class="active">Shows</a></li>
-                <li><a href="mission.html">Our Mission</a></li>
+                <li><a href="resources.html">Resources</a></li>
             </ul>
         </nav>
     </header>

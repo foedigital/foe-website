@@ -36,10 +36,16 @@ class ParamountScraper(BaseScraper):
         """Clean up event name by removing extra whitespace and trailing punctuation."""
         if not name:
             return ""
+        # Split by newlines first and take only the first meaningful part
+        lines = [line.strip() for line in name.split('\n') if line.strip() and line.strip() not in [',', '.', '-']]
+        if lines:
+            name = lines[0]
         # Replace multiple whitespace with single space
         name = " ".join(name.split())
         # Remove trailing commas, periods
         name = name.rstrip(",. ")
+        # Remove leading/trailing punctuation
+        name = name.strip(",.-: ")
         return name
 
     async def scrape(self, page: Page) -> List[Dict]:
@@ -69,13 +75,21 @@ class ParamountScraper(BaseScraper):
 
         for event in event_elements:
             try:
-                # Get event name
+                # Get event name - use the h4 heading link which has the main title
                 event_name = None
-                title_el = await event.query_selector(".tn-prod-list-item__perf-property--title, .tn-performance-title")
+                title_el = await event.query_selector("h4.tn-prod-list-item__property--heading a")
                 if title_el:
                     event_name = await title_el.inner_text()
                     if event_name:
                         event_name = self.clean_name(event_name)
+
+                # Fallback to other selectors if h4 didn't work
+                if not event_name:
+                    title_el = await event.query_selector(".tn-performance-title")
+                    if title_el:
+                        event_name = await title_el.inner_text()
+                        if event_name:
+                            event_name = self.clean_name(event_name)
 
                 if not event_name:
                     continue
@@ -90,13 +104,17 @@ class ParamountScraper(BaseScraper):
                         # Clean up multi-line dates
                         event_date = " ".join(event_date.split())
 
-                # Get event time - try multiple selectors
+                # Get event time - use the dedicated time element
                 show_time = None
-                # Try dedicated time element first
-                time_el = await event.query_selector(".tn-prod-list-item__perf-time, .tn-perf-time, .tn-event-time")
+                time_el = await event.query_selector(".tn-prod-list-item__perf-time")
                 if time_el:
                     time_text = await time_el.inner_text()
-                    show_time = self.parse_time(time_text)
+                    # Handle format like "7:00PM" (no space)
+                    if time_text:
+                        time_text = time_text.strip()
+                        # Add space before AM/PM if missing
+                        time_text = re.sub(r'(\d)(AM|PM)', r'\1 \2', time_text, flags=re.I)
+                        show_time = self.parse_time(time_text)
 
                 # If no dedicated time element, try to extract from the full card text
                 if not show_time:

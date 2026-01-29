@@ -100,6 +100,7 @@ nav {
     padding: 1rem 5vw;
     max-width: 1400px;
     margin: 0 auto;
+    position: relative;
 }
 
 .logo {
@@ -107,6 +108,9 @@ nav {
     align-items: center;
     gap: 12px;
     text-decoration: none;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .logo-img {
@@ -134,10 +138,49 @@ nav {
     letter-spacing: 2px;
 }
 
+/* Hamburger toggle - hidden on desktop */
+.nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    z-index: 10;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+}
+
+.hamburger-line {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--text-primary);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.nav-toggle.active .hamburger-line:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.nav-toggle.active .hamburger-line:nth-child(2) {
+    opacity: 0;
+}
+
+.nav-toggle.active .hamburger-line:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/* Nav menu - transparent wrapper on desktop */
+.nav-menu {
+    display: contents;
+}
+
 .nav-links {
     display: flex;
     list-style: none;
     gap: 2.5rem;
+    margin-left: auto;
 }
 
 .nav-links a {
@@ -171,12 +214,17 @@ nav {
     width: 100%;
 }
 
+/* Nav social links - hidden on desktop */
+.nav-social {
+    display: none;
+}
+
 .nav-instagram {
     display: flex;
     align-items: center;
     color: #ccc;
     transition: color 0.3s ease, transform 0.3s ease;
-    margin-left: 1rem;
+    order: -1;
 }
 
 .nav-instagram:hover {
@@ -965,6 +1013,19 @@ footer p {
 @media (max-width: 768px) {
     nav {
         padding: 0.75rem 4vw;
+        flex-wrap: wrap;
+    }
+
+    .nav-toggle {
+        display: flex;
+        order: 1;
+    }
+
+    .logo {
+        position: static;
+        transform: none;
+        order: 2;
+        margin: 0 auto;
     }
 
     .logo-img {
@@ -979,22 +1040,72 @@ footer p {
         font-size: 0.7rem;
     }
 
+    /* Hide desktop IG icon on mobile - it appears in dropdown instead */
+    .nav-instagram {
+        display: none;
+        order: 3;
+    }
+
+    /* Nav menu dropdown */
+    .nav-menu {
+        display: block;
+        order: 4;
+        flex-basis: 100%;
+        max-height: 0;
+        overflow: hidden;
+        transition: max-height 0.35s ease;
+    }
+
+    .nav-menu.active {
+        max-height: 400px;
+    }
+
     .nav-links {
-        gap: 1rem;
+        flex-direction: column;
+        gap: 0;
+        padding: 1rem 0 0.5rem;
+    }
+
+    .nav-links li {
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .nav-links li:last-child {
+        border-bottom: none;
     }
 
     .nav-links a {
-        font-size: 0.8rem;
-        letter-spacing: 0.5px;
+        display: block;
+        padding: 0.85rem 0;
+        font-size: 0.95rem;
+        letter-spacing: 1px;
     }
 
-    .nav-instagram svg {
-        width: 18px;
-        height: 18px;
+    .nav-links a::after {
+        display: none;
     }
 
-    .nav-instagram {
-        margin-left: 0.5rem;
+    /* Show social links in mobile dropdown */
+    .nav-social {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+        border-top: 1px solid var(--border-color);
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    }
+
+    .nav-social a {
+        display: block;
+        padding: 0.75rem 0;
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+
+    .nav-social a:hover {
+        color: var(--text-primary);
     }
 
     .featured-show-card {

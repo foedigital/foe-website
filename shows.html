@@ -242,6 +242,11 @@
     </svg>
     <header>
         <nav>
+            <button class="nav-toggle" aria-label="Menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
             <a href="index.html" class="logo">
                 <img src="images/logo.jpg" alt="Funny Over Everything" class="logo-img">
                 <div class="logo-text">
@@ -249,14 +254,20 @@
                     <span class="logo-atx">ATX</span>
                 </div>
             </a>
-            <ul class="nav-links">
-                <li><a href="index.html">Home</a></li>
-                <li><a href="shows.html" class="active">Shows</a></li>
-                <li><a href="resources.html">Resources</a></li>
-            </ul>
             <a href="https://www.instagram.com/foeatx/" class="nav-instagram" target="_blank" aria-label="Instagram">
                 <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
             </a>
+            <div class="nav-menu">
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="shows.html" class="active">Shows</a></li>
+                    <li><a href="resources.html">Resources</a></li>
+                </ul>
+                <div class="nav-social">
+                    <a href="https://www.instagram.com/foeatx/" target="_blank">Instagram (@foeatx)</a>
+                    <a href="mailto:foeatx@gmail.com">foeatx@gmail.com</a>
+                </div>
+            </div>
         </nav>
     </header>
 
@@ -1145,6 +1156,12 @@
     // Add glow-hover and card-lift to show cards
     document.querySelectorAll('.show-card').forEach(card => {
         card.classList.add('glow-hover', 'card-lift');
+    });
+
+    // Hamburger menu toggle
+    document.querySelector('.nav-toggle').addEventListener('click', function() {
+        this.classList.toggle('active');
+        document.querySelector('.nav-menu').classList.toggle('active');
     });
     </script>
 </body>

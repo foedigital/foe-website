@@ -303,7 +303,7 @@ MOTHERSHIP_URL = 'https://comedymothership.com/shows'
 BULLS_PUB_URL = 'https://www.eventbrite.com/e/stand-up-comedy-show-bulls-pub-wedsthursat-at-830pm-tickets-1039732296287'
 GNAR_BAR_URL = 'https://gnarbaratx.com/events'
 ROZCOS_URL = 'https://rozcoscomedyclub.simpletix.com/'
-EAST_AUSTIN_URL = 'https://eastaustincomedy.com/events-2-1'
+EAST_AUSTIN_URL = 'https://eastaustincomedy.com/'
 VULCAN_URL = 'https://www.vulcanatx.com/'
 BLACK_RABBIT_URL = 'https://www.eventbrite.com/e/black-rabbit-underground-comedy-tickets-1442073413399'
 
@@ -520,9 +520,6 @@ def get_event_url(show_name, venue_name, venue_base_url, source_url=''):
         return CAPCITY_URL
 
     elif 'east austin' in venue_name.lower():
-        # Use the source_url from scraper (specific event page)
-        if source_url:
-            return source_url
         return EAST_AUSTIN_URL
 
     elif 'vulcan' in venue_name.lower():

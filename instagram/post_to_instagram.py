@@ -43,14 +43,6 @@ OUTPUT_DIR = PROJECT_ROOT / "instagram" / "daily_output"
 # Instagram Graph API base URL
 GRAPH_API_BASE = "https://graph.facebook.com/v18.0"
 
-# Image hosting - images need to be publicly accessible URLs
-# You'll need to either:
-# 1. Use your Vercel deployment URLs
-# 2. Upload to a CDN/image host
-# 3. Use a service like Cloudinary
-IMAGE_BASE_URL = os.environ.get("IMAGE_BASE_URL", "https://funnyovereverything.com")
-
-
 class InstagramPoster:
     """Handles posting content to Instagram via Graph API."""
 
@@ -403,7 +395,7 @@ def main():
         print(f"  python -m instagram.generate_daily_post --date {target_date}")
         sys.exit(1)
     else:
-        print(f"Using {len(image_urls)} URLs from funnyovereverything.com")
+        print(f"Using {len(image_urls)} URLs from summary.json")
 
     # Create poster and post
     poster = InstagramPoster(access_token, account_id)

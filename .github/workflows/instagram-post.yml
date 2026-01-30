@@ -51,6 +51,7 @@ jobs:
       - name: Generate Instagram content
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          WEBSITE_BASE_URL: "https://foe-website.vercel.app"
         run: |
           python -m instagram.generate_daily_post --date ${{ steps.date.outputs.target_date }}
 

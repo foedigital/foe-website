@@ -77,7 +77,7 @@ class InstagramPoster:
     def get_account_info(self) -> Dict:
         """Get Instagram account information."""
         return self._make_request('GET', self.account_id, params={
-            'fields': 'id,username,account_type,media_count'
+            'fields': 'id,username,media_count'
         })
 
     def create_media_container(self, image_url: str, caption: str = None,
@@ -413,7 +413,6 @@ def main():
     try:
         account_info = poster.get_account_info()
         print(f"  Account: @{account_info.get('username', 'unknown')}")
-        print(f"  Type: {account_info.get('account_type', 'unknown')}")
     except Exception as e:
         print(f"  Error: {e}")
         sys.exit(1)

@@ -83,10 +83,40 @@ class SunsetStripScraper(BaseScraper):
             return f"{time_part} {ampm}"
         return None
 
+    # SquadUP API endpoint for Sunset Strip events
+    SQUADUP_API_URL = "https://www.squadup.com/api/v3/events?user_ids=9086799&page_size=800&additional_attr=sold_out&include=custom_fields"
+
+    async def _fetch_api_image_map(self, page: Page) -> Dict[str, str]:
+        """
+        Fetch the SquadUP API via the page context to build a mapping of
+        event name -> default image URL (the full evergreen poster).
+        """
+        image_map = {}
+        try:
+            data = await page.evaluate("""async (url) => {
+                const resp = await fetch(url);
+                return await resp.json();
+            }""", self.SQUADUP_API_URL)
+
+            events = data if isinstance(data, list) else data.get('data', data.get('events', []))
+            for evt in events:
+                name = evt.get('name', '')
+                image = evt.get('image') or {}
+                default_url = image.get('default_url', '')
+                if name and default_url:
+                    image_map[name] = default_url
+            print(f"    SquadUP API: found {len(image_map)} event posters")
+        except Exception as e:
+            print(f"    SquadUP API failed, falling back to HTML scraping: {e}")
+        return image_map
+
     async def scrape(self, page: Page) -> List[Dict]:
         """Scrape Sunset Strip Comedy shows from SquadUP."""
         await page.goto(self.events_url, wait_until="networkidle", timeout=60000)
         await page.wait_for_timeout(5000)
+
+        # Fetch full poster URLs from the SquadUP API
+        api_image_map = await self._fetch_api_image_map(page)
 
         # Scroll to load all events
         for _ in range(5):
@@ -130,24 +160,18 @@ class SunsetStripScraper(BaseScraper):
                         event_date = self.parse_date(full_text)
                         show_time = self.parse_time(full_text)
 
-                # Get image
-                img_url = None
-                img_el = await box.query_selector('.squadup-checkout-flyer-image')
-                if img_el:
-                    # Check for background-image style
-                    style = await img_el.get_attribute('style') or ''
-                    match = re.search(r"url\(['\"]?([^'\"]+)['\"]?\)", style)
-                    if match:
-                        img_url = match.group(1)
-                    else:
-                        # Try src attribute
-                        img_url = await img_el.get_attribute('src')
-
-                    # FilePicker CDN supports resizing - request larger image
-                    if img_url and 'filepicker.io' in img_url:
-                        # Remove any existing params and add resize
-                        base_url = img_url.split('?')[0]
-                        img_url = f"{base_url}/convert?w=600"
+                # Get image — prefer the full poster from the API
+                img_url = api_image_map.get(event_name)
+                if not img_url:
+                    # Fallback: scrape thumbnail from HTML widget
+                    img_el = await box.query_selector('.squadup-checkout-flyer-image')
+                    if img_el:
+                        style = await img_el.get_attribute('style') or ''
+                        match = re.search(r"url\(['\"]?([^'\"]+)['\"]?\)", style)
+                        if match:
+                            img_url = match.group(1)
+                        else:
+                            img_url = await img_el.get_attribute('src')
 
                 # Get ticket URL from data-squadup-event-id
                 ticket_url = None

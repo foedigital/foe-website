@@ -469,11 +469,18 @@ def get_event_url(show_name, venue_name, venue_base_url, source_url=''):
         return clean_url
 
     if 'creek' in venue_name.lower():
+        # Use Creek website URL from scraper if available (preferred)
+        if source_url and 'creekandcave.com/events/' in source_url:
+            return source_url
+        # Fall back to hardcoded mapping
         if name_lower in CREEK_CAVE_URLS:
             return 'https://www.creekandcave.com' + CREEK_CAVE_URLS[name_lower]
         for key, path in CREEK_CAVE_URLS.items():
             if key in name_lower or name_lower in key:
                 return 'https://www.creekandcave.com' + path
+        # Fall back to ShowClix ticket URL
+        if source_url and 'showclix.com' in source_url:
+            return source_url
         slug = re.sub(r'[^\w\s-]', '', name_lower)
         slug = re.sub(r'[\s_]+', '-', slug).strip('-')
         return f'https://www.creekandcave.com/events/{slug}'
@@ -501,11 +508,9 @@ def get_event_url(show_name, venue_name, venue_base_url, source_url=''):
         return GNAR_BAR_URL
 
     elif 'rozco' in venue_name.lower():
-        if name_lower in ROZCOS_URLS:
-            return ROZCOS_URLS[name_lower]
-        for key, url in ROZCOS_URLS.items():
-            if key in name_lower or name_lower in key:
-                return url
+        # Use the per-show SimpleTix ticket URL from the scraper
+        if source_url and 'simpletix.com' in source_url:
+            return source_url
         return ROZCOS_URL
 
     elif 'speakeasy' in venue_name.lower():

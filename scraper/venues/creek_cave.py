@@ -128,15 +128,16 @@ class CreekCaveScraper(BaseScraper):
                                 time_text = await time_el.inner_text()
                                 show_time = self.parse_time(time_text)
 
-                            # Get ticket URL from ShowClix link
-                            ticket_link = await event.query_selector('a[href*="showclix"]')
-                            ticket_url = await ticket_link.get_attribute('href') if ticket_link else None
+                            # Get Creek event page URL (preferred for user-facing links)
+                            event_link = await event.query_selector('a[href*="/events/"]')
+                            ticket_url = None
+                            if event_link:
+                                href = await event_link.get_attribute('href')
+                                ticket_url = f"https://www.creekandcave.com{href}" if href.startswith('/') else href
                             if not ticket_url:
-                                # Fall back to event page link
-                                event_link = await event.query_selector('a[href*="/events/"]')
-                                if event_link:
-                                    href = await event_link.get_attribute('href')
-                                    ticket_url = f"https://www.creekandcave.com{href}" if href.startswith('/') else href
+                                # Fall back to ShowClix ticket link
+                                ticket_link = await event.query_selector('a[href*="showclix"]')
+                                ticket_url = await ticket_link.get_attribute('href') if ticket_link else None
 
                             # Get image
                             img_el = await event.query_selector('.events-event-detail-image-img')

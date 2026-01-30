@@ -62,14 +62,10 @@ VENUES = {
     "rozcos": {
         "name": "Rozco's Comedy",
         "url": "https://www.rozcoscomedy.com",
-        "events_url": "https://www.rozcoscomedy.com/events",
-        "image_selectors": [
-            ".event img",
-            ".sqs-block-image img",
-            "[class*='event'] img",
-        ],
-        "event_name_selector": ".event-title, h2, h3",
-        "event_date_selector": ".event-date, time",
+        "events_url": "https://rozcoscomedyclub.simpletix.com/",
+        "image_selectors": [],
+        "event_name_selector": "",
+        "event_date_selector": "",
     },
     "vulcan": {
         "name": "Vulcan Gas Company",

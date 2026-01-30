@@ -21,6 +21,7 @@ from typing import List, Dict, Optional, Tuple
 import shutil
 import json
 import traceback
+from PIL import Image, ImageDraw, ImageFilter
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -33,6 +34,9 @@ OUTPUT_DIR = PROJECT_ROOT / "instagram" / "daily_output"
 
 # Base URL for deployed images
 WEBSITE_BASE_URL = os.environ.get("WEBSITE_BASE_URL", "https://foe-website.vercel.app")
+
+# Instagram image dimensions (1:1 square)
+IG_SIZE = 1080
 
 # Venue display names (cleaned up for Instagram)
 VENUE_DISPLAY_NAMES = {
@@ -49,6 +53,22 @@ VENUE_DISPLAY_NAMES = {
     "gnar-bar": "Gnar Bar",
     "speakeasy": "Speakeasy",
     "pop-up": "Pop-Up Show",
+}
+
+# Venue Instagram handles (for tagging in captions)
+VENUE_INSTAGRAMS = {
+    "Creek and the Cave": "@creekandcave",
+    "Comedy Mothership": "@comedymothership",
+    "Cap City Comedy": "@capcitycomedy",
+    "The Velveeta Room": "@thevelveetaroom",
+    "Vulcan Gas Company": "@vulcanatx",
+    "Rozco's Comedy": "@rozcoscomedyclub",
+    "East Austin Comedy Club": "@eastaustincomedy",
+    "Paramount Theatre": "@paramountaustin",
+    "Sunset Strip Comedy": "@sunsetstripatx",
+    "Black Rabbit Comedy": "@blackrabbitatx",
+    "Gnar Bar": "@gnarbaratx",
+    "Speakeasy": "@speakeasyaustin",
 }
 
 # Free shows list (from regenerate_shows.py)
@@ -118,7 +138,8 @@ def get_todays_shows(target_date: datetime) -> List[Dict]:
             i.show_time,
             i.local_path,
             i.source_url,
-            v.name as venue_name
+            v.name as venue_name,
+            v.url as venue_url
         FROM images i
         JOIN venues v ON i.venue_id = v.id
         WHERE i.event_name IS NOT NULL
@@ -141,6 +162,7 @@ def get_todays_shows(target_date: datetime) -> List[Dict]:
                 'time': show['show_time'] or 'TBA',
                 'image_path': show['local_path'],
                 'venue': show['venue_name'],
+                'venue_url': show['venue_url'],
                 'source_url': show['source_url'],
                 'is_free': show['event_name'].lower().strip() in FREE_SHOWS,
             })
@@ -160,7 +182,7 @@ def get_todays_shows(target_date: datetime) -> List[Dict]:
     return todays_shows
 
 
-HASHTAGS = "#austincomedy #atxcomedy #comedyshows #standup #austintx #thingstodoinaustin #atxevents #livecomedy"
+HASHTAGS = "#austincomedy #atxcomedy #comedyshows #standup #austintx #thingstodoinaustin #atxevents #livecomedy #funnyovereverything"
 
 
 def generate_ai_caption(shows: List[Dict], target_date: datetime) -> Optional[str]:
@@ -203,8 +225,10 @@ Guidelines:
 - Keep it under 300 characters (before hashtags)
 - Be enthusiastic but not over-the-top
 - Mention the number of shows and highlight any free ones
-- Include a call to action pointing to funnyovereverything.com for full listings and tickets
+- Include a call to action pointing to https://foe-website.vercel.app/index.html for full listings and tickets
+- Use a different, original opening line every day — never start with the same phrase twice
 - Do NOT include hashtags (they will be added separately)
+- Do NOT include venue tags (they will be added separately)
 - Do NOT use emojis
 - Write ONLY the caption text, nothing else"""
 
@@ -260,8 +284,32 @@ def generate_template_caption(shows: List[Dict], target_date: datetime) -> str:
         caption += f" ({free_count} FREE!)"
     caption += "\n\n"
 
-    caption += "Full listings & tickets: funnyovereverything.com"
+    caption += "Full listings & tickets: https://foe-website.vercel.app/index.html"
     return caption
+
+
+def build_venue_section(shows: List[Dict]) -> str:
+    """
+    Build a venue tag section from the shows list.
+    Deduplicates venues while preserving show order.
+    Looks up Instagram handles from VENUE_INSTAGRAMS, falls back to venue website URL.
+    """
+    seen = set()
+    venue_lines = []
+    for show in shows:
+        venue = show['venue']
+        if venue in seen:
+            continue
+        seen.add(venue)
+        handle = VENUE_INSTAGRAMS.get(venue)
+        if handle:
+            venue_lines.append(handle)
+        else:
+            # Fall back to venue website URL
+            venue_lines.append(show.get('venue_url', venue))
+    if not venue_lines:
+        return ""
+    return "Tonight's venues:\n" + "\n".join(venue_lines)
 
 
 def generate_caption(shows: List[Dict], target_date: datetime) -> str:
@@ -275,12 +323,63 @@ def generate_caption(shows: List[Dict], target_date: datetime) -> str:
     # Try AI caption first
     ai_caption = generate_ai_caption(shows, target_date)
     if ai_caption:
-        return ai_caption + "\n\n" + HASHTAGS
+        caption_text = ai_caption
+    else:
+        # Fall back to template
+        print("  Using template caption.")
+        caption_text = generate_template_caption(shows, target_date)
 
-    # Fall back to template
-    print("  Using template caption.")
-    template = generate_template_caption(shows, target_date)
-    return template + "\n\n" + HASHTAGS
+    # Build venue section
+    venue_section = build_venue_section(shows)
+
+    parts = [caption_text]
+    if venue_section:
+        parts.append(venue_section)
+    parts.append(HASHTAGS)
+    return "\n\n".join(parts)
+
+
+def format_image_for_instagram(src_path: Path) -> Image.Image:
+    """
+    Format any image into a 1080x1080 square for Instagram.
+
+    The original image is scaled to fit within the square, then centered
+    on a blurred, zoomed version of itself that fills the background.
+    """
+    with Image.open(src_path) as img:
+        img = img.convert("RGB")
+        w, h = img.size
+
+        # Scale the original to fit within IG_SIZE x IG_SIZE
+        scale = min(IG_SIZE / w, IG_SIZE / h)
+        fg_w = round(w * scale)
+        fg_h = round(h * scale)
+        fg = img.resize((fg_w, fg_h), Image.LANCZOS)
+
+        # If the image already fills the square, just return resized
+        if fg_w == IG_SIZE and fg_h == IG_SIZE:
+            return fg
+
+        # Create blurred background: scale original to cover full square, then blur
+        cover_scale = max(IG_SIZE / w, IG_SIZE / h)
+        bg_w = round(w * cover_scale)
+        bg_h = round(h * cover_scale)
+        bg = img.resize((bg_w, bg_h), Image.LANCZOS)
+
+        # Center-crop the background to exact square
+        left = (bg_w - IG_SIZE) // 2
+        top = (bg_h - IG_SIZE) // 2
+        bg = bg.crop((left, top, left + IG_SIZE, top + IG_SIZE))
+
+        # Apply heavy blur
+        bg = bg.filter(ImageFilter.GaussianBlur(radius=40))
+
+        # Paste sharp foreground centered on blurred background
+        x_offset = (IG_SIZE - fg_w) // 2
+        y_offset = (IG_SIZE - fg_h) // 2
+        bg.paste(fg, (x_offset, y_offset))
+
+        return bg
 
 
 def copy_images_to_output(shows: List[Dict], output_dir: Path) -> Tuple[List[Path], List[str]]:
@@ -324,13 +423,17 @@ def copy_images_to_output(shows: List[Dict], output_dir: Path) -> Tuple[List[Pat
         dest_name = "".join(c for c in dest_name if c.isalnum() or c in '._-')
         dest_path = output_dir / dest_name
 
-        shutil.copy2(src_path, dest_path)
-        copied_images.append(dest_path)
+        # Format every image as 1080x1080 square with blurred background
+        formatted = format_image_for_instagram(src_path)
+        dest_path = dest_path.with_suffix(".jpg")
+        formatted.save(dest_path, "JPEG", quality=92)
+        # Also save alongside original in images/ so it deploys to Vercel
+        ig_path = src_path.parent / f"{src_path.stem}_ig.jpg"
+        formatted.save(ig_path, "JPEG", quality=92)
+        ig_web_path = ig_path.relative_to(PROJECT_ROOT).as_posix()
+        web_url = f"{WEBSITE_BASE_URL}/{ig_web_path}"
 
-        # Build web URL from original path (e.g., images/venue/hash.jpg)
-        # Convert backslashes to forward slashes for URL
-        web_path = show['image_path'].replace('\\', '/')
-        web_url = f"{WEBSITE_BASE_URL}/{web_path}"
+        copied_images.append(dest_path)
         image_urls.append(web_url)
 
         # Instagram carousel limit is 10

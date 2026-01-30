@@ -1,0 +1,68 @@
+name: Refresh Instagram Access Token
+
+# Runs every 50 days to refresh the 60-day Meta token before it expires
+on:
+  schedule:
+    - cron: '0 12 */50 * *'  # Roughly every 50 days at noon UTC
+  workflow_dispatch:  # Manual trigger for testing
+
+jobs:
+  refresh-token:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Refresh Meta access token
+        id: refresh
+        env:
+          META_APP_ID: ${{ secrets.META_APP_ID }}
+          META_APP_SECRET: ${{ secrets.META_APP_SECRET }}
+          CURRENT_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+        run: |
+          echo "Exchanging current token for a new long-lived token..."
+
+          RESPONSE=$(curl -s "https://graph.facebook.com/v18.0/oauth/access_token?grant_type=fb_exchange_token&client_id=${META_APP_ID}&client_secret=${META_APP_SECRET}&fb_exchange_token=${CURRENT_TOKEN}")
+
+          echo "Response received (token redacted)"
+
+          # Check for errors
+          ERROR=$(echo "$RESPONSE" | jq -r '.error.message // empty')
+          if [ -n "$ERROR" ]; then
+            echo "::error::Token refresh failed: $ERROR"
+            exit 1
+          fi
+
+          # Extract new token
+          NEW_TOKEN=$(echo "$RESPONSE" | jq -r '.access_token // empty')
+          if [ -z "$NEW_TOKEN" ]; then
+            echo "::error::No access_token in response"
+            exit 1
+          fi
+
+          EXPIRES_IN=$(echo "$RESPONSE" | jq -r '.expires_in // "unknown"')
+          echo "New token obtained. Expires in: ${EXPIRES_IN} seconds"
+
+          # Mask the token so it doesn't appear in logs
+          echo "::add-mask::${NEW_TOKEN}"
+          echo "new_token=${NEW_TOKEN}" >> "$GITHUB_OUTPUT"
+
+      - name: Update GitHub secret
+        env:
+          GH_TOKEN: ${{ secrets.GH_PAT }}
+        run: |
+          echo "${{ steps.refresh.outputs.new_token }}" | gh secret set INSTAGRAM_ACCESS_TOKEN --repo "${{ github.repository }}"
+          echo "✓ INSTAGRAM_ACCESS_TOKEN secret updated"
+
+      - name: Verify new token
+        env:
+          NEW_TOKEN: ${{ steps.refresh.outputs.new_token }}
+        run: |
+          RESPONSE=$(curl -s "https://graph.facebook.com/v18.0/me?fields=id,name&access_token=${NEW_TOKEN}")
+
+          ERROR=$(echo "$RESPONSE" | jq -r '.error.message // empty')
+          if [ -n "$ERROR" ]; then
+            echo "::error::Verification failed: $ERROR"
+            exit 1
+          fi
+
+          NAME=$(echo "$RESPONSE" | jq -r '.name')
+          echo "✓ Token verified for: ${NAME}"

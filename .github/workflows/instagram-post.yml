@@ -37,7 +37,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests
+          pip install requests anthropic
 
       - name: Determine target date
         id: date
@@ -49,6 +49,8 @@ jobs:
           fi
 
       - name: Generate Instagram content
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
           python -m instagram.generate_daily_post --date ${{ steps.date.outputs.target_date }}
 
@@ -64,24 +66,3 @@ jobs:
         if: ${{ inputs.dry_run }}
         run: |
           python -m instagram.post_to_instagram --date ${{ steps.date.outputs.target_date }} --dry-run
-
-      - name: Send notification on failure
-        if: failure()
-        uses: dawidd6/action-send-mail@v3
-        with:
-          server_address: smtp.gmail.com
-          server_port: 465
-          secure: true
-          username: ${{ secrets.EMAIL_USERNAME }}
-          password: ${{ secrets.EMAIL_PASSWORD }}
-          subject: "❌ Instagram Post Failed - ${{ steps.date.outputs.target_date }}"
-          to: foeatx@gmail.com
-          from: Funny Over Everything <${{ secrets.EMAIL_USERNAME }}>
-          body: |
-            The Instagram auto-post failed for ${{ steps.date.outputs.target_date }}.
-
-            Check the workflow run for details:
-            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
-            ---
-            This is an automated message from GitHub Actions.

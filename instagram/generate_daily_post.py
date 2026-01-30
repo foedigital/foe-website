@@ -20,6 +20,7 @@ from pathlib import Path
 from typing import List, Dict, Optional, Tuple
 import shutil
 import json
+import traceback
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -159,13 +160,76 @@ def get_todays_shows(target_date: datetime) -> List[Dict]:
     return todays_shows
 
 
-def generate_caption(shows: List[Dict], target_date: datetime) -> str:
-    """
-    Generate Instagram caption with all shows for the day.
-    """
-    date_str = target_date.strftime("%A, %B %d")  # "Tuesday, January 27"
+HASHTAGS = "#austincomedy #atxcomedy #comedyshows #standup #austintx #thingstodoinaustin #atxevents #livecomedy"
 
-    # Header
+
+def generate_ai_caption(shows: List[Dict], target_date: datetime) -> Optional[str]:
+    """
+    Generate an engaging Instagram caption using the Anthropic API.
+    Returns None if the API key is not set or the call fails.
+    """
+    api_key = os.environ.get("ANTHROPIC_API_KEY")
+    if not api_key:
+        print("  ANTHROPIC_API_KEY not set, skipping AI caption.")
+        return None
+
+    try:
+        import anthropic
+    except ImportError:
+        print("  anthropic package not installed, skipping AI caption.")
+        return None
+
+    date_str = target_date.strftime("%A, %B %d")
+    total_shows = len(shows)
+    free_count = sum(1 for s in shows if s['is_free'])
+
+    # Build show info for the prompt
+    show_lines = []
+    for s in shows:
+        free_tag = " (FREE)" if s['is_free'] else ""
+        show_lines.append(f"- {s['name']} at {s['venue']}, {s['time']}{free_tag}")
+    show_info = "\n".join(show_lines)
+
+    prompt = f"""Write a short, engaging Instagram caption for a daily comedy show listing in Austin, TX.
+
+Date: {date_str}
+Total shows: {total_shows}
+Free shows: {free_count}
+
+Shows:
+{show_info}
+
+Guidelines:
+- Keep it under 300 characters (before hashtags)
+- Be enthusiastic but not over-the-top
+- Mention the number of shows and highlight any free ones
+- Include a call to action pointing to funnyovereverything.com for full listings and tickets
+- Do NOT include hashtags (they will be added separately)
+- Do NOT use emojis
+- Write ONLY the caption text, nothing else"""
+
+    try:
+        client = anthropic.Anthropic(api_key=api_key)
+        message = client.messages.create(
+            model="claude-sonnet-4-20250514",
+            max_tokens=256,
+            messages=[{"role": "user", "content": prompt}],
+        )
+        caption_text = message.content[0].text.strip()
+        print(f"  AI caption generated ({len(caption_text)} chars)")
+        return caption_text
+    except Exception as e:
+        print(f"  AI caption failed: {e}")
+        traceback.print_exc()
+        return None
+
+
+def generate_template_caption(shows: List[Dict], target_date: datetime) -> str:
+    """
+    Generate a static template caption (fallback when AI is unavailable).
+    """
+    date_str = target_date.strftime("%A, %B %d")
+
     caption = f"Comedy in Austin - {date_str}\n"
     caption += "=" * 30 + "\n\n"
 
@@ -173,7 +237,6 @@ def generate_caption(shows: List[Dict], target_date: datetime) -> str:
         caption += "No shows found for today. Check back tomorrow!\n"
         return caption
 
-    # Group by venue
     by_venue = {}
     for show in shows:
         venue = show['venue']
@@ -181,7 +244,6 @@ def generate_caption(shows: List[Dict], target_date: datetime) -> str:
             by_venue[venue] = []
         by_venue[venue].append(show)
 
-    # Build show listings
     for venue, venue_shows in by_venue.items():
         caption += f"{venue}\n"
         for show in venue_shows:
@@ -190,7 +252,6 @@ def generate_caption(shows: List[Dict], target_date: datetime) -> str:
             caption += f"  {time_str} - {show['name']}{free_tag}\n"
         caption += "\n"
 
-    # Footer
     total_shows = len(shows)
     free_count = sum(1 for s in shows if s['is_free'])
 
@@ -199,10 +260,27 @@ def generate_caption(shows: List[Dict], target_date: datetime) -> str:
         caption += f" ({free_count} FREE!)"
     caption += "\n\n"
 
-    caption += "Full listings & tickets: funnyovereverything.com\n\n"
-    caption += "#austincomedy #atxcomedy #comedyshows #standup #austintx #thingstodoinaustin #atxevents #livecomedy"
-
+    caption += "Full listings & tickets: funnyovereverything.com"
     return caption
+
+
+def generate_caption(shows: List[Dict], target_date: datetime) -> str:
+    """
+    Generate Instagram caption with all shows for the day.
+    Tries AI generation first, falls back to static template.
+    """
+    if not shows:
+        return "No shows found for today. Check back tomorrow!\n\n" + HASHTAGS
+
+    # Try AI caption first
+    ai_caption = generate_ai_caption(shows, target_date)
+    if ai_caption:
+        return ai_caption + "\n\n" + HASHTAGS
+
+    # Fall back to template
+    print("  Using template caption.")
+    template = generate_template_caption(shows, target_date)
+    return template + "\n\n" + HASHTAGS
 
 
 def copy_images_to_output(shows: List[Dict], output_dir: Path) -> Tuple[List[Path], List[str]]:
@@ -228,7 +306,8 @@ def copy_images_to_output(shows: List[Dict], output_dir: Path) -> Tuple[List[Pat
         if not show['image_path']:
             continue
 
-        src_path = PROJECT_ROOT / show['image_path']
+        # Normalize path separators for cross-platform (DB may store Windows backslashes)
+        src_path = PROJECT_ROOT / Path(show['image_path'].replace('\\', '/'))
         if not src_path.exists():
             print(f"  Warning: Image not found: {src_path}")
             continue

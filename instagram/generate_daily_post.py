@@ -32,7 +32,7 @@ IMAGES_DIR = PROJECT_ROOT / "images"
 OUTPUT_DIR = PROJECT_ROOT / "instagram" / "daily_output"
 
 # Base URL for deployed images
-WEBSITE_BASE_URL = "https://funnyovereverything.com"
+WEBSITE_BASE_URL = os.environ.get("WEBSITE_BASE_URL", "https://foe-website.vercel.app")
 
 # Venue display names (cleaned up for Instagram)
 VENUE_DISPLAY_NAMES = {

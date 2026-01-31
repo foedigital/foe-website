@@ -356,6 +356,10 @@ def format_image_for_instagram(src_path: Path) -> Image.Image:
         fg_h = round(h * scale)
         fg = img.resize((fg_w, fg_h), Image.LANCZOS)
 
+        # Sharpen if the image was upscaled (avoids soft/grainy look)
+        if scale > 1.0:
+            fg = fg.filter(ImageFilter.UnsharpMask(radius=2, percent=100, threshold=3))
+
         # If the image already fills the square, just return resized
         if fg_w == IG_SIZE and fg_h == IG_SIZE:
             return fg

@@ -86,10 +86,23 @@ class SunsetStripScraper(BaseScraper):
     # SquadUP API endpoint for Sunset Strip events
     SQUADUP_API_URL = "https://www.squadup.com/api/v3/events?user_ids=9086799&page_size=800&additional_attr=sold_out&include=custom_fields"
 
+    @staticmethod
+    def _upscale_filepicker_url(url: str, width: int = 1080) -> str:
+        """
+        Transform a Filepicker CDN URL to request a larger image via their
+        server-side convert endpoint.  SquadUP only stores 600px originals;
+        this lets Filestack upscale to 1080px *before* JPEG compression,
+        avoiding a decode→upscale→re-encode quality loss in our pipeline.
+        """
+        if not url or 'cdn.filepicker.io/api/file/' not in url:
+            return url
+        # Append /convert?w=1080 to the handle URL
+        return f"{url.rstrip('/')}/convert?w={width}"
+
     async def _fetch_api_image_map(self, page: Page) -> Dict[str, str]:
         """
         Fetch the SquadUP API via the page context to build a mapping of
-        event name -> default image URL (the full evergreen poster).
+        event name -> image URL (upscaled to 1080px via Filestack CDN).
         """
         image_map = {}
         try:
@@ -102,10 +115,10 @@ class SunsetStripScraper(BaseScraper):
             for evt in events:
                 name = evt.get('name', '')
                 image = evt.get('image') or {}
-                default_url = image.get('default_url', '')
-                if name and default_url:
-                    image_map[name] = default_url
-            print(f"    SquadUP API: found {len(image_map)} event posters")
+                img_url = image.get('default_url', '')
+                if name and img_url:
+                    image_map[name] = self._upscale_filepicker_url(img_url)
+            print(f"    SquadUP API: found {len(image_map)} event posters (1080px upscale)")
         except Exception as e:
             print(f"    SquadUP API failed, falling back to HTML scraping: {e}")
         return image_map

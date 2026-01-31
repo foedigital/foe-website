@@ -55,6 +55,23 @@ jobs:
         run: |
           python -m instagram.generate_daily_post --date ${{ steps.date.outputs.target_date }}
 
+      - name: Commit and push new _ig.jpg files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add images/**/*_ig.jpg
+          if git diff --cached --quiet; then
+            echo "No new _ig.jpg files to commit"
+          else
+            git commit -m "Auto-generate show images - $(date +'%Y-%m-%d')"
+            git push
+          fi
+
+      - name: Wait for Vercel deployment
+        run: |
+          echo "Waiting 60s for Vercel to deploy new images..."
+          sleep 60
+
       - name: Post to Instagram
         if: ${{ !inputs.dry_run }}
         env:

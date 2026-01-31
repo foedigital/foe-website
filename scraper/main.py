@@ -21,9 +21,8 @@ from .database import (
     get_or_create_venue,
     update_venue_last_scraped,
     image_exists,
-    get_stored_image_url,
+    get_stored_image_hash,
     update_image,
-    backfill_image_url,
     hash_exists,
     add_image,
     start_sync_log,
@@ -78,26 +77,27 @@ async def scrape_venue(venue_key: str, browser) -> dict:
 
                 # Check if this source_url already exists in the DB
                 if image_exists(stored_url):
-                    stored_image_url = get_stored_image_url(stored_url)
+                    if not url or not url.strip():
+                        continue
 
-                    if stored_image_url is None:
-                        # First run after migration — backfill the URL, skip
-                        backfill_image_url(stored_url, url)
+                    # Re-download and compare content hash to detect stale flyers
+                    # (venues can update the image at the same CDN URL)
+                    result = await download_and_save(url, config["name"], session)
+                    if result is None:
                         continue
-                    elif stored_image_url == url:
-                        # CDN URL unchanged — skip
+
+                    new_local_path, new_hash = result
+                    stored_hash = get_stored_image_hash(stored_url)
+
+                    if stored_hash and new_hash == stored_hash:
+                        # Content unchanged — skip
                         continue
-                    else:
-                        # CDN URL changed — re-download the new flyer
-                        if url and url.strip():
-                            result = await download_and_save(url, config["name"], session)
-                            if result is None:
-                                continue
-                            local_path, image_hash = result
-                            update_image(stored_url, local_path, image_hash, url)
-                            images_updated += 1
-                            print(f"  ~ Updated flyer: {event_name or url[:50]}")
-                        continue
+
+                    # Content changed — update DB with new image
+                    update_image(stored_url, new_local_path, new_hash, url)
+                    images_updated += 1
+                    print(f"  ~ Updated flyer: {event_name or url[:50]}")
+                    continue
 
                 # New source_url — handle events with images
                 if url and url.strip():

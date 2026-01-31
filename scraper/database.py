@@ -159,6 +159,18 @@ def get_stored_image_url(source_url: str) -> Optional[str]:
     return row["image_url"]
 
 
+def get_stored_image_hash(source_url: str) -> Optional[str]:
+    """Return the stored image_hash for a source_url, or None if not found."""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT image_hash FROM images WHERE source_url = ?", (source_url,))
+    row = cursor.fetchone()
+    conn.close()
+    if row is None:
+        return None
+    return row["image_hash"]
+
+
 def update_image(source_url: str, local_path: str, image_hash: str, image_url: str):
     """Update an existing image record when the flyer has changed."""
     conn = get_connection()

@@ -1,10 +1,10 @@
 name: Weekly Venue Spotlight to Instagram
 
-# Runs every Thursday at 2pm CST (8pm UTC)
+# Runs every Tuesday at 2pm CST (8pm UTC)
 # Posts a venue spotlight with weekend show listings
 on:
   schedule:
-    - cron: '0 20 * * 4'  # 8pm UTC = 2pm CST, Thursdays
+    - cron: '0 20 * * 2'  # 8pm UTC = 2pm CST, Tuesdays
   workflow_dispatch:
     inputs:
       venue:

@@ -38,6 +38,11 @@ WEBSITE_BASE_URL = os.environ.get("WEBSITE_BASE_URL", "https://foe-website.verce
 # Instagram image dimensions (1:1 square)
 IG_SIZE = 1080
 
+# Venue logo overlays — keyed by venue display name
+VENUE_LOGOS = {
+    "Cap City Comedy": PROJECT_ROOT / "images" / "venue_spotlight" / "cap_city.jpg",
+}
+
 # Venue display names (cleaned up for Instagram)
 VENUE_DISPLAY_NAMES = {
     "creek-and-the-cave": "Creek and the Cave",
@@ -178,6 +183,13 @@ def get_todays_shows(target_date: datetime) -> List[Dict]:
             return (24, 0)
 
     todays_shows.sort(key=lambda x: parse_time(x['time']))
+
+    # On Sundays, pin Banana Phone as the first image
+    if target_date.weekday() == 6:  # Sunday
+        for i, show in enumerate(todays_shows):
+            if 'banana phone' in show['name'].lower():
+                todays_shows.insert(0, todays_shows.pop(i))
+                break
 
     return todays_shows
 
@@ -386,6 +398,26 @@ def format_image_for_instagram(src_path: Path) -> Image.Image:
         return bg
 
 
+def add_venue_logo(img: Image.Image, logo_path: Path) -> Image.Image:
+    """
+    Overlay a venue logo banner at the bottom of a formatted Instagram image.
+    The logo is scaled to full width and placed at the bottom edge.
+    """
+    with Image.open(logo_path) as logo:
+        logo = logo.convert("RGB")
+        logo_w, logo_h = logo.size
+
+        # Scale logo to full image width
+        scale = IG_SIZE / logo_w
+        new_h = round(logo_h * scale)
+        logo = logo.resize((IG_SIZE, new_h), Image.LANCZOS)
+
+        # Paste at the bottom
+        img = img.copy()
+        img.paste(logo, (0, IG_SIZE - new_h))
+        return img
+
+
 def copy_images_to_output(shows: List[Dict], output_dir: Path) -> Tuple[List[Path], List[str]]:
     """
     Copy show images to output directory, renamed for easy ordering.
@@ -429,6 +461,12 @@ def copy_images_to_output(shows: List[Dict], output_dir: Path) -> Tuple[List[Pat
 
         # Format every image as 1080x1080 square with blurred background
         formatted = format_image_for_instagram(src_path)
+
+        # Overlay venue logo if one exists for this venue
+        logo_path = VENUE_LOGOS.get(show['venue'])
+        if logo_path and logo_path.exists():
+            formatted = add_venue_logo(formatted, logo_path)
+
         dest_path = dest_path.with_suffix(".jpg")
         formatted.save(dest_path, "JPEG", quality=92)
         # Also save alongside original in images/ so it deploys to Vercel

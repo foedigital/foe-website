@@ -21,6 +21,9 @@ from .database import (
     get_or_create_venue,
     update_venue_last_scraped,
     image_exists,
+    get_stored_image_url,
+    update_image,
+    backfill_image_url,
     hash_exists,
     add_image,
     start_sync_log,
@@ -60,6 +63,8 @@ async def scrape_venue(venue_key: str, browser) -> dict:
         images_found = len(images)
         print(f"  Found {images_found} images")
 
+        images_updated = 0
+
         async with aiohttp.ClientSession() as session:
             for img in images:
                 url = img["url"]
@@ -71,11 +76,30 @@ async def scrape_venue(venue_key: str, browser) -> dict:
                 # Use ticket_url as source_url for uniqueness
                 stored_url = ticket_url or url
 
-                # Skip if this exact source_url already exists
+                # Check if this source_url already exists in the DB
                 if image_exists(stored_url):
-                    continue
+                    stored_image_url = get_stored_image_url(stored_url)
 
-                # Handle events with images
+                    if stored_image_url is None:
+                        # First run after migration — backfill the URL, skip
+                        backfill_image_url(stored_url, url)
+                        continue
+                    elif stored_image_url == url:
+                        # CDN URL unchanged — skip
+                        continue
+                    else:
+                        # CDN URL changed — re-download the new flyer
+                        if url and url.strip():
+                            result = await download_and_save(url, config["name"], session)
+                            if result is None:
+                                continue
+                            local_path, image_hash = result
+                            update_image(stored_url, local_path, image_hash, url)
+                            images_updated += 1
+                            print(f"  ~ Updated flyer: {event_name or url[:50]}")
+                        continue
+
+                # New source_url — handle events with images
                 if url and url.strip():
                     result = await download_and_save(url, config["name"], session)
                     if result is None:
@@ -110,6 +134,7 @@ async def scrape_venue(venue_key: str, browser) -> dict:
                     event_name=event_name,
                     event_date=event_date,
                     show_time=show_time,
+                    image_url=url,
                 )
                 images_new += 1
                 if local_path:
@@ -127,13 +152,17 @@ async def scrape_venue(venue_key: str, browser) -> dict:
         print(f"  Error: {error_message}")
 
     complete_sync_log(log_id, images_found, images_new, status, error_message)
-    print(f"  Done: {images_new} new images saved")
+    parts = [f"{images_new} new"]
+    if images_updated:
+        parts.append(f"{images_updated} updated")
+    print(f"  Done: {', '.join(parts)} images saved")
 
     return {
         "venue": config["name"],
         "status": status,
         "images_found": images_found,
         "images_new": images_new,
+        "images_updated": images_updated,
         "error": error_message,
     }
 
@@ -240,14 +269,22 @@ async def main():
 
     total_found = 0
     total_new = 0
+    total_updated = 0
     for r in results:
         total_found += r.get("images_found", 0)
         total_new += r.get("images_new", 0)
+        total_updated += r.get("images_updated", 0)
         status_icon = "[OK]" if r["status"] == "success" else "[FAIL]"
-        print(f"{status_icon} {r['venue']}: {r.get('images_new', 0)} new images")
+        parts = [f"{r.get('images_new', 0)} new"]
+        if r.get("images_updated", 0):
+            parts.append(f"{r['images_updated']} updated")
+        print(f"{status_icon} {r['venue']}: {', '.join(parts)} images")
 
     print("-" * 50)
-    print(f"Total: {total_found} found, {total_new} new images saved")
+    summary = f"Total: {total_found} found, {total_new} new"
+    if total_updated:
+        summary += f", {total_updated} updated"
+    print(summary)
 
 
 if __name__ == "__main__":

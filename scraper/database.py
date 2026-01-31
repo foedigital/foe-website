@@ -35,10 +35,17 @@ def init_db():
             event_name TEXT,
             event_date TEXT,
             image_hash TEXT NOT NULL,
+            image_url TEXT,
             scraped_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (venue_id) REFERENCES venues(id)
         )
     """)
+
+    # Migration: add image_url column to existing databases
+    cursor.execute("PRAGMA table_info(images)")
+    columns = [row["name"] for row in cursor.fetchall()]
+    if "image_url" not in columns:
+        cursor.execute("ALTER TABLE images ADD COLUMN image_url TEXT")
 
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS sync_log (
@@ -122,21 +129,60 @@ def add_image(
     image_hash: str,
     event_name: Optional[str] = None,
     event_date: Optional[str] = None,
-    show_time: Optional[str] = None
+    show_time: Optional[str] = None,
+    image_url: Optional[str] = None,
 ) -> int:
     """Add a new image record to the database."""
     conn = get_connection()
     cursor = conn.cursor()
     cursor.execute(
         """INSERT INTO images
-           (venue_id, source_url, local_path, image_hash, event_name, event_date, show_time)
-           VALUES (?, ?, ?, ?, ?, ?, ?)""",
-        (venue_id, source_url, local_path, image_hash, event_name, event_date, show_time)
+           (venue_id, source_url, local_path, image_hash, event_name, event_date, show_time, image_url)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
+        (venue_id, source_url, local_path, image_hash, event_name, event_date, show_time, image_url)
     )
     image_id = cursor.lastrowid
     conn.commit()
     conn.close()
     return image_id
+
+
+def get_stored_image_url(source_url: str) -> Optional[str]:
+    """Return the stored CDN image_url for a source_url, or None if not found."""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT image_url FROM images WHERE source_url = ?", (source_url,))
+    row = cursor.fetchone()
+    conn.close()
+    if row is None:
+        return None
+    return row["image_url"]
+
+
+def update_image(source_url: str, local_path: str, image_hash: str, image_url: str):
+    """Update an existing image record when the flyer has changed."""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        """UPDATE images
+           SET local_path = ?, image_hash = ?, image_url = ?, scraped_at = CURRENT_TIMESTAMP
+           WHERE source_url = ?""",
+        (local_path, image_hash, image_url, source_url)
+    )
+    conn.commit()
+    conn.close()
+
+
+def backfill_image_url(source_url: str, image_url: str):
+    """Set image_url on a legacy row that has NULL."""
+    conn = get_connection()
+    cursor = conn.cursor()
+    cursor.execute(
+        "UPDATE images SET image_url = ? WHERE source_url = ?",
+        (image_url, source_url)
+    )
+    conn.commit()
+    conn.close()
 
 
 def start_sync_log(venue_id: int) -> int:

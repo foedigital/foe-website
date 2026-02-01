@@ -76,14 +76,15 @@ VENUE_INSTAGRAMS = {
     "Speakeasy": "@speakeasyaustin",
 }
 
-# Free shows list (from regenerate_shows.py)
+# Free shows list (synced with regenerate_shows.py)
 FREE_SHOWS = {
     'the monday gamble mic', 'dunk tank', 'hood therapy tuesdays', 'hood therapy',
     'open mic night', 'open mic', 'crowd control', 'wild west wednesdays',
     'bear arms: open mic', 'bear arms', 'word up! open mic', 'word up',
     'new joke saturday open mic', 'new joke saturday', 'off the cuff',
     'sunday service', 'the thursday special', 'stand up comedy show',
-    'eastside open mic',
+    'eastside open mic', 'banana phone',
+    'the creek and the cave open mic',
 }
 
 
@@ -237,7 +238,8 @@ Guidelines:
 - Keep it under 300 characters (before hashtags)
 - Be enthusiastic but not over-the-top
 - Mention the number of shows and highlight any free ones
-- Include a call to action pointing to https://foe-website.vercel.app/index.html for full listings and tickets
+- Include a call to action pointing to https://foe-website.vercel.app/index.html for full show listings, times, and dates
+- We are a show listing resource, NOT a ticket seller — never say "buy tickets here" or similar
 - Use a different, original opening line every day — never start with the same phrase twice
 - Do NOT include hashtags (they will be added separately)
 - Do NOT include venue tags (they will be added separately)
@@ -296,7 +298,7 @@ def generate_template_caption(shows: List[Dict], target_date: datetime) -> str:
         caption += f" ({free_count} FREE!)"
     caption += "\n\n"
 
-    caption += "Full listings & tickets: https://foe-website.vercel.app/index.html"
+    caption += "Full show listings: https://foe-website.vercel.app/index.html"
     return caption
 
 

@@ -278,7 +278,7 @@ def generate_spotlight_caption(venue: Dict, shows_by_day: Dict[str, List[Dict]])
     parts = [
         ai_intro,
         show_listing,
-        f"Full listings & tickets: https://foe-website.vercel.app/index.html",
+        f"Full show listings: https://foe-website.vercel.app/index.html",
         venue["instagram"],
         HASHTAGS,
     ]

@@ -115,12 +115,14 @@ class InstagramPoster:
         })
         return result.get('status_code', 'UNKNOWN'), result.get('status')
 
-    def wait_for_container(self, container_id: str, timeout: int = 60) -> bool:
+    def wait_for_container(self, container_id: str, timeout: int = 180) -> bool:
         """
         Wait for a container to be ready for publishing.
         Returns True if ready, False if error/timeout.
+        Uses exponential backoff: 2s, 4s, 8s, ... capped at 15s.
         """
         start_time = time.time()
+        delay = 2
         while time.time() - start_time < timeout:
             status, message = self.check_container_status(container_id)
 
@@ -133,9 +135,10 @@ class InstagramPoster:
                 print(f"  Container expired")
                 return False
 
-            time.sleep(2)
+            time.sleep(delay)
+            delay = min(delay * 2, 15)
 
-        print(f"  Timeout waiting for container")
+        print(f"  Timeout waiting for container after {timeout}s")
         return False
 
     def publish_container(self, container_id: str) -> str:

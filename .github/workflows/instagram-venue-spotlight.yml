@@ -41,7 +41,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests anthropic pillow
+          pip install -r requirements.txt
 
       - name: Determine parameters
         id: params
@@ -77,13 +77,36 @@ jobs:
             echo "No new _ig.jpg files to commit"
           else
             git commit -m "Auto-generate venue spotlight image - $(date +'%Y-%m-%d')"
-            git push
+            for attempt in 1 2 3; do
+              git push && break
+              echo "Push failed (attempt $attempt/3), pulling and retrying..."
+              git pull --rebase
+            done
           fi
 
       - name: Wait for Vercel deployment
         run: |
-          echo "Waiting 60s for Vercel to deploy new images..."
-          sleep 60
+          # Venue spotlight uses a single image — poll until it's live
+          SPOTLIGHT_DIR="instagram/venue_spotlight_output/${{ steps.params.outputs.target_date }}"
+          if [ -f "$SPOTLIGHT_DIR/summary.json" ]; then
+            PROBE_URL=$(python3 -c "import json; d=json.load(open('$SPOTLIGHT_DIR/summary.json')); print(d.get('image_url',''))")
+          fi
+
+          if [ -z "$PROBE_URL" ]; then
+            echo "No image URL to probe, falling back to 60s sleep"
+            sleep 60
+          else
+            echo "Waiting for Vercel to serve: $PROBE_URL"
+            for i in $(seq 1 12); do
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$PROBE_URL")
+              if [ "$STATUS" = "200" ]; then
+                echo "Image live after ~$((i * 10))s"
+                break
+              fi
+              echo "  Attempt $i/12: HTTP $STATUS, retrying in 10s..."
+              sleep 10
+            done
+          fi
 
       - name: Post to Instagram
         if: ${{ !inputs.dry_run }}

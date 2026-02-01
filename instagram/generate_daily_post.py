@@ -238,8 +238,8 @@ Guidelines:
 - Keep it under 300 characters (before hashtags)
 - Be enthusiastic but not over-the-top
 - Mention the number of shows and highlight any free ones
-- Include a call to action pointing to https://foe-website.vercel.app/index.html for full show listings, times, and dates
-- We are a show listing resource, NOT a ticket seller — never say "buy tickets here" or similar
+- End with a call to action saying "Link in bio" to direct people to full show listings
+- We are a show listing resource, NOT a ticket seller — never say "buy tickets" or include URLs
 - Use a different, original opening line every day — never start with the same phrase twice
 - Do NOT include hashtags (they will be added separately)
 - Do NOT include venue tags (they will be added separately)
@@ -298,7 +298,7 @@ def generate_template_caption(shows: List[Dict], target_date: datetime) -> str:
         caption += f" ({free_count} FREE!)"
     caption += "\n\n"
 
-    caption += "Full show listings: https://foe-website.vercel.app/index.html"
+    caption += "Full show listings -- link in bio"
     return caption
 
 

@@ -51,20 +51,33 @@ class InstagramPoster:
         self.account_id = account_id
         self.api_base = GRAPH_API_BASE
 
-    def _make_request(self, method: str, endpoint: str, **kwargs) -> Dict:
-        """Make a request to the Graph API."""
+    def _make_request(self, method: str, endpoint: str, retries: int = 3, **kwargs) -> Dict:
+        """Make a request to the Graph API with retry on transient errors."""
         url = f"{self.api_base}/{endpoint}"
         params = kwargs.get('params', {})
         params['access_token'] = self.access_token
         kwargs['params'] = params
 
-        response = requests.request(method, url, **kwargs)
+        last_error = None
+        for attempt in range(1, retries + 1):
+            response = requests.request(method, url, **kwargs)
 
-        if response.status_code != 200:
+            if response.status_code == 200:
+                return response.json()
+
             error_data = response.json() if response.text else {}
-            raise Exception(f"API Error {response.status_code}: {error_data}")
 
-        return response.json()
+            # Don't retry client errors (4xx) except rate limits (429)
+            if 400 <= response.status_code < 500 and response.status_code != 429:
+                raise Exception(f"API Error {response.status_code}: {error_data}")
+
+            last_error = f"API Error {response.status_code}: {error_data}"
+            if attempt < retries:
+                delay = 5 * attempt
+                print(f"  Retryable error (attempt {attempt}/{retries}), waiting {delay}s: {last_error}")
+                time.sleep(delay)
+
+        raise Exception(last_error)
 
     def get_account_info(self) -> Dict:
         """Get Instagram account information."""
@@ -165,31 +178,51 @@ class InstagramPoster:
         return media_id
 
     def post_carousel(self, image_urls: List[str], caption: str) -> str:
-        """Post a carousel with multiple images."""
-        if len(image_urls) < 2:
-            raise ValueError("Carousel requires at least 2 images")
+        """Post a carousel with multiple images. Skips individual images that fail."""
         if len(image_urls) > 10:
             print(f"Warning: Limiting to 10 images (had {len(image_urls)})")
             image_urls = image_urls[:10]
 
-        # Create containers for each image
+        # Create containers for each image, skipping failures
         print(f"Creating {len(image_urls)} media containers...")
         children_ids = []
         for i, url in enumerate(image_urls):
             print(f"  Image {i+1}/{len(image_urls)}: {url[:50]}...")
-            container_id = self.create_media_container(url, is_carousel_item=True)
-            children_ids.append(container_id)
+            try:
+                container_id = self.create_media_container(url, is_carousel_item=True)
+                children_ids.append(container_id)
+            except Exception as e:
+                print(f"  WARNING: Failed to create container for image {i+1}, skipping: {e}")
             time.sleep(1)  # Rate limiting
 
-        # Wait for all containers to be ready
-        print(f"Waiting for processing...")
+        if len(children_ids) < 2:
+            if len(children_ids) == 1:
+                # Fall back to single image post
+                print("Only 1 image succeeded, falling back to single image post...")
+                return self.post_single_image(image_urls[0], caption)
+            raise Exception(f"Not enough images succeeded ({len(children_ids)}/{len(image_urls)})")
+
+        # Wait for all containers to be ready, dropping failures
+        print(f"Waiting for processing of {len(children_ids)} containers...")
+        ready_ids = []
         for i, container_id in enumerate(children_ids):
-            if not self.wait_for_container(container_id):
-                raise Exception(f"Failed to process image {i+1}")
+            if self.wait_for_container(container_id):
+                ready_ids.append(container_id)
+            else:
+                print(f"  WARNING: Container {i+1} failed processing, skipping")
+
+        if len(ready_ids) < 2:
+            if len(ready_ids) == 1:
+                print("Only 1 image processed, falling back to single image post...")
+                return self.post_single_image(image_urls[0], caption)
+            raise Exception("No images processed successfully")
+
+        if len(ready_ids) < len(children_ids):
+            print(f"  Proceeding with {len(ready_ids)}/{len(children_ids)} images")
 
         # Create carousel container
         print(f"Creating carousel...")
-        carousel_id = self.create_carousel_container(children_ids, caption)
+        carousel_id = self.create_carousel_container(ready_ids, caption)
 
         if not self.wait_for_container(carousel_id):
             raise Exception("Failed to create carousel")

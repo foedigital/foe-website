@@ -25,10 +25,22 @@ jobs:
   venue-spotlight:
     runs-on: ubuntu-latest
 
-    # Only run if Instagram credentials are configured
-    if: ${{ vars.INSTAGRAM_ENABLED == 'true' }}
-
     steps:
+      - name: Verify credentials are configured
+        run: |
+          MISSING=""
+          if [ -z "${{ secrets.INSTAGRAM_ACCESS_TOKEN }}" ]; then
+            MISSING="$MISSING INSTAGRAM_ACCESS_TOKEN"
+          fi
+          if [ -z "${{ secrets.INSTAGRAM_ACCOUNT_ID }}" ]; then
+            MISSING="$MISSING INSTAGRAM_ACCOUNT_ID"
+          fi
+          if [ -n "$MISSING" ]; then
+            echo "::error::Missing required secrets:$MISSING"
+            exit 1
+          fi
+          echo "All required secrets are configured."
+
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -97,13 +109,16 @@ jobs:
             sleep 60
           else
             echo "Waiting for Vercel to serve: $PROBE_URL"
-            for i in $(seq 1 12); do
+            for i in $(seq 1 20); do
               STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$PROBE_URL")
               if [ "$STATUS" = "200" ]; then
                 echo "Image live after ~$((i * 10))s"
                 break
               fi
-              echo "  Attempt $i/12: HTTP $STATUS, retrying in 10s..."
+              if [ "$i" = "20" ]; then
+                echo "::warning::Timed out waiting for Vercel (200s). Proceeding anyway."
+              fi
+              echo "  Attempt $i/20: HTTP $STATUS, retrying in 10s..."
               sleep 10
             done
           fi
@@ -126,3 +141,29 @@ jobs:
             --date ${{ steps.params.outputs.target_date }} \
             ${{ steps.params.outputs.venue_flag }} \
             --post-only --dry-run
+
+      - name: Send failure notification
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "FAILED: Venue spotlight post for ${{ steps.params.outputs.target_date || 'unknown date' }}"
+          to: foeatx@gmail.com
+          from: Funny Over Everything <${{ secrets.EMAIL_USERNAME }}>
+          body: |
+            The weekly venue spotlight workflow FAILED.
+
+            Date: ${{ steps.params.outputs.target_date || 'unknown' }}
+            Trigger: ${{ github.event_name }}
+
+            Check the workflow run for details:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            You can manually re-trigger from the Actions tab.
+
+            ---
+            This is an automated alert from GitHub Actions.

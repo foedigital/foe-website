@@ -66,3 +66,29 @@ jobs:
 
           NAME=$(echo "$RESPONSE" | jq -r '.name')
           echo "✓ Token verified for: ${NAME}"
+
+      - name: Send failure notification
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "URGENT: Instagram token refresh FAILED"
+          to: foeatx@gmail.com
+          from: Funny Over Everything <${{ secrets.EMAIL_USERNAME }}>
+          body: |
+            The Instagram access token refresh FAILED.
+
+            If this is not resolved, Instagram posting will stop when the
+            current token expires (within ~10 days).
+
+            Check the workflow run for details:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            You may need to manually generate a new token from the Meta Developer portal.
+
+            ---
+            This is an automated alert from GitHub Actions.

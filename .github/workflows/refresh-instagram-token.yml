@@ -1,9 +1,11 @@
 name: Refresh Instagram Access Token
 
-# Runs every 50 days to refresh the 60-day Meta token before it expires
+# Refreshes the 60-day Meta token on the 1st and 15th of each month (~every 15 days).
+# Even if several refreshes fail in a row, the 60-day token gives plenty of buffer.
 on:
   schedule:
-    - cron: '0 12 */50 * *'  # Roughly every 50 days at noon UTC
+    - cron: '22 12 1 * *'   # 1st of each month at 12:22 UTC
+    - cron: '22 12 15 * *'  # 15th of each month at 12:22 UTC
   workflow_dispatch:  # Manual trigger for testing
 
 jobs:

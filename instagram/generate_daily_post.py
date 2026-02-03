@@ -159,9 +159,13 @@ def get_todays_shows(target_date: datetime) -> List[Dict]:
     target_date_only = target_date.date()
     todays_shows = []
 
+    skipped_unparseable = 0
     for show in all_shows:
         parsed_date = parse_event_date(show['event_date'], target_date)
-        if parsed_date and parsed_date.date() == target_date_only:
+        if not parsed_date:
+            skipped_unparseable += 1
+            continue
+        if parsed_date.date() == target_date_only:
             todays_shows.append({
                 'name': show['event_name'],
                 'date': show['event_date'],
@@ -172,6 +176,9 @@ def get_todays_shows(target_date: datetime) -> List[Dict]:
                 'source_url': show['source_url'],
                 'is_free': show['event_name'].lower().strip() in FREE_SHOWS,
             })
+
+    if skipped_unparseable > 0:
+        print(f"  Warning: {skipped_unparseable} shows had unparseable dates and were skipped")
 
     # Sort by time
     def parse_time(t):
@@ -462,20 +469,24 @@ def copy_images_to_output(shows: List[Dict], output_dir: Path) -> Tuple[List[Pat
         dest_path = output_dir / dest_name
 
         # Format every image as 1080x1080 square with blurred background
-        formatted = format_image_for_instagram(src_path)
+        try:
+            formatted = format_image_for_instagram(src_path)
 
-        # Overlay venue logo if one exists for this venue
-        logo_path = VENUE_LOGOS.get(show['venue'])
-        if logo_path and logo_path.exists():
-            formatted = add_venue_logo(formatted, logo_path)
+            # Overlay venue logo if one exists for this venue
+            logo_path = VENUE_LOGOS.get(show['venue'])
+            if logo_path and logo_path.exists():
+                formatted = add_venue_logo(formatted, logo_path)
 
-        dest_path = dest_path.with_suffix(".jpg")
-        formatted.save(dest_path, "JPEG", quality=92)
-        # Also save alongside original in images/ so it deploys to Vercel
-        ig_path = src_path.parent / f"{src_path.stem}_ig.jpg"
-        formatted.save(ig_path, "JPEG", quality=92)
-        ig_web_path = ig_path.relative_to(PROJECT_ROOT).as_posix()
-        web_url = f"{WEBSITE_BASE_URL}/{ig_web_path}"
+            dest_path = dest_path.with_suffix(".jpg")
+            formatted.save(dest_path, "JPEG", quality=92)
+            # Also save alongside original in images/ so it deploys to Vercel
+            ig_path = src_path.parent / f"{src_path.stem}_ig.jpg"
+            formatted.save(ig_path, "JPEG", quality=92)
+            ig_web_path = ig_path.relative_to(PROJECT_ROOT).as_posix()
+            web_url = f"{WEBSITE_BASE_URL}/{ig_web_path}"
+        except Exception as e:
+            print(f"  Warning: Failed to process image for '{show['name']}': {e}")
+            continue
 
         copied_images.append(dest_path)
         image_urls.append(web_url)

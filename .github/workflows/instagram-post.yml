@@ -4,7 +4,7 @@ name: Post Daily Shows to Instagram
 # Can also be triggered manually
 on:
   schedule:
-    - cron: '0 16 * * *'  # 4pm UTC = 10am CST
+    - cron: '37 16 * * *'  # 4:37pm UTC = 10:37am CST (offset avoids GitHub Actions peak delays)
   workflow_dispatch:  # Manual trigger
     inputs:
       date:
@@ -31,14 +31,14 @@ jobs:
           if [ -z "${{ secrets.INSTAGRAM_ACCOUNT_ID }}" ]; then
             MISSING="$MISSING INSTAGRAM_ACCOUNT_ID"
           fi
-          if [ -z "${{ secrets.ANTHROPIC_API_KEY }}" ]; then
-            MISSING="$MISSING ANTHROPIC_API_KEY"
-          fi
           if [ -n "$MISSING" ]; then
             echo "::error::Missing required secrets:$MISSING"
             exit 1
           fi
           echo "All required secrets are configured."
+          if [ -z "${{ secrets.ANTHROPIC_API_KEY }}" ]; then
+            echo "::notice::ANTHROPIC_API_KEY not set -- captions will use template format"
+          fi
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -146,11 +146,22 @@ jobs:
           fi
 
       - name: Post to Instagram
+        id: post-attempt
         if: ${{ !inputs.dry_run }}
         env:
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
         run: |
+          python -m instagram.post_to_instagram --date ${{ steps.date.outputs.target_date }}
+
+      - name: Retry post to Instagram (if first attempt failed)
+        if: ${{ !inputs.dry_run && failure() && steps.post-attempt.outcome == 'failure' }}
+        env:
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
+        run: |
+          echo "First posting attempt failed. Waiting 30s before retry..."
+          sleep 30
           python -m instagram.post_to_instagram --date ${{ steps.date.outputs.target_date }}
 
       - name: Dry run (preview only)

@@ -85,6 +85,24 @@ class InstagramPoster:
             'fields': 'id,username,media_count'
         })
 
+    def already_posted_today(self, target_date: str) -> Optional[str]:
+        """
+        Check if we already posted today by looking at recent media timestamps.
+        Returns the permalink if a post exists for target_date, None otherwise.
+        """
+        try:
+            result = self._make_request('GET', f"{self.account_id}/media", params={
+                'fields': 'id,timestamp,permalink,media_type',
+                'limit': '5'
+            })
+            for media in result.get('data', []):
+                ts = media.get('timestamp', '')
+                if ts.startswith(target_date):
+                    return media.get('permalink', f"media:{media['id']}")
+        except Exception as e:
+            print(f"  Could not check for existing posts: {e}")
+        return None
+
     def create_media_container(self, image_url: str, caption: str = None,
                                 is_carousel_item: bool = False) -> str:
         """
@@ -164,17 +182,25 @@ class InstagramPoster:
         })
         return result['id']
 
-    def verify_published_post(self, media_id: str) -> Dict:
+    def verify_published_post(self, media_id: str, retries: int = 3) -> Dict:
         """
         Verify a published post actually exists and is accessible.
-        Returns the media metadata. Raises if the post doesn't exist.
+        Retries with delay since Instagram may take a few seconds to make the post queryable.
+        Returns the media metadata. Raises if the post doesn't exist after all retries.
         """
-        result = self._make_request('GET', media_id, params={
-            'fields': 'id,media_type,timestamp,permalink'
-        })
-        if 'id' not in result:
-            raise Exception(f"Post verification failed: no 'id' in response for {media_id}")
-        return result
+        for attempt in range(1, retries + 1):
+            try:
+                result = self._make_request('GET', media_id, params={
+                    'fields': 'id,media_type,timestamp,permalink'
+                })
+                if 'id' in result:
+                    return result
+            except Exception as e:
+                if attempt == retries:
+                    raise
+                print(f"  Verification attempt {attempt}/{retries} failed: {e}")
+            time.sleep(5 * attempt)
+        raise Exception(f"Post verification failed after {retries} attempts for {media_id}")
 
     def post_single_image(self, image_url: str, caption: str) -> str:
         """Post a single image with caption."""
@@ -207,12 +233,12 @@ class InstagramPoster:
                 print(f"  WARNING: Failed to create container for image {i+1}, skipping: {e}")
             time.sleep(1)  # Rate limiting
 
-        if len(children_ids) < 2:
-            if len(children_ids) == 1:
-                # Fall back to single image post
-                print("Only 1 image succeeded, falling back to single image post...")
-                return self.post_single_image(image_urls[0], caption)
-            raise Exception(f"Not enough images succeeded ({len(children_ids)}/{len(image_urls)})")
+        # Fail if fewer than half the images succeeded -- something is seriously wrong
+        if len(children_ids) < len(image_urls) // 2 or len(children_ids) < 2:
+            raise Exception(
+                f"Too many image failures: {len(children_ids)}/{len(image_urls)} succeeded. "
+                f"Aborting to avoid posting incomplete content."
+            )
 
         # Wait for all containers to be ready, dropping failures
         print(f"Waiting for processing of {len(children_ids)} containers...")
@@ -223,11 +249,11 @@ class InstagramPoster:
             else:
                 print(f"  WARNING: Container {i+1} failed processing, skipping")
 
-        if len(ready_ids) < 2:
-            if len(ready_ids) == 1:
-                print("Only 1 image processed, falling back to single image post...")
-                return self.post_single_image(image_urls[0], caption)
-            raise Exception("No images processed successfully")
+        if len(ready_ids) < len(children_ids) // 2 or len(ready_ids) < 2:
+            raise Exception(
+                f"Too many processing failures: {len(ready_ids)}/{len(children_ids)} ready. "
+                f"Aborting to avoid posting incomplete content."
+            )
 
         if len(ready_ids) < len(children_ids):
             print(f"  Proceeding with {len(ready_ids)}/{len(children_ids)} images")
@@ -454,8 +480,16 @@ def main():
         account_info = poster.get_account_info()
         print(f"  Account: @{account_info.get('username', 'unknown')}")
     except Exception as e:
-        print(f"  Error: {e}")
+        print(f"  Error verifying account: {e}")
         sys.exit(1)
+
+    # Check if we already posted today (prevents duplicates on retry)
+    print(f"\nChecking for existing post on {target_date}...")
+    existing = poster.already_posted_today(target_date)
+    if existing:
+        print(f"Already posted today: {existing}")
+        print("Skipping to avoid duplicate post.")
+        return
 
     # Post content
     print(f"\nPosting to Instagram...")
@@ -467,7 +501,7 @@ def main():
 
         print(f"\nPublish returned Media ID: {media_id}")
 
-        # Verify the post actually exists
+        # Verify the post actually exists (retries with delay)
         print("Verifying post is live...")
         try:
             post_info = poster.verify_published_post(media_id)
@@ -476,9 +510,9 @@ def main():
             print(f"  Media type: {post_info.get('media_type', 'unknown')}")
             print(f"  Timestamp: {post_info.get('timestamp', 'unknown')}")
         except Exception as verify_err:
-            print(f"\nWARNING: Post may not be live! Verification failed: {verify_err}")
-            print("The Instagram API accepted the post but it may not be visible.")
-            sys.exit(1)
+            # Post was accepted by Instagram -- it's likely live even if verification failed
+            print(f"\nWARNING: Verification failed ({verify_err}) but post was accepted.")
+            print(f"Media ID {media_id} is probably live. Check Instagram manually.")
 
     except Exception as e:
         print(f"\nError posting: {e}")

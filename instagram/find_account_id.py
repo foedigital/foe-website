@@ -25,7 +25,7 @@ import os
 import sys
 import requests
 
-GRAPH_API_BASE = "https://graph.facebook.com/v18.0"
+GRAPH_API_BASE = "https://graph.facebook.com/v22.0"
 
 
 def find_instagram_account_id(access_token: str) -> None:

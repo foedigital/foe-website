@@ -41,7 +41,7 @@ PROJECT_ROOT = Path(__file__).parent.parent
 OUTPUT_DIR = PROJECT_ROOT / "instagram" / "daily_output"
 
 # Instagram Graph API base URL
-GRAPH_API_BASE = "https://graph.facebook.com/v18.0"
+GRAPH_API_BASE = "https://graph.facebook.com/v22.0"
 
 class InstagramPoster:
     """Handles posting content to Instagram via Graph API."""
@@ -163,6 +163,18 @@ class InstagramPoster:
             'creation_id': container_id
         })
         return result['id']
+
+    def verify_published_post(self, media_id: str) -> Dict:
+        """
+        Verify a published post actually exists and is accessible.
+        Returns the media metadata. Raises if the post doesn't exist.
+        """
+        result = self._make_request('GET', media_id, params={
+            'fields': 'id,media_type,timestamp,permalink'
+        })
+        if 'id' not in result:
+            raise Exception(f"Post verification failed: no 'id' in response for {media_id}")
+        return result
 
     def post_single_image(self, image_url: str, caption: str) -> str:
         """Post a single image with caption."""
@@ -453,8 +465,20 @@ def main():
         else:
             media_id = poster.post_carousel(image_urls, caption)
 
-        print(f"\nSuccess! Media ID: {media_id}")
-        print(f"View at: https://www.instagram.com/p/{media_id}/")
+        print(f"\nPublish returned Media ID: {media_id}")
+
+        # Verify the post actually exists
+        print("Verifying post is live...")
+        try:
+            post_info = poster.verify_published_post(media_id)
+            permalink = post_info.get('permalink', 'N/A')
+            print(f"VERIFIED: Post is live at {permalink}")
+            print(f"  Media type: {post_info.get('media_type', 'unknown')}")
+            print(f"  Timestamp: {post_info.get('timestamp', 'unknown')}")
+        except Exception as verify_err:
+            print(f"\nWARNING: Post may not be live! Verification failed: {verify_err}")
+            print("The Instagram API accepted the post but it may not be visible.")
+            sys.exit(1)
 
     except Exception as e:
         print(f"\nError posting: {e}")

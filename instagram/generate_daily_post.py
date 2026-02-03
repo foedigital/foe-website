@@ -76,6 +76,92 @@ VENUE_INSTAGRAMS = {
     "Speakeasy": "@speakeasyaustin",
 }
 
+# Show / comedian Instagram handles (keyed by event_name, case-insensitive lookup)
+# Used to tag comedians and show accounts in captions for engagement.
+SHOW_INSTAGRAMS = {
+    # --- Creek and the Cave ---
+    "jay jurden":           ["@jayjurden"],
+    "adam mamawala":         ["@adammamawala"],
+    "pete lee":             ["@petelee"],
+    "david nihill":         ["@davidnihill"],
+    "rosebud baker":        ["@rosebudbaker"],
+    "beth stelling":        ["@bethstelling"],
+    "todd glass":           ["@toddglass"],
+    "michael che":          ["@chethinks"],
+    "joe list & friends":   ["@joelistcomedy"],
+    "andrew packer":        ["@andpacker"],
+    "santi espinosa - espanglish (english/spanish show)": ["@santiagocomedy"],
+    "standupatodos by hector sifuentes (en espanol)": ["@hectorsifuentesx"],
+    "are you garbage: back on the block tour": ["@areyougarbage"],
+    "absolute show":        ["@absoluteshowusa"],
+    "big naturals":         ["@big_naturals_comedy"],
+    "circus fire":          ["@circusfirecomedy"],
+    "the unteachables":     ["@unteachablescomedy"],
+    "litty titty thursdays": ["@littytittycomedy", "@alliwo"],
+    "king of the creek":    ["@dopamine.comedy", "@bestsamlopez", "@nicholairoscoe"],
+    "comedians on the rise": ["@joshfranciscomedy", "@mattrosscomic"],
+    "the butterly effect":  ["@timbutterly"],
+    "roast battle: austin": ["@roastbattleaustin"],
+    "judgment day":         ["@_jemischa", "@cgenivive"],
+    "algonauts":            ["@algonauts"],
+    "optimum noctis":       ["@optimum.noctis", "@lemairelee", "@shwangardini"],
+    "bodybrain coffee presents: the depraved": ["@gomezcomedy", "@bodybraincoffee"],
+    # --- Cap City Comedy ---
+    "eric eaton":           ["@themagicofericeaton"],
+    "kelsey cook":          ["@kelseycookcomedy"],
+    "peter antoniou":       ["@peterantoniou"],
+    "cap city presents: valentine's weekend with kurt braunohler": ["@kurtbraunohler"],
+    "fiona cauley":         ["@fionacauley"],
+    "the red room at cap city: spencer cavins": ["@spencercavins"],
+    "the red room at cap city: aidan mccluskey": ["@aidsman109"],
+    # --- Paramount Theatre ---
+    "akaash singh":         ["@akaashsingh"],
+    "andrew callaghan":     ["@andreww.me"],
+    "brad williams":        ["@bradwilliamscomic"],
+    "chris fleming":        ["@chrisflemingfleming"],
+    "cristela alonzo":      ["@cristela9"],
+    "gary gulman":          ["@garygulman"],
+    "james acaster":        ["@official_james_acaster"],
+    "jeff arcuri":          ["@jarcuri"],
+    "jessica kirson":       ["@jessykirson"],
+    "justin willman":       ["@justinwillman"],
+    "kathy griffin":        ["@kathygriffin"],
+    "leslie jones":         ["@lesdogggg"],
+    "marc maron":           ["@marcmaron"],
+    "mary beth barone":     ["@marybethbarone"],
+    "nimesh patel":         ["@findingnimesh"],
+    "nish kumar":           ["@mrnishkumar"],
+    "trevor wallace":       ["@trevorwallace"],
+    "vir das":              ["@virdas"],
+    "zachariah porter":     ["@zachariahporter"],
+    "stephen lynch":        ["@thestephenlynch"],
+    "rob anderson":         ["@heartthrobanderson"],
+    "ren\u00e9 vaca":       ["@renevacacomedy"],
+    # --- Vulcan Gas Company ---
+    "ben gleib - one night only": ["@bengleib"],
+    "chris d\u2019elia \"go for it! the tour\"": ["@chrisdelia"],
+    "crystal marie - the \"call me mommy\" tour": ["@iamcrystalmarie"],
+    "jerry wayne - live!":  ["@jerrywaynelive"],
+    "lara beitz live!":     ["@larabeitz"],
+    "marcus monroe live!":  ["@marcusjmonroe"],
+    "sam miller - live!":   ["@sammillercomedian"],
+    "ben bankas has no friends": ["@benbankas2"],
+    # --- Velveeta Room ---
+    "arielle isaac norman": ["@ellendegenderless"],
+    "mike macrae":          ["@heyitsmichaelmacrae"],
+    "symply courtney":      ["@iamsymplycourtney"],
+    # --- Rozco's ---
+    "dressed to kill":      ["@dressedtokillcomedy"],
+}
+
+
+def get_show_tags(event_name: str) -> list:
+    """Look up Instagram handles for a show/comedian by event name."""
+    if not event_name:
+        return []
+    return SHOW_INSTAGRAMS.get(event_name.lower().strip(), [])
+
+
 # Free shows list (synced with regenerate_shows.py)
 FREE_SHOWS = {
     'the monday gamble mic', 'dunk tank', 'hood therapy tuesdays', 'hood therapy',
@@ -106,23 +192,32 @@ def parse_event_date(date_str: str, target_date: datetime) -> Optional[datetime]
     date_str = date_str.strip()
     current_year = target_date.year
 
-    # Try various date formats
-    formats = [
-        "%A, %b %d",      # "Tuesday, Jan 27"
-        "%a, %b %d",      # "Tue, Jan 27"
+    # Formats that include a year (parse directly)
+    formats_with_year = [
+        "%A, %B %d, %Y",  # "Friday, February 13, 2026"
+        "%A, %b %d, %Y",  # "Friday, Feb 13, 2026"
         "%B %d, %Y",      # "January 27, 2026"
         "%b %d, %Y",      # "Jan 27, 2026"
-        "%b %d",          # "Jan 27"
-        "%B %d",          # "January 27"
     ]
 
-    for fmt in formats:
+    for fmt in formats_with_year:
         try:
-            parsed = datetime.strptime(date_str, fmt)
-            # If no year in format, use target year
-            if parsed.year == 1900:
-                parsed = parsed.replace(year=current_year)
-            return parsed
+            return datetime.strptime(date_str, fmt)
+        except ValueError:
+            continue
+
+    # Formats without a year — append target year before parsing
+    # to avoid Python 3.15 deprecation (yearless day-of-month parsing)
+    formats_no_year = [
+        ("%A, %b %d", "%A, %b %d, %Y"),    # "Tuesday, Jan 27" -> "Tuesday, Jan 27, 2026"
+        ("%a, %b %d", "%a, %b %d, %Y"),    # "Tue, Jan 27"     -> "Tue, Jan 27, 2026"
+        ("%b %d",     "%b %d, %Y"),         # "Jan 27"          -> "Jan 27, 2026"
+        ("%B %d",     "%B %d, %Y"),         # "January 27"      -> "January 27, 2026"
+    ]
+
+    for _, fmt_with_year in formats_no_year:
+        try:
+            return datetime.strptime(f"{date_str}, {current_year}", fmt_with_year)
         except ValueError:
             continue
 
@@ -549,9 +644,9 @@ def main():
     print(f"Found {len(shows)} shows")
 
     if not shows:
-        print("\nNo shows found for this date.")
-        print("Try a different date with --date YYYY-MM-DD")
-        return
+        print("\nERROR: No shows found for this date.")
+        print("The scraper may not have run or the database may be empty.")
+        sys.exit(1)
 
     # Generate caption
     print("\nGenerating caption...")

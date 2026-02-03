@@ -1,0 +1,184 @@
+name: Hot Show Alert to Instagram
+
+# Manual trigger only — no cron schedule
+on:
+  workflow_dispatch:
+    inputs:
+      venue:
+        description: 'Venue key (creek_cave, cap_city, sunset_strip, rozcos, velveeta)'
+        required: true
+        type: string
+      urls:
+        description: 'Comma-separated show URLs to feature'
+        required: true
+        type: string
+      date:
+        description: 'Reference date (YYYY-MM-DD), defaults to today'
+        required: false
+        type: string
+      direction:
+        description: 'Optional caption direction (e.g. "hype up the headliners")'
+        required: false
+        type: string
+      dry_run:
+        description: 'Dry run (no actual post)'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  hot-show-alert:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Verify credentials are configured
+        run: |
+          MISSING=""
+          if [ -z "${{ secrets.INSTAGRAM_ACCESS_TOKEN }}" ]; then
+            MISSING="$MISSING INSTAGRAM_ACCESS_TOKEN"
+          fi
+          if [ -z "${{ secrets.INSTAGRAM_ACCOUNT_ID }}" ]; then
+            MISSING="$MISSING INSTAGRAM_ACCOUNT_ID"
+          fi
+          if [ -n "$MISSING" ]; then
+            echo "::error::Missing required secrets:$MISSING"
+            exit 1
+          fi
+          echo "All required secrets are configured."
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Determine parameters
+        id: params
+        run: |
+          if [ -n "${{ inputs.date }}" ]; then
+            echo "target_date=${{ inputs.date }}" >> $GITHUB_OUTPUT
+          else
+            echo "target_date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate hot show alert content
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          WEBSITE_BASE_URL: "https://foe-website.vercel.app"
+        run: |
+          DIRECTION_FLAG=""
+          if [ -n "${{ inputs.direction }}" ]; then
+            DIRECTION_FLAG="--direction \"${{ inputs.direction }}\""
+          fi
+          python -m instagram.generate_hot_show_alert \
+            --venue ${{ inputs.venue }} \
+            --urls "${{ inputs.urls }}" \
+            --date ${{ steps.params.outputs.target_date }} \
+            $DIRECTION_FLAG \
+            --generate-only
+
+      - name: Commit and push new _ig.jpg files
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add images/**/*_ig.jpg
+          if git diff --cached --quiet; then
+            echo "No new _ig.jpg files to commit"
+          else
+            git commit -m "Auto-generate hot show alert images - $(date +'%Y-%m-%d')"
+            for attempt in 1 2 3; do
+              git push && break
+              echo "Push failed (attempt $attempt/3), pulling and retrying..."
+              git pull --rebase
+            done
+          fi
+
+      - name: Wait for Vercel deployment and verify images
+        run: |
+          ALERT_DIR="instagram/hot_show_alert_output/${{ steps.params.outputs.target_date }}"
+          if [ ! -f "$ALERT_DIR/summary.json" ]; then
+            echo "::error::summary.json not found -- generation likely failed"
+            exit 1
+          fi
+
+          # Grab the first image URL to probe
+          PROBE_URL=$(python3 -c "import json; d=json.load(open('$ALERT_DIR/summary.json')); print(d.get('image_urls',[''])[0])")
+
+          if [ -z "$PROBE_URL" ]; then
+            echo "::error::No image URLs in summary.json"
+            exit 1
+          fi
+
+          echo "Waiting for Vercel to serve: $PROBE_URL"
+          DEPLOY_READY=false
+          for i in $(seq 1 60); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$PROBE_URL")
+            if [ "$STATUS" = "200" ]; then
+              echo "Image live after ~$((i * 10))s"
+              DEPLOY_READY=true
+              break
+            fi
+            echo "  Attempt $i/60: HTTP $STATUS, retrying in 10s..."
+            sleep 10
+          done
+
+          if [ "$DEPLOY_READY" = "false" ]; then
+            echo "::error::Timed out waiting for Vercel after 600s. Image is not reachable -- aborting."
+            exit 1
+          fi
+
+      - name: Post to Instagram
+        if: ${{ !inputs.dry_run }}
+        env:
+          INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+          INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
+        run: |
+          python -m instagram.generate_hot_show_alert \
+            --venue ${{ inputs.venue }} \
+            --urls "${{ inputs.urls }}" \
+            --date ${{ steps.params.outputs.target_date }} \
+            --post-only
+
+      - name: Dry run (preview only)
+        if: ${{ inputs.dry_run }}
+        run: |
+          python -m instagram.generate_hot_show_alert \
+            --venue ${{ inputs.venue }} \
+            --urls "${{ inputs.urls }}" \
+            --date ${{ steps.params.outputs.target_date }} \
+            --post-only --dry-run
+
+      - name: Send failure notification
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+          subject: "FAILED: Hot show alert post for ${{ steps.params.outputs.target_date || 'unknown date' }}"
+          to: foeatx@gmail.com
+          from: Funny Over Everything <${{ secrets.EMAIL_USERNAME }}>
+          body: |
+            The hot show alert workflow FAILED.
+
+            Venue: ${{ inputs.venue }}
+            Date: ${{ steps.params.outputs.target_date || 'unknown' }}
+            Trigger: ${{ github.event_name }}
+
+            Check the workflow run for details:
+            ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            You can manually re-trigger from the Actions tab.
+
+            ---
+            This is an automated alert from GitHub Actions.

@@ -108,20 +108,25 @@ jobs:
           echo "Verifying $TOTAL image URLs are live on Vercel..."
 
           # Wait for the first URL to come online (signals deploy is done)
+          # Allow up to 10 minutes (60 attempts x 10s) for slow Vercel deploys
           FIRST_URL=$(echo "$URLS" | head -1)
           echo "Waiting for Vercel deploy (probing $FIRST_URL)..."
-          for i in $(seq 1 20); do
+          DEPLOY_READY=false
+          for i in $(seq 1 60); do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$FIRST_URL")
             if [ "$STATUS" = "200" ]; then
               echo "Deploy live after ~$((i * 10))s"
+              DEPLOY_READY=true
               break
             fi
-            if [ "$i" = "20" ]; then
-              echo "::warning::Timed out waiting for Vercel (200s). Proceeding anyway."
-            fi
-            echo "  Attempt $i/20: HTTP $STATUS, retrying in 10s..."
+            echo "  Attempt $i/60: HTTP $STATUS, retrying in 10s..."
             sleep 10
           done
+
+          if [ "$DEPLOY_READY" = "false" ]; then
+            echo "::error::Timed out waiting for Vercel after 600s. Images are not reachable -- aborting."
+            exit 1
+          fi
 
           # Now verify every image URL
           FAILED=""
@@ -136,7 +141,8 @@ jobs:
           done <<< "$URLS"
 
           if [ -n "$FAILED" ]; then
-            echo "::warning::Some images were not reachable. Post may still succeed if Instagram can fetch them."
+            echo "::error::Some images are not reachable on Vercel. Cannot post to Instagram."
+            exit 1
           fi
 
       - name: Post to Instagram

@@ -86,19 +86,27 @@ jobs:
             --generate-only
 
       - name: Commit and push new _ig.jpg files
+        id: commit-push
+        env:
+          WEBSITE_BASE_URL: "https://foe-website.vercel.app"
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add images/**/*_ig.jpg
           if git diff --cached --quiet; then
             echo "No new _ig.jpg files to commit"
+            echo "new_files_pushed=false" >> $GITHUB_OUTPUT
           else
+            # Capture a newly staged file to use as Vercel deploy probe
+            NEW_FILE=$(git diff --cached --name-only | head -1)
+            echo "new_probe_url=${WEBSITE_BASE_URL}/${NEW_FILE}" >> $GITHUB_OUTPUT
             git commit -m "Auto-generate hot show alert images - $(date +'%Y-%m-%d')"
             for attempt in 1 2 3; do
               git push && break
               echo "Push failed (attempt $attempt/3), pulling and retrying..."
               git pull --rebase
             done
+            echo "new_files_pushed=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Wait for Vercel deployment and verify images
@@ -109,15 +117,25 @@ jobs:
             exit 1
           fi
 
-          # Grab the first image URL to probe
-          PROBE_URL=$(python3 -c "import json; d=json.load(open('$ALERT_DIR/summary.json')); print(d.get('image_urls',[''])[0])")
-
-          if [ -z "$PROBE_URL" ]; then
+          # Extract all image URLs
+          URLS=$(python3 -c "import json; d=json.load(open('$ALERT_DIR/summary.json')); print('\n'.join(d.get('image_urls', [])))")
+          if [ -z "$URLS" ]; then
             echo "::error::No image URLs in summary.json"
             exit 1
           fi
 
-          echo "Waiting for Vercel to serve: $PROBE_URL"
+          # If new files were pushed, probe one of THOSE specifically
+          # to avoid false positives from pre-existing images
+          if [ "${{ steps.commit-push.outputs.new_files_pushed }}" = "true" ]; then
+            PROBE_URL="${{ steps.commit-push.outputs.new_probe_url }}"
+            echo "New images were pushed. Waiting for Vercel redeploy..."
+            echo "Probing new file: $PROBE_URL"
+          else
+            PROBE_URL=$(echo "$URLS" | head -1)
+            echo "No new images pushed. Verifying existing images..."
+            echo "Probing: $PROBE_URL"
+          fi
+
           DEPLOY_READY=false
           for i in $(seq 1 60); do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$PROBE_URL")
@@ -132,6 +150,23 @@ jobs:
 
           if [ "$DEPLOY_READY" = "false" ]; then
             echo "::error::Timed out waiting for Vercel after 600s. Image is not reachable -- aborting."
+            exit 1
+          fi
+
+          # Verify every image URL
+          FAILED=""
+          while IFS= read -r URL; do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+            if [ "$STATUS" != "200" ]; then
+              echo "::warning::Image not reachable (HTTP $STATUS): $URL"
+              FAILED="$FAILED $URL"
+            else
+              echo "  OK: $URL"
+            fi
+          done <<< "$URLS"
+
+          if [ -n "$FAILED" ]; then
+            echo "::error::Some images are not reachable on Vercel. Cannot post to Instagram."
             exit 1
           fi
 

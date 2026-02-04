@@ -71,19 +71,27 @@ jobs:
           python -m instagram.generate_daily_post --date ${{ steps.date.outputs.target_date }}
 
       - name: Commit and push new _ig.jpg files
+        id: commit-push
+        env:
+          WEBSITE_BASE_URL: "https://foe-website.vercel.app"
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add images/**/*_ig.jpg
           if git diff --cached --quiet; then
             echo "No new _ig.jpg files to commit"
+            echo "new_files_pushed=false" >> $GITHUB_OUTPUT
           else
+            # Capture a newly staged file to use as Vercel deploy probe
+            NEW_FILE=$(git diff --cached --name-only | head -1)
+            echo "new_probe_url=${WEBSITE_BASE_URL}/${NEW_FILE}" >> $GITHUB_OUTPUT
             git commit -m "Auto-generate show images - $(date +'%Y-%m-%d')"
             for attempt in 1 2 3; do
               git push && break
               echo "Push failed (attempt $attempt/3), pulling and retrying..."
               git pull --rebase
             done
+            echo "new_files_pushed=true" >> $GITHUB_OUTPUT
           fi
 
       - name: Wait for Vercel deployment and verify all images
@@ -107,13 +115,24 @@ jobs:
           TOTAL=$(echo "$URLS" | wc -l)
           echo "Verifying $TOTAL image URLs are live on Vercel..."
 
-          # Wait for the first URL to come online (signals deploy is done)
-          # Allow up to 10 minutes (60 attempts x 10s) for slow Vercel deploys
-          FIRST_URL=$(echo "$URLS" | head -1)
-          echo "Waiting for Vercel deploy (probing $FIRST_URL)..."
+          # Determine which URL to probe for deploy readiness
+          # If new images were just pushed, probe one of THOSE files specifically.
+          # This prevents false positives from pre-existing images that are already
+          # live on Vercel from a previous deploy.
+          if [ "${{ steps.commit-push.outputs.new_files_pushed }}" = "true" ]; then
+            PROBE_URL="${{ steps.commit-push.outputs.new_probe_url }}"
+            echo "New images were pushed. Waiting for Vercel redeploy..."
+            echo "Probing new file: $PROBE_URL"
+          else
+            PROBE_URL=$(echo "$URLS" | head -1)
+            echo "No new images pushed. Verifying existing images..."
+            echo "Probing: $PROBE_URL"
+          fi
+
+          # Wait for probe URL to come online (up to 10 minutes)
           DEPLOY_READY=false
           for i in $(seq 1 60); do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$FIRST_URL")
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$PROBE_URL")
             if [ "$STATUS" = "200" ]; then
               echo "Deploy live after ~$((i * 10))s"
               DEPLOY_READY=true

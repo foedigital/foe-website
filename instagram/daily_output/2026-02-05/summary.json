@@ -1,0 +1,101 @@
+{
+  "date": "2026-02-05T00:00:00",
+  "date_display": "Thursday, February 05, 2026",
+  "total_shows": 12,
+  "free_shows": 2,
+  "venues": [
+    "Vulcan Gas Company",
+    "Rozco's Comedy",
+    "The Velveeta Room",
+    "Cap City Comedy",
+    "Creek and the Cave",
+    "Sunset Strip Comedy"
+  ],
+  "images_count": 10,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/creek_and_the_cave/2ac8d6d61297adce_ig.jpg",
+    "https://foe-website.vercel.app/images/vulcan_gas_company/b80f40b14d7b49c7_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/2795044c7c54b9fa_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/eric_eaton_2de16a7c_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/b0b545f77696cb8d_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/18ce26990a33c7f6_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/the_red_room_at_cap_city_aidan_0e546c24_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/46f8a62baf76408f_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/8137a5ea60e8fcc8_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/29643c6ce3d8d9dd_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "Bear Arms: Open Mic",
+      "venue": "Creek and the Cave",
+      "time": "6:00 PM",
+      "is_free": true
+    },
+    {
+      "name": "Sam Miller - Live!",
+      "venue": "Vulcan Gas Company",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Best of Austin Comedy",
+      "venue": "Rozco's Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "ERIC EATON",
+      "venue": "Cap City Comedy",
+      "time": "7:15 PM",
+      "is_free": false
+    },
+    {
+      "name": "Deathsquad Secret Show",
+      "venue": "Sunset Strip Comedy",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Girls Gone Wild",
+      "venue": "Creek and the Cave",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Red Room at Cap City: Aidan McCluskey",
+      "venue": "Cap City Comedy",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Austin All-Stars",
+      "venue": "The Velveeta Room",
+      "time": "8:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "Candlelight Comedy",
+      "venue": "Rozco's Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Austin All-Star Comedy",
+      "venue": "Rozco's Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Love F*cks: A Psychedelic Comedy Dating Show",
+      "venue": "Creek and the Cave",
+      "time": "10:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Word Up! Open mic",
+      "venue": "Creek and the Cave",
+      "time": "11:55 PM",
+      "is_free": true
+    }
+  ]
+}

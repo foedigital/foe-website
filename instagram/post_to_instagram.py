@@ -309,13 +309,12 @@ def load_daily_content(date_str: str) -> Tuple[str, List[Path], List[str], Dict]
         raise FileNotFoundError(f"Caption not found: {caption_path}")
     caption = caption_path.read_text(encoding='utf-8')
 
-    # Load images
+    # Load local images (optional — only needed for preview, not for posting)
     images_dir = date_dir / "images"
-    if not images_dir.exists():
-        raise FileNotFoundError(f"Images directory not found: {images_dir}")
-
-    images = sorted(images_dir.glob("*.*"))
-    images = [p for p in images if p.suffix.lower() in ['.jpg', '.jpeg', '.png', '.webp']]
+    images = []
+    if images_dir.exists():
+        images = sorted(images_dir.glob("*.*"))
+        images = [p for p in images if p.suffix.lower() in ['.jpg', '.jpeg', '.png', '.webp']]
 
     # Load summary (contains public image URLs)
     summary_path = date_dir / "summary.json"

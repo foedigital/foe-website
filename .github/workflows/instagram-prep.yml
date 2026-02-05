@@ -1,0 +1,72 @@
+name: Prep Daily Instagram Content
+
+# Runs at 10am CST (4pm UTC) — generates images and pushes to Vercel
+# The post workflow runs 37 minutes later, by which time everything is deployed
+on:
+  schedule:
+    - cron: '0 16 * * *'  # 4pm UTC = 10am CST
+  workflow_dispatch:
+    inputs:
+      date:
+        description: 'Date to prep (YYYY-MM-DD), defaults to today'
+        required: false
+        type: string
+
+jobs:
+  prep-content:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Determine target date
+        id: date
+        run: |
+          if [ -n "${{ inputs.date }}" ]; then
+            echo "target_date=${{ inputs.date }}" >> $GITHUB_OUTPUT
+          else
+            echo "target_date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate Instagram content
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          WEBSITE_BASE_URL: "https://foe-website.vercel.app"
+        run: |
+          python -m instagram.generate_daily_post --date ${{ steps.date.outputs.target_date }}
+
+      - name: Commit and push generated content
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          TARGET_DATE="${{ steps.date.outputs.target_date }}"
+
+          # Stage _ig.jpg images (served by Vercel) and the daily output (summary + caption)
+          git add images/**/*_ig.jpg
+          git add "instagram/daily_output/${TARGET_DATE}/summary.json"
+          git add "instagram/daily_output/${TARGET_DATE}/caption.txt"
+
+          if git diff --cached --quiet; then
+            echo "No new content to commit — already prepped for ${TARGET_DATE}"
+          else
+            git commit -m "Prep Instagram content - ${TARGET_DATE}"
+            for attempt in 1 2 3; do
+              git push && break
+              echo "Push failed (attempt $attempt/3), pulling and retrying..."
+              git pull --rebase
+            done
+            echo "Content pushed. Vercel will deploy before the post workflow runs."
+          fi

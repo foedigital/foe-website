@@ -1,11 +1,11 @@
 name: Post Daily Shows to Instagram
 
-# Runs daily at 10am CST (4pm UTC) - after shows are updated
-# Can also be triggered manually
+# Runs at 10:37am CST (4:37pm UTC) — 37 minutes after the prep workflow
+# By now, all images are generated, committed, and live on Vercel
 on:
   schedule:
-    - cron: '37 16 * * *'  # 4:37pm UTC = 10:37am CST (offset avoids GitHub Actions peak delays)
-  workflow_dispatch:  # Manual trigger
+    - cron: '37 16 * * *'  # 4:37pm UTC = 10:37am CST
+  workflow_dispatch:
     inputs:
       date:
         description: 'Date to post (YYYY-MM-DD), defaults to today'
@@ -16,6 +16,11 @@ on:
         required: false
         type: boolean
         default: false
+      generate:
+        description: 'Also generate content (for manual runs without prior prep)'
+        required: false
+        type: boolean
+        default: false
 
 jobs:
   post-to-instagram:
@@ -23,6 +28,7 @@ jobs:
 
     steps:
       - name: Verify Instagram credentials are configured
+        if: ${{ !inputs.dry_run }}
         run: |
           MISSING=""
           if [ -z "${{ secrets.INSTAGRAM_ACCESS_TOKEN }}" ]; then
@@ -36,9 +42,6 @@ jobs:
             exit 1
           fi
           echo "All required secrets are configured."
-          if [ -z "${{ secrets.ANTHROPIC_API_KEY }}" ]; then
-            echo "::notice::ANTHROPIC_API_KEY not set -- captions will use template format"
-          fi
 
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -63,49 +66,69 @@ jobs:
             echo "target_date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
           fi
 
-      - name: Generate Instagram content
+      - name: Generate content (manual runs only)
+        if: ${{ inputs.generate }}
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           WEBSITE_BASE_URL: "https://foe-website.vercel.app"
         run: |
           python -m instagram.generate_daily_post --date ${{ steps.date.outputs.target_date }}
 
-      - name: Commit and push new _ig.jpg files
-        id: commit-push
+      - name: Commit and push (manual runs only)
+        if: ${{ inputs.generate }}
         env:
           WEBSITE_BASE_URL: "https://foe-website.vercel.app"
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          TARGET_DATE="${{ steps.date.outputs.target_date }}"
           git add images/**/*_ig.jpg
+          git add "instagram/daily_output/${TARGET_DATE}/summary.json"
+          git add "instagram/daily_output/${TARGET_DATE}/caption.txt"
           if git diff --cached --quiet; then
-            echo "No new _ig.jpg files to commit"
-            echo "new_files_pushed=false" >> $GITHUB_OUTPUT
+            echo "No new content to commit"
           else
-            # Capture a newly staged file to use as Vercel deploy probe
-            NEW_FILE=$(git diff --cached --name-only | head -1)
-            echo "new_probe_url=${WEBSITE_BASE_URL}/${NEW_FILE}" >> $GITHUB_OUTPUT
-            git commit -m "Auto-generate show images - $(date +'%Y-%m-%d')"
+            git commit -m "Auto-generate show images - ${TARGET_DATE}"
             for attempt in 1 2 3; do
               git push && break
               echo "Push failed (attempt $attempt/3), pulling and retrying..."
               git pull --rebase
             done
-            echo "new_files_pushed=true" >> $GITHUB_OUTPUT
           fi
 
-      - name: Wait for Vercel deployment and verify all images
-        id: vercel-wait
+      - name: Wait for Vercel if content was just pushed
+        if: ${{ inputs.generate }}
         env:
           WEBSITE_BASE_URL: "https://foe-website.vercel.app"
         run: |
           SUMMARY="instagram/daily_output/${{ steps.date.outputs.target_date }}/summary.json"
+          PROBE_URL=$(python3 -c "import json; d=json.load(open('$SUMMARY')); print(d['image_urls'][0])")
+          echo "Waiting for Vercel deploy (probing $PROBE_URL)..."
+          for i in $(seq 1 60); do
+            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$PROBE_URL")
+            if [ "$STATUS" = "200" ]; then
+              echo "Deploy live after ~$((i * 10))s"
+              sleep 15  # CDN propagation buffer
+              break
+            fi
+            echo "  Attempt $i/60: HTTP $STATUS, retrying in 10s..."
+            sleep 10
+          done
+
+      - name: Verify prepped content exists
+        id: verify-prep
+        env:
+          WEBSITE_BASE_URL: "https://foe-website.vercel.app"
+        run: |
+          TARGET_DATE="${{ steps.date.outputs.target_date }}"
+          SUMMARY="instagram/daily_output/${TARGET_DATE}/summary.json"
+
           if [ ! -f "$SUMMARY" ]; then
-            echo "::error::summary.json not found -- generation likely failed"
+            echo "::error::summary.json not found for ${TARGET_DATE}. Did the prep workflow run?"
+            echo "::error::Run the prep workflow first, or re-trigger this with generate=true"
             exit 1
           fi
 
-          # Extract all image URLs and verify each one is reachable
           URLS=$(python3 -c "import json; d=json.load(open('$SUMMARY')); print('\n'.join(d.get('image_urls', [])))")
           if [ -z "$URLS" ]; then
             echo "::error::No image URLs in summary.json"
@@ -115,43 +138,6 @@ jobs:
           TOTAL=$(echo "$URLS" | wc -l)
           echo "Verifying $TOTAL image URLs are live on Vercel..."
 
-          # Determine which URL to probe for deploy readiness
-          # If new images were just pushed, probe one of THOSE files specifically.
-          # This prevents false positives from pre-existing images that are already
-          # live on Vercel from a previous deploy.
-          if [ "${{ steps.commit-push.outputs.new_files_pushed }}" = "true" ]; then
-            PROBE_URL="${{ steps.commit-push.outputs.new_probe_url }}"
-            echo "New images were pushed. Waiting for Vercel redeploy..."
-            echo "Probing new file: $PROBE_URL"
-          else
-            PROBE_URL=$(echo "$URLS" | head -1)
-            echo "No new images pushed. Verifying existing images..."
-            echo "Probing: $PROBE_URL"
-          fi
-
-          # Wait for probe URL to come online (up to 10 minutes)
-          DEPLOY_READY=false
-          for i in $(seq 1 60); do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$PROBE_URL")
-            if [ "$STATUS" = "200" ]; then
-              echo "Deploy live after ~$((i * 10))s"
-              DEPLOY_READY=true
-              break
-            fi
-            echo "  Attempt $i/60: HTTP $STATUS, retrying in 10s..."
-            sleep 10
-          done
-
-          if [ "$DEPLOY_READY" = "false" ]; then
-            echo "::error::Timed out waiting for Vercel after 600s. Images are not reachable -- aborting."
-            exit 1
-          fi
-
-          # Brief buffer for CDN propagation across all paths
-          echo "Deploy confirmed. Waiting 15s for full CDN propagation..."
-          sleep 15
-
-          # Now verify every image URL (with per-URL retries)
           FAILED=""
           while IFS= read -r URL; do
             OK=false
@@ -175,6 +161,8 @@ jobs:
             echo "::error::Some images are not reachable on Vercel. Cannot post to Instagram."
             exit 1
           fi
+
+          echo "All $TOTAL images verified."
 
       - name: Post to Instagram
         id: post-attempt
@@ -222,6 +210,7 @@ jobs:
             ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
             You can manually re-trigger the post from the Actions tab.
+            Tip: check "generate" if the prep workflow didn't run.
 
             ---
             This is an automated alert from GitHub Actions.

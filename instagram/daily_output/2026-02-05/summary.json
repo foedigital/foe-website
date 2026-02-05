@@ -4,12 +4,12 @@
   "total_shows": 12,
   "free_shows": 2,
   "venues": [
+    "Creek and the Cave",
+    "Cap City Comedy",
+    "Sunset Strip Comedy",
     "Vulcan Gas Company",
     "Rozco's Comedy",
-    "The Velveeta Room",
-    "Cap City Comedy",
-    "Creek and the Cave",
-    "Sunset Strip Comedy"
+    "The Velveeta Room"
   ],
   "images_count": 10,
   "image_urls": [

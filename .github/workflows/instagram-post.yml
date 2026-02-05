@@ -1,10 +1,14 @@
 name: Post Daily Shows to Instagram
 
-# Runs at 10:37am CST (4:37pm UTC) — 37 minutes after the prep workflow
-# By now, all images are generated, committed, and live on Vercel
+# Primary trigger: fires automatically when the prep workflow succeeds
+# Fallback trigger: 10:37am CST in case prep ran early or was manually triggered
+# Manual trigger: workflow_dispatch with optional generate flag
 on:
+  workflow_run:
+    workflows: ["Prep Daily Instagram Content"]
+    types: [completed]
   schedule:
-    - cron: '37 16 * * *'  # 4:37pm UTC = 10:37am CST
+    - cron: '37 16 * * *'  # 4:37pm UTC = 10:37am CST (fallback)
   workflow_dispatch:
     inputs:
       date:
@@ -25,8 +29,16 @@ on:
 jobs:
   post-to-instagram:
     runs-on: ubuntu-latest
+    # Skip if triggered by workflow_run but the prep workflow failed
+    if: ${{ github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success' }}
 
     steps:
+      - name: Wait for Vercel deploy (after prep)
+        if: ${{ github.event_name == 'workflow_run' }}
+        run: |
+          echo "Triggered by prep workflow. Waiting 3 minutes for Vercel to deploy..."
+          sleep 180
+
       - name: Verify Instagram credentials are configured
         if: ${{ !inputs.dry_run }}
         run: |

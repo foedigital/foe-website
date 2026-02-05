@@ -153,15 +153,27 @@ jobs:
             exit 1
           fi
 
-          # Verify every image URL
+          # Brief buffer for CDN propagation across all paths
+          echo "Deploy confirmed. Waiting 15s for full CDN propagation..."
+          sleep 15
+
+          # Verify every image URL (with per-URL retries)
           FAILED=""
           while IFS= read -r URL; do
-            STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
-            if [ "$STATUS" != "200" ]; then
-              echo "::warning::Image not reachable (HTTP $STATUS): $URL"
+            OK=false
+            for attempt in 1 2 3; do
+              STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
+              if [ "$STATUS" = "200" ]; then
+                echo "  OK: $URL"
+                OK=true
+                break
+              fi
+              echo "  Attempt $attempt/3 for $URL: HTTP $STATUS, retrying in 5s..."
+              sleep 5
+            done
+            if [ "$OK" = "false" ]; then
+              echo "::warning::Image not reachable after 3 attempts (HTTP $STATUS): $URL"
               FAILED="$FAILED $URL"
-            else
-              echo "  OK: $URL"
             fi
           done <<< "$URLS"
 

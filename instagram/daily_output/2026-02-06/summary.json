@@ -1,0 +1,107 @@
+{
+  "date": "2026-02-06T00:00:00",
+  "date_display": "Friday, February 06, 2026",
+  "total_shows": 13,
+  "free_shows": 0,
+  "venues": [
+    "Sunset Strip Comedy",
+    "Rozco's Comedy",
+    "Creek and the Cave",
+    "Cap City Comedy",
+    "Vulcan Gas Company",
+    "The Velveeta Room"
+  ],
+  "images_count": 10,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/vulcan_gas_company/95777d5fcfb4cd0e_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/3ef5dc8ac218180e_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/7bf1dd885132e990_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/kelsey_cook_9d694537_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/the_red_room_at_cap_city_aidan_0e546c24_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/a8c7a7993e24fd3e_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/050c83d0df5aa442_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/6e6b03d07e2328fd_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/e03c05858739e918_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/bc2b7262be7087ae_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "BEN GLEIB - ONE NIGHT ONLY",
+      "venue": "Vulcan Gas Company",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Friday Night Laughs 7pm",
+      "venue": "Rozco's Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Jay Jurden",
+      "venue": "Creek and the Cave",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Kelsey Cook",
+      "venue": "Cap City Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Red Room at Cap City: Aidan McCluskey",
+      "venue": "Cap City Comedy",
+      "time": "7:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "Comedy Gold",
+      "venue": "Sunset Strip Comedy",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Austin All-Stars",
+      "venue": "The Velveeta Room",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Friday Night Laughs 9pm",
+      "venue": "Rozco's Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Kelsey Cook",
+      "venue": "Cap City Comedy",
+      "time": "9:15 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Red Room at Cap City: Aidan McCluskey",
+      "venue": "Cap City Comedy",
+      "time": "9:45 PM",
+      "is_free": false
+    },
+    {
+      "name": "Sunset Strip After Dark Comedy Showcase",
+      "venue": "Sunset Strip Comedy",
+      "time": "10:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Comics Against Humanity",
+      "venue": "The Velveeta Room",
+      "time": "10:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Circus Fire",
+      "venue": "Creek and the Cave",
+      "time": "11:00 PM",
+      "is_free": false
+    }
+  ]
+}

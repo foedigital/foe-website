@@ -1,0 +1,93 @@
+{
+  "date": "2026-02-07T00:00:00",
+  "date_display": "Saturday, February 07, 2026",
+  "total_shows": 11,
+  "free_shows": 0,
+  "venues": [
+    "Creek and the Cave",
+    "Cap City Comedy",
+    "Sunset Strip Comedy",
+    "Vulcan Gas Company",
+    "The Velveeta Room"
+  ],
+  "images_count": 9,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/creek_and_the_cave/5eeb030a9381b4b6_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/a40785d94c286a0b_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/kelsey_cook_9d694537_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/the_red_room_at_cap_city_aidan_0e546c24_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/52756e7ee5df0154_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/220acb8f0acc3ac0_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/85528e54dbbe7477_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/3ee923763c624852_ig.jpg",
+    "https://foe-website.vercel.app/images/vulcan_gas_company/cdd3481044ab87dc_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "The Unteachables",
+      "venue": "Creek and the Cave",
+      "time": "4:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Big Texas Comedy Showcase",
+      "venue": "Sunset Strip Comedy",
+      "time": "6:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Kelsey Cook",
+      "venue": "Cap City Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Red Room at Cap City: Aidan McCluskey",
+      "venue": "Cap City Comedy",
+      "time": "7:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "Symply Courtney",
+      "venue": "The Velveeta Room",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Spotlight: Comedy Show",
+      "venue": "Sunset Strip Comedy",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Kelsey Cook",
+      "venue": "Cap City Comedy",
+      "time": "9:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Red Room at Cap City: Aidan McCluskey",
+      "venue": "Cap City Comedy",
+      "time": "9:45 PM",
+      "is_free": false
+    },
+    {
+      "name": "Late Night at Sunset Strip",
+      "venue": "Sunset Strip Comedy",
+      "time": "10:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Timeless Comedy",
+      "venue": "The Velveeta Room",
+      "time": "10:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Best of Vulcan Comedy Showcase",
+      "venue": "Vulcan Gas Company",
+      "time": "10:00 PM",
+      "is_free": false
+    }
+  ]
+}

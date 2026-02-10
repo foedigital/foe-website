@@ -8,42 +8,332 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
     <meta name="theme-color" content="#f05a28">
-    <meta name="description" content="Resources for comedians navigating the Austin comedy scene. Open mics, booking contacts, tips and more.">
+    <meta name="description" content="Resources for comedians navigating the Austin comedy scene. Free shows, open mics, podcasts, and more.">
     <link rel="stylesheet" href="styles.css">
     <style>
-        .coming-soon-container {
-            min-height: 60vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+        /* ── Resources Page Styles ── */
+        .resources-section {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 60px 5vw;
+        }
+
+        .resources-section h2 {
+            margin-bottom: 16px;
+        }
+
+        .section-intro {
+            color: var(--text-secondary);
             text-align: center;
-            padding: 60px 20px;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            max-width: 700px;
+            margin: 0 auto 40px;
         }
-        .coming-soon-icon {
-            font-size: 6rem;
-            margin-bottom: 30px;
-            animation: bounce 2s ease-in-out infinite;
+
+        /* Free Shows Grid */
+        .free-shows-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
         }
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
+
+        .free-show-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 28px;
+            transition: all 0.3s ease;
         }
-        .coming-soon-title {
-            font-size: 2.5rem;
-            color: #f05a28;
-            margin-bottom: 20px;
+
+        .free-show-card:hover {
+            border-color: var(--primary-orange);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 35px rgba(240, 90, 40, 0.12);
+        }
+
+        .free-show-card h3 {
+            color: var(--text-primary);
+            font-size: 1.15rem;
+            margin-bottom: 6px;
+        }
+
+        .free-show-card .venue-name {
+            color: var(--teal-accent);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-bottom: 12px;
+        }
+
+        .free-show-card .schedule {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .free-show-card .schedule span {
+            display: inline-block;
+            background: rgba(255, 107, 53, 0.15);
+            color: var(--primary-orange);
+            font-size: 0.78rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .free-show-card p {
+            color: var(--text-secondary);
+            font-size: 0.92rem;
+            line-height: 1.6;
+        }
+
+        /* Kill Tony Standout Card */
+        .kt-card {
+            background: linear-gradient(135deg, #1A1A1A 0%, #221510 100%);
+            border: 2px solid var(--primary-orange);
+            border-radius: 18px;
+            padding: 44px;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 0 40px rgba(255, 107, 53, 0.1);
+        }
+
+        .kt-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 107, 53, 0.06) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .kt-card h3 {
+            font-size: 1.8rem;
+            color: var(--primary-orange);
             text-transform: uppercase;
             letter-spacing: 2px;
+            margin-bottom: 8px;
+            position: relative;
         }
-        .coming-soon-text {
-            font-size: 1.2rem;
-            color: #ccc;
-            max-width: 600px;
+
+        .kt-card .kt-subtitle {
+            color: var(--teal-accent);
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .kt-card p {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
             line-height: 1.8;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
         }
-        .coming-soon-text strong {
-            color: #f05a28;
+
+        .kt-card .kt-details {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+            position: relative;
+        }
+
+        .kt-card .kt-details span {
+            background: rgba(255, 107, 53, 0.12);
+            color: var(--primary-orange);
+            padding: 8px 18px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* Instagram Callout Card */
+        .ig-callout {
+            background: linear-gradient(135deg, #1A1A1A 0%, #1a1520 100%);
+            border: 2px solid transparent;
+            border-image: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888) 1;
+            border-radius: 0;
+            padding: 40px;
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Wrapper to get rounded corners with gradient border */
+        .ig-callout-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            border-radius: 18px;
+            overflow: hidden;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            padding: 2px;
+        }
+
+        .ig-callout-inner {
+            background: linear-gradient(135deg, #1A1A1A 0%, #1a1520 100%);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .ig-callout-inner h3 {
+            font-size: 1.6rem;
+            margin-bottom: 8px;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .ig-callout-inner .ig-handle {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .ig-callout-inner .ig-handle a {
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: opacity 0.3s ease;
+        }
+
+        .ig-callout-inner .ig-handle a:hover {
+            opacity: 0.8;
+        }
+
+        .ig-callout-inner p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.7;
+            max-width: 550px;
+            margin: 0 auto;
+        }
+
+        .ig-follow-btn {
+            display: inline-block;
+            margin-top: 24px;
+            padding: 12px 30px;
+            background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+            color: #fff;
+            font-weight: 700;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .ig-follow-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(225, 48, 108, 0.35);
+        }
+
+        /* Podcast Grid */
+        .podcast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 24px;
+        }
+
+        .podcast-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .podcast-card:hover {
+            border-color: var(--primary-orange);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(240, 90, 40, 0.12);
+        }
+
+        .podcast-card img {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            display: block;
+        }
+
+        .podcast-card .podcast-info {
+            padding: 16px 18px 20px;
+        }
+
+        .podcast-card .podcast-name {
+            color: var(--text-primary);
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .podcast-card .podcast-host {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .free-shows-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .podcast-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 16px;
+            }
+
+            .kt-card {
+                padding: 30px 24px;
+            }
+
+            .kt-card h3 {
+                font-size: 1.4rem;
+            }
+
+            .ig-callout-inner {
+                padding: 30px 24px;
+            }
+
+            .ig-callout-inner h3 {
+                font-size: 1.3rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .podcast-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+
+            .podcast-card .podcast-info {
+                padding: 12px 14px 16px;
+            }
+
+            .podcast-card .podcast-name {
+                font-size: 0.88rem;
+            }
+
+            .podcast-card .podcast-host {
+                font-size: 0.78rem;
+            }
         }
     </style>
 </head>
@@ -127,15 +417,193 @@
         </div>
     </div>
 
-    <section class="coming-soon-container">
-        <div class="coming-soon-icon">🚧</div>
-        <h2 class="coming-soon-title">Working On It!</h2>
-        <p class="coming-soon-text">
-            We're building out a comprehensive guide to help comedians navigate the <strong>Austin comedy scene</strong>.
-            Open mics, booking tips, venue contacts, and more coming soon!
+    <!-- Section 1: Free Shows -->
+    <section class="resources-section">
+        <h2 class="ribbon-title">Free Shows</h2>
+        <p class="section-intro">
+            The best way to get a feel for the Austin comedy scene is to show up. These free shows are where you'll meet local comics, see new talent, and get a lay of the land.
         </p>
+        <div class="free-shows-grid">
+            <div class="free-show-card">
+                <h3>Open Mic & Comedy Night</h3>
+                <div class="venue-name">Gnar Bar</div>
+                <div class="schedule">
+                    <span>Monday</span>
+                    <span>Wednesday</span>
+                </div>
+                <p>A chill neighborhood bar with a solid rotating lineup of local comics. Great vibe for beginners and regulars alike.</p>
+            </div>
+
+            <div class="free-show-card">
+                <h3>Open Mic Night</h3>
+                <div class="venue-name">Rozco's</div>
+                <div class="schedule">
+                    <span>Wednesday</span>
+                </div>
+                <p>Intimate room, supportive crowd. One of the best open mics in town to test new material and meet other comics.</p>
+            </div>
+
+            <div class="free-show-card">
+                <h3>Comedy at Bull's</h3>
+                <div class="venue-name">Bull's Pub</div>
+                <div class="schedule">
+                    <span>Wednesday</span>
+                    <span>Thursday</span>
+                    <span>Saturday</span>
+                </div>
+                <p>Multiple nights of free comedy every week. A staple on the Austin scene with a loyal crowd that shows up ready to laugh.</p>
+            </div>
+
+            <div class="free-show-card">
+                <h3>Thursday Special</h3>
+                <div class="venue-name">Speakeasy</div>
+                <div class="schedule">
+                    <span>Thursday</span>
+                </div>
+                <p>A midweek showcase at one of Austin's iconic venues. A solid mix of up-and-comers and seasoned locals.</p>
+            </div>
+
+            <div class="free-show-card">
+                <h3>Sunday Service</h3>
+                <div class="venue-name">Speakeasy</div>
+                <div class="schedule">
+                    <span>Sunday</span>
+                </div>
+                <p>End the weekend right. A laid-back Sunday show that pulls a fun crowd and gives comics a great stage to close out the week.</p>
+            </div>
+        </div>
     </section>
 
+    <!-- Section 2: Kill Tony Watch Party -->
+    <section class="resources-section">
+        <h2 class="ribbon-title">Kill Tony Watch Party</h2>
+        <div class="kt-card">
+            <h3>Monday Nights at Shakespeare's</h3>
+            <div class="kt-subtitle">The weekly gathering spot for Austin comics</div>
+            <p>
+                Every Monday, Austin's comedy community packs into Shakespeare's to watch Kill Tony live.
+                The energy is electric — local comics, out-of-towners passing through, and fans all
+                crammed in together. You'll see familiar faces from the scene, hear about upcoming shows,
+                and feel the buzz that comes from watching someone land a golden ticket minute on stage.
+                It's part watch party, part networking event, part comedy church. If you're in Austin on a Monday, this is where you need to be.
+            </p>
+            <div class="kt-details">
+                <span>Every Monday</span>
+                <span>8:00 PM</span>
+                <span>Shakespeare's Pub</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 3: @austintexascomedy -->
+    <section class="resources-section">
+        <h2 class="ribbon-title">Find Open Mics</h2>
+        <div class="ig-callout-wrapper">
+            <div class="ig-callout-inner">
+                <h3>Your Open Mic Cheat Code</h3>
+                <div class="ig-handle">
+                    <a href="https://www.instagram.com/austintexascomedy/" target="_blank">@austintexascomedy</a>
+                </div>
+                <p>
+                    This account posts open mics all over Austin where aspiring comics can sign up for free stage time.
+                    If you're looking to start doing standup or just want more reps, give them a follow.
+                    It's the easiest way to find a mic near you any night of the week.
+                </p>
+                <a href="https://www.instagram.com/austintexascomedy/" class="ig-follow-btn" target="_blank">Follow on Instagram</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Section 4: Austin Comedy Podcasts -->
+    <section class="resources-section">
+        <h2 class="ribbon-title">Austin Comedy Podcasts</h2>
+        <p class="section-intro">
+            Get to know the Austin comedy scene through the voices of the people living it. These podcasts are made by local comics and comedy fans right here in ATX.
+        </p>
+        <div class="podcast-grid">
+            <a class="podcast-card" href="https://podcasts.apple.com/us/podcast/radio-ridley-radio-with-michael-ridley/id1717280269" target="_blank">
+                <img src="images/podcasts/radio-ridley-radio.jpg" alt="Radio Ridley Radio cover art" loading="lazy">
+                <div class="podcast-info">
+                    <div class="podcast-name">Radio Ridley Radio</div>
+                    <div class="podcast-host">Michael Ridley</div>
+                </div>
+            </a>
+
+            <a class="podcast-card" href="https://podcasts.apple.com/us/podcast/the-solid-show-w-deric-and-ehsan/id1333793393" target="_blank">
+                <img src="images/podcasts/spoil-the-beans.jpg" alt="Spoil the Beans cover art" loading="lazy">
+                <div class="podcast-info">
+                    <div class="podcast-name">Spoil the Beans</div>
+                    <div class="podcast-host">Deric Poston</div>
+                </div>
+            </a>
+
+            <a class="podcast-card" href="https://podcasts.apple.com/us/podcast/absolute-show/id1761235705" target="_blank">
+                <img src="images/podcasts/absolute-show.jpg" alt="Absolute Show cover art" loading="lazy">
+                <div class="podcast-info">
+                    <div class="podcast-name">Absolute Show</div>
+                    <div class="podcast-host">Lukas McCrary</div>
+                </div>
+            </a>
+
+            <a class="podcast-card" href="https://podcasts.apple.com/us/podcast/some-of-this-is-bad/id1647509036" target="_blank">
+                <img src="images/podcasts/some-of-this-is-bad.jpg" alt="Some of This is Bad cover art" loading="lazy">
+                <div class="podcast-info">
+                    <div class="podcast-name">Some of This is Bad</div>
+                    <div class="podcast-host">Colton Dowling & Dylan Carlino</div>
+                </div>
+            </a>
+
+            <a class="podcast-card" href="https://podcasts.apple.com/us/podcast/giggleboys/id1546313469" target="_blank">
+                <img src="images/podcasts/giggleboys.jpg" alt="GiggleBoys cover art" loading="lazy">
+                <div class="podcast-info">
+                    <div class="podcast-name">GiggleBoys</div>
+                    <div class="podcast-host">Mike Eaton & Eli Halpern</div>
+                </div>
+            </a>
+
+            <a class="podcast-card" href="https://open.spotify.com/show/6jXKnubPGZJzDju4KEbUgK" target="_blank">
+                <img src="images/podcasts/welcome-to-brookwood.jpg" alt="Welcome to Brookwood cover art" loading="lazy">
+                <div class="podcast-info">
+                    <div class="podcast-name">Welcome to Brookwood</div>
+                    <div class="podcast-host">Rocky Dale Davis</div>
+                </div>
+            </a>
+
+            <a class="podcast-card" href="https://podcasts.apple.com/us/podcast/gender-fluids/id1294948276" target="_blank">
+                <img src="images/podcasts/gender-fluids.jpg" alt="Gender Fluids cover art" loading="lazy">
+                <div class="podcast-info">
+                    <div class="podcast-name">Gender Fluids</div>
+                    <div class="podcast-host">Arielle Isaac Norman & Ava Smartt</div>
+                </div>
+            </a>
+
+            <a class="podcast-card" href="https://podcasts.apple.com/us/podcast/comedy-wham/id1206581015" target="_blank">
+                <img src="images/podcasts/comedy-wham.jpg" alt="Comedy Wham cover art" loading="lazy">
+                <div class="podcast-info">
+                    <div class="podcast-name">Comedy Wham</div>
+                    <div class="podcast-host">Valerie Lopez</div>
+                </div>
+            </a>
+
+            <a class="podcast-card" href="https://podcasts.apple.com/us/podcast/detalks-with-allison/id1577480825" target="_blank">
+                <img src="images/podcasts/detalks-with-allison.jpg" alt="DeTalks with Allison cover art" loading="lazy">
+                <div class="podcast-info">
+                    <div class="podcast-name">DeTalks with Allison</div>
+                    <div class="podcast-host">Allison Wojtowecz</div>
+                </div>
+            </a>
+
+            <a class="podcast-card" href="https://podcasts.apple.com/us/podcast/big-natural-podcast-with-kait-calabrese/id1867700235" target="_blank">
+                <img src="images/podcasts/big-natural-podcast.jpg" alt="Big Natural Podcast cover art" loading="lazy">
+                <div class="podcast-info">
+                    <div class="podcast-name">Big Natural Podcast</div>
+                    <div class="podcast-host">Kait Calabrese</div>
+                </div>
+            </a>
+        </div>
+    </section>
+
+    <!-- Section 5: Got Ideas? CTA -->
     <section class="faq-section got-questions">
         <h2 class="ribbon-title">Got Ideas?</h2>
         <p class="questions-text">Have suggestions for resources we should include? Let us know!</p>

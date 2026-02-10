@@ -90,6 +90,14 @@ VENUES = {
         "event_name_selector": ".tn-event-listing-item__name, .tn-name",
         "event_date_selector": ".tn-event-listing-item__date, .tn-date-time",
     },
+    "secret_level": {
+        "name": "Secret Level",
+        "url": "https://www.eventbrite.com/o/secret-level-productions-45772952383",
+        "events_url": "https://www.eventbrite.com/o/secret-level-productions-45772952383",
+        "image_selectors": [],
+        "event_name_selector": "",
+        "event_date_selector": "",
+    },
 }
 
 MIN_IMAGE_WIDTH = 200

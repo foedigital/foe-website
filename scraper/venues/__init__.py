@@ -6,6 +6,7 @@ from .east_austin import EastAustinScraper
 from .rozcos import RozcosScraper
 from .vulcan import VulcanScraper
 from .paramount import ParamountScraper
+from .secret_level import SecretLevelScraper
 
 SCRAPERS = {
     "creek_cave": CreekCaveScraper,
@@ -16,6 +17,7 @@ SCRAPERS = {
     "rozcos": RozcosScraper,
     "vulcan": VulcanScraper,
     "paramount": ParamountScraper,
+    "secret_level": SecretLevelScraper,
 }
 
 __all__ = [
@@ -27,5 +29,6 @@ __all__ = [
     "RozcosScraper",
     "VulcanScraper",
     "ParamountScraper",
+    "SecretLevelScraper",
     "SCRAPERS",
 ]

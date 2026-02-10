@@ -261,8 +261,8 @@ SPEAKEASY_URLS = {
     'sunday service': 'https://www.eventbrite.com/e/sunday-service-stand-up-comedy-show-tickets-1308986797749',
 }
 
-# Pop Up venues (Bull's Pub, Gnar Bar, Speakeasy)
-POP_UP_VENUES = ["bull's pub", "gnar bar", "speakeasy"]
+# Pop Up venues (Bull's Pub, Gnar Bar, Speakeasy, Secret Level)
+POP_UP_VENUES = ["bull's pub", "gnar bar", "speakeasy", "secret level"]
 
 # Venue location descriptions for tooltips
 VENUE_DESCRIPTIONS = {
@@ -275,6 +275,7 @@ VENUE_DESCRIPTIONS = {
     'vulcan gas company': 'Historic 6th Street venue - comedy, music &amp; more',
     'black rabbit comedy': 'Underground comedy in Austin',
     'pop up': 'Every bar\'s a comedy club in ATX',
+    'secret level': 'Secret comedy pop-ups across ATX',
 }
 
 # Cap City Comedy URL
@@ -306,6 +307,7 @@ ROZCOS_URL = 'https://rozcoscomedyclub.simpletix.com/'
 EAST_AUSTIN_URL = 'https://eastaustincomedy.com/'
 VULCAN_URL = 'https://www.vulcanatx.com/'
 BLACK_RABBIT_URL = 'https://www.eventbrite.com/e/black-rabbit-underground-comedy-tickets-1442073413399'
+SECRET_LEVEL_URL = 'https://www.eventbrite.com/o/secret-level-productions-45772952383'
 
 def is_free_show(name, venue):
     name_lower = name.lower()
@@ -550,6 +552,11 @@ def get_event_url(show_name, venue_name, venue_base_url, source_url=''):
     elif 'black rabbit' in venue_name.lower():
         return BLACK_RABBIT_URL
 
+    elif 'secret level' in venue_name.lower():
+        if source_url and 'eventbrite.com' in source_url:
+            return source_url
+        return SECRET_LEVEL_URL
+
     return venue_base_url
 
 # Get show data from database
@@ -590,7 +597,7 @@ for row in cursor.fetchall():
     source_url = row['source_url'] or ''
 
     # For venues with same show on multiple days/times, include date+time in key
-    if 'bull' in venue.lower() or 'gnar' in venue.lower() or 'cap city' in venue.lower():
+    if 'bull' in venue.lower() or 'gnar' in venue.lower() or 'cap city' in venue.lower() or 'secret level' in venue.lower():
         key = (clean_name.lower(), venue, event_date, show_time)
     else:
         key = (clean_name.lower(), venue)

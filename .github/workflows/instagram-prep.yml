@@ -1,10 +1,13 @@
 name: Prep Daily Instagram Content
 
 # Runs at 10am CST (4pm UTC) — generates images and pushes to Vercel
-# The post workflow runs 37 minutes later, by which time everything is deployed
+# Retries at 11am and 12pm CST in case the first attempt fails (e.g. GitHub outage)
+# The post workflow chains automatically via workflow_run when prep succeeds
 on:
   schedule:
     - cron: '0 16 * * *'  # 4pm UTC = 10am CST
+    - cron: '0 17 * * *'  # 5pm UTC = 11am CST (retry 1)
+    - cron: '0 18 * * *'  # 6pm UTC = 12pm CST (retry 2)
   workflow_dispatch:
     inputs:
       date:
@@ -40,7 +43,17 @@ jobs:
             echo "target_date=$(date +'%Y-%m-%d')" >> $GITHUB_OUTPUT
           fi
 
+      - name: Check if already prepped
+        id: check-existing
+        run: |
+          TARGET_DATE="${{ steps.date.outputs.target_date }}"
+          if [ -f "instagram/daily_output/${TARGET_DATE}/summary.json" ]; then
+            echo "::notice::Content already prepped for ${TARGET_DATE}. Skipping."
+            echo "skip=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Generate Instagram content
+        if: steps.check-existing.outputs.skip != 'true'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           WEBSITE_BASE_URL: "https://foe-website.vercel.app"
@@ -48,6 +61,7 @@ jobs:
           python -m instagram.generate_daily_post --date ${{ steps.date.outputs.target_date }}
 
       - name: Commit and push generated content
+        if: steps.check-existing.outputs.skip != 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"

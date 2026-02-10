@@ -176,9 +176,18 @@ jobs:
 
           echo "All $TOTAL images verified."
 
+      - name: Check if already posted today
+        id: check-posted
+        run: |
+          TARGET_DATE="${{ steps.date.outputs.target_date }}"
+          if [ -f "instagram/daily_output/${TARGET_DATE}/.posted" ]; then
+            echo "::notice::Already posted for ${TARGET_DATE}. Skipping to prevent duplicate."
+            echo "skip=true" >> $GITHUB_OUTPUT
+          fi
+
       - name: Post to Instagram
         id: post-attempt
-        if: ${{ !inputs.dry_run }}
+        if: ${{ !inputs.dry_run && steps.check-posted.outputs.skip != 'true' }}
         env:
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
@@ -186,7 +195,8 @@ jobs:
           python -m instagram.post_to_instagram --date ${{ steps.date.outputs.target_date }}
 
       - name: Retry post to Instagram (if first attempt failed)
-        if: ${{ !inputs.dry_run && failure() && steps.post-attempt.outcome == 'failure' }}
+        id: retry-post
+        if: ${{ !inputs.dry_run && failure() && steps.post-attempt.outcome == 'failure' && steps.check-posted.outputs.skip != 'true' }}
         env:
           INSTAGRAM_ACCESS_TOKEN: ${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
           INSTAGRAM_ACCOUNT_ID: ${{ secrets.INSTAGRAM_ACCOUNT_ID }}
@@ -194,6 +204,17 @@ jobs:
           echo "First posting attempt failed. Waiting 30s before retry..."
           sleep 30
           python -m instagram.post_to_instagram --date ${{ steps.date.outputs.target_date }}
+
+      - name: Mark as posted
+        if: ${{ !inputs.dry_run && steps.check-posted.outputs.skip != 'true' && (steps.post-attempt.outcome == 'success' || steps.retry-post.outcome == 'success') }}
+        run: |
+          TARGET_DATE="${{ steps.date.outputs.target_date }}"
+          echo "${{ github.run_id }}" > "instagram/daily_output/${TARGET_DATE}/.posted"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "instagram/daily_output/${TARGET_DATE}/.posted"
+          git commit -m "Mark posted to Instagram - ${TARGET_DATE}"
+          git push || true
 
       - name: Dry run (preview only)
         if: ${{ inputs.dry_run }}

@@ -1,0 +1,67 @@
+{
+  "date": "2026-02-11T00:00:00",
+  "date_display": "Wednesday, February 11, 2026",
+  "total_shows": 7,
+  "free_shows": 1,
+  "venues": [
+    "The Velveeta Room",
+    "Rozco's Comedy",
+    "Sunset Strip Comedy",
+    "Cap City Comedy",
+    "Creek and the Cave"
+  ],
+  "images_count": 7,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/a5ca0f5500dcf5ad_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/peter_antoniou_f0586bf8_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/a9776f989ab01d6c_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/52f87a28770ed417_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/9c276581036637c1_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/736cf0da6ac4bd9c_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/ad1a35cc05b267ee_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "Weekly Dose Comedy Showcase",
+      "venue": "Sunset Strip Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "PETER ANTONIOU",
+      "venue": "Cap City Comedy",
+      "time": "7:15 PM",
+      "is_free": false
+    },
+    {
+      "name": "Eastside Open Mic",
+      "venue": "Rozco's Comedy",
+      "time": "8:00 PM",
+      "is_free": true
+    },
+    {
+      "name": "Absolute Show",
+      "venue": "Creek and the Cave",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Sunset Strip Comedy Showcase",
+      "venue": "Sunset Strip Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Hump",
+      "venue": "The Velveeta Room",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "King Of The Creek",
+      "venue": "Creek and the Cave",
+      "time": "10:00 PM",
+      "is_free": false
+    }
+  ]
+}

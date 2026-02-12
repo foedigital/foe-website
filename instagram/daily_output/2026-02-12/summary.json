@@ -1,0 +1,100 @@
+{
+  "date": "2026-02-12T00:00:00",
+  "date_display": "Thursday, February 12, 2026",
+  "total_shows": 12,
+  "free_shows": 0,
+  "venues": [
+    "Sunset Strip Comedy",
+    "Creek and the Cave",
+    "Rozco's Comedy",
+    "The Velveeta Room",
+    "Cap City Comedy"
+  ],
+  "images_count": 10,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/rozcos_comedy/2795044c7c54b9fa_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/a4c2420b70d62196_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/334c535ea201c0f0_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/fiona_cauley_da5f2e06_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/the_red_room_at_cap_city_spenc_21c025d3_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/b0b545f77696cb8d_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/55520ce3f7235458_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/8137a5ea60e8fcc8_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/dd34790110d4e219_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/29643c6ce3d8d9dd_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "Best of Austin Comedy",
+      "venue": "Rozco's Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Adam Mamawala",
+      "venue": "Creek and the Cave",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Austin's Best Stand Up Comedy",
+      "venue": "Rozco's Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "FIONA CAULEY",
+      "venue": "Cap City Comedy",
+      "time": "7:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "THE RED ROOM AT CAP CITY: SPENCER CAVINS",
+      "venue": "Cap City Comedy",
+      "time": "7:45 PM",
+      "is_free": false
+    },
+    {
+      "name": "Deathsquad Secret Show",
+      "venue": "Sunset Strip Comedy",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Austin All-Stars",
+      "venue": "The Velveeta Room",
+      "time": "8:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "Candlelight Comedy",
+      "venue": "Rozco's Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Michael Che",
+      "venue": "Creek and the Cave",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Austin All-Star Comedy",
+      "venue": "Rozco's Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Austin All-Star Comedy: Galentines Edition",
+      "venue": "Rozco's Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Litty Titty Thursdays",
+      "venue": "Creek and the Cave",
+      "time": "11:00 PM",
+      "is_free": false
+    }
+  ]
+}

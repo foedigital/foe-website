@@ -1,0 +1,108 @@
+{
+  "date": "2026-02-13T00:00:00",
+  "date_display": "Friday, February 13, 2026",
+  "total_shows": 13,
+  "free_shows": 0,
+  "venues": [
+    "Cap City Comedy",
+    "Sunset Strip Comedy",
+    "Creek and the Cave",
+    "Secret Level",
+    "Paramount Theatre",
+    "The Velveeta Room",
+    "Rozco's Comedy"
+  ],
+  "images_count": 10,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/paramount_theatre/b1e35f026c7d48ca_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/3ef5dc8ac218180e_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/cap_city_presents_stand-up_con_fbe318d4_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/cap_city_presents_valentines_w_a14562a2_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/a8c7a7993e24fd3e_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/6f018503ad0226eb_ig.jpg",
+    "https://foe-website.vercel.app/images/secret_level/secret_level_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/6e6b03d07e2328fd_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/02ff23c82c07486a_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/7f3d7e2a6fb9854a_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "TREVOR WALLACE",
+      "venue": "Paramount Theatre",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Friday Night Laughs 7pm",
+      "venue": "Rozco's Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Cap City Presents: Stand-Up Confidential",
+      "venue": "Cap City Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Cap City Presents: Valentine's Weekend with Kurt Braunohler",
+      "venue": "Cap City Comedy",
+      "time": "7:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "Comedy Gold",
+      "venue": "Sunset Strip Comedy",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Mike Macrae",
+      "venue": "The Velveeta Room",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Secret Level: Stand-Up Comedy Show",
+      "venue": "Secret Level",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Friday Night Laughs 9pm",
+      "venue": "Rozco's Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Cap City Presents: Stand-Up Confidential",
+      "venue": "Cap City Comedy",
+      "time": "9:15 PM",
+      "is_free": false
+    },
+    {
+      "name": "Cap City Presents: Valentine's Weekend with Kurt Braunohler",
+      "venue": "Cap City Comedy",
+      "time": "9:45 PM",
+      "is_free": false
+    },
+    {
+      "name": "Sunset Strip After Dark Comedy Showcase",
+      "venue": "Sunset Strip Comedy",
+      "time": "10:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Austin All Starsfsdfe",
+      "venue": "The Velveeta Room",
+      "time": "10:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Roast Battle: Austin",
+      "venue": "Creek and the Cave",
+      "time": "11:00 PM",
+      "is_free": false
+    }
+  ]
+}

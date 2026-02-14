@@ -1,0 +1,112 @@
+{
+  "date": "2026-02-14T00:00:00",
+  "date_display": "Saturday, February 14, 2026",
+  "total_shows": 14,
+  "free_shows": 0,
+  "venues": [
+    "Sunset Strip Comedy",
+    "Paramount Theatre",
+    "Cap City Comedy",
+    "Creek and the Cave",
+    "Rozco's Comedy"
+  ],
+  "images_count": 10,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/cap_city_comedy/bananas_podcast_live_c082a8a4_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/3fbcbfa5b8fdeb7b_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/ec2c1fa192a8f732_ig.jpg",
+    "https://foe-website.vercel.app/images/paramount_theatre/54cd51aa87aa088e_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/2f908c029da0137d_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/cap_city_presents_valentines_w_a14562a2_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/the_red_room_at_cap_city_valen_2a0d2483_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/e748ff96666f2322_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/8b56237ff3424f59_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/adb9f5d1825b593c_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "BANANAS PODCAST LIVE",
+      "venue": "Cap City Comedy",
+      "time": "3:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "AJ Valentine's Valentines Extravaganza",
+      "venue": "Creek and the Cave",
+      "time": "5:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Big Texas Comedy Showcase",
+      "venue": "Sunset Strip Comedy",
+      "time": "6:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "CANCELLED - JANE LYNCH AND KATE FLANNERY",
+      "venue": "Paramount Theatre",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Austin All-Star Comedy 7pm",
+      "venue": "Rozco's Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Cap City Presents: Valentine's Weekend with Kurt Braunohler",
+      "venue": "Cap City Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Red Room at Cap City: Valentine's Day with Blair Socci",
+      "venue": "Cap City Comedy",
+      "time": "7:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "Main Course Comedy",
+      "venue": "Sunset Strip Comedy",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Austin All-Star Comedy 9pm",
+      "venue": "Rozco's Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Trevor Wallace: Valentine\u2019s Day Crowd Work Show",
+      "venue": "Rozco's Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Cap City Presents: Valentine's Weekend with Kurt Braunohler",
+      "venue": "Cap City Comedy",
+      "time": "9:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Red Room at Cap City: Valentine's Day with Blair Socci",
+      "venue": "Cap City Comedy",
+      "time": "9:45 PM",
+      "is_free": false
+    },
+    {
+      "name": "Date Night at Sunset Strip",
+      "venue": "Sunset Strip Comedy",
+      "time": "10:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Trevor Wallace: Valentine\u2019s Day Crowd Work Show 11pm",
+      "venue": "Rozco's Comedy",
+      "time": "11:00 PM",
+      "is_free": false
+    }
+  ]
+}

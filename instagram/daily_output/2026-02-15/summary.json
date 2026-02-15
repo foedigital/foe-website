@@ -1,0 +1,73 @@
+{
+  "date": "2026-02-15T00:00:00",
+  "date_display": "Sunday, February 15, 2026",
+  "total_shows": 8,
+  "free_shows": 0,
+  "venues": [
+    "The Velveeta Room",
+    "Creek and the Cave",
+    "Sunset Strip Comedy",
+    "Cap City Comedy"
+  ],
+  "images_count": 8,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/cap_city_comedy/sarper_guven_ba364ce0_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/e606dc7f1b23cdb2_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/christopher_titus_c1a4fd26_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/2046ce0ce4c6a795_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/cap_city_presents_valentines_w_a14562a2_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/7d1203e6e9eca2eb_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/1ad52edd17eaa011_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/0e23b69ce0ea2f5d_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "SARPER GUVEN",
+      "venue": "Cap City Comedy",
+      "time": "3:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "Yikes, Bikes!",
+      "venue": "Creek and the Cave",
+      "time": "6:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "CHRISTOPHER TITUS",
+      "venue": "Cap City Comedy",
+      "time": "6:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Sunset Sundays",
+      "venue": "Sunset Strip Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "CAP CITY PRESENTS: VALENTINE'S WEEKEND WITH KURT BRAUNOHLER",
+      "venue": "Cap City Comedy",
+      "time": "7:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "Main Course Comedy",
+      "venue": "Creek and the Cave",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Cocktails and Comedy",
+      "venue": "The Velveeta Room",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Live at Sunset Strip: Comedy Showcase",
+      "venue": "Sunset Strip Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    }
+  ]
+}

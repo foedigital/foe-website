@@ -1,0 +1,21 @@
+{
+  "date": "2026-02-16T00:00:00",
+  "date_display": "Monday, February 16, 2026",
+  "total_shows": 1,
+  "free_shows": 0,
+  "venues": [
+    "The Velveeta Room"
+  ],
+  "images_count": 1,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/the_velveeta_room/26fd0c5bde737931_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "Power Bomb",
+      "venue": "The Velveeta Room",
+      "time": "8:00 PM",
+      "is_free": false
+    }
+  ]
+}

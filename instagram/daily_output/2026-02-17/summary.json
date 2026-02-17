@@ -1,0 +1,44 @@
+{
+  "date": "2026-02-17T00:00:00",
+  "date_display": "Tuesday, February 17, 2026",
+  "total_shows": 4,
+  "free_shows": 1,
+  "venues": [
+    "Cap City Comedy",
+    "Vulcan Gas Company",
+    "Sunset Strip Comedy"
+  ],
+  "images_count": 4,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/71bded6d5965d715_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/open_mic_night_d801caf3_ig.jpg",
+    "https://foe-website.vercel.app/images/vulcan_gas_company/5fd5ace3b92a606a_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/af19c2d762d8cbca_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "The Drop In Stand-Up Comedy Show",
+      "venue": "Sunset Strip Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Open Mic Night",
+      "venue": "Cap City Comedy",
+      "time": "7:30 PM",
+      "is_free": true
+    },
+    {
+      "name": "The Kill Tony Regulars",
+      "venue": "Vulcan Gas Company",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Austin Comedy Killers",
+      "venue": "Sunset Strip Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    }
+  ]
+}

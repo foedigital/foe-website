@@ -1,0 +1,67 @@
+{
+  "date": "2026-02-18T00:00:00",
+  "date_display": "Wednesday, February 18, 2026",
+  "total_shows": 7,
+  "free_shows": 1,
+  "venues": [
+    "Rozco's Comedy",
+    "The Velveeta Room",
+    "Creek and the Cave",
+    "Sunset Strip Comedy",
+    "Cap City Comedy"
+  ],
+  "images_count": 7,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/c91d4de0de1e5b48_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/jeff_dean_and_jordan_thewlis_l_88a822a6_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/a9776f989ab01d6c_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/9dd7945d54531b0f_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/9c276581036637c1_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/388c116bd7e3c0cd_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/2a395971a373daad_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "Dope City",
+      "venue": "Sunset Strip Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "JEFF DEAN AND JORDAN THEWLIS LIVE",
+      "venue": "Cap City Comedy",
+      "time": "7:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "Eastside Open Mic",
+      "venue": "Rozco's Comedy",
+      "time": "8:00 PM",
+      "is_free": true
+    },
+    {
+      "name": "Some Of This Is Live",
+      "venue": "Creek and the Cave",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Sunset Strip Comedy Showcase",
+      "venue": "Sunset Strip Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Hump",
+      "venue": "The Velveeta Room",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Comedians of The Fold",
+      "venue": "Creek and the Cave",
+      "time": "10:00 PM",
+      "is_free": false
+    }
+  ]
+}

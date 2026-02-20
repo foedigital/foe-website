@@ -1,0 +1,114 @@
+{
+  "date": "2026-02-20T00:00:00",
+  "date_display": "Friday, February 20, 2026",
+  "total_shows": 14,
+  "free_shows": 0,
+  "venues": [
+    "Vulcan Gas Company",
+    "Sunset Strip Comedy",
+    "Creek and the Cave",
+    "Secret Level",
+    "Cap City Comedy",
+    "Rozco's Comedy",
+    "The Velveeta Room"
+  ],
+  "images_count": 10,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/vulcan_gas_company/4156a06335c2012a_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/3ef5dc8ac218180e_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/90761292c823bca1_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/corey_b_96b640fc_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/the_red_room_at_cap_city_matt__4adcce60_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/0fd3c602fa506236_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/ce0b3617b94b886a_ig.jpg",
+    "https://foe-website.vercel.app/images/secret_level/17c106871c9a4480_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/c2be8e9eef5306fe_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/cec9c9c8ee9ac5dd_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "Crystal Marie - The \"Call Me Mommy\u201d Tour",
+      "venue": "Vulcan Gas Company",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Friday Night Laughs 7pm",
+      "venue": "Rozco's Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Pete Lee",
+      "venue": "Creek and the Cave",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Corey B",
+      "venue": "Cap City Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Red Room at Cap City: Matt Kirshen",
+      "venue": "Cap City Comedy",
+      "time": "7:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "Comedy Gold",
+      "venue": "Sunset Strip Comedy",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Austin All-Stars, a comedy show featuring the best comics in town,",
+      "venue": "The Velveeta Room",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Secret Level: Stand-Up Comedy Show",
+      "venue": "Secret Level",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Friday Night Laughs 9pm",
+      "venue": "Rozco's Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Corey B",
+      "venue": "Cap City Comedy",
+      "time": "9:15 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Red Room at Cap City: Matt Kirshen",
+      "venue": "Cap City Comedy",
+      "time": "9:45 PM",
+      "is_free": false
+    },
+    {
+      "name": "Sunset Strip After Dark Comedy Showcase",
+      "venue": "Sunset Strip Comedy",
+      "time": "10:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Freaky Comedy!",
+      "venue": "The Velveeta Room",
+      "time": "10:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Big Naturals",
+      "venue": "Creek and the Cave",
+      "time": "11:00 PM",
+      "is_free": false
+    }
+  ]
+}

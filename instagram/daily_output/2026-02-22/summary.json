@@ -1,0 +1,60 @@
+{
+  "date": "2026-02-22T00:00:00",
+  "date_display": "Sunday, February 22, 2026",
+  "total_shows": 6,
+  "free_shows": 0,
+  "venues": [
+    "The Velveeta Room",
+    "Paramount Theatre",
+    "Creek and the Cave",
+    "Sunset Strip Comedy",
+    "Cap City Comedy"
+  ],
+  "images_count": 6,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/paramount_theatre/a25a01f360ce3343_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/c5d0ff6f5eb28400_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/corey_b_96b640fc_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/2813f48c45b5c0c6_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/2dd12930224caa68_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/0e23b69ce0ea2f5d_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "MARY BETH BARONE",
+      "venue": "Paramount Theatre",
+      "time": "6:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "BBC - Big Book Club",
+      "venue": "Sunset Strip Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "COREY B",
+      "venue": "Cap City Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Joe List & Friends",
+      "venue": "Creek and the Cave",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Cocktails and Comedy",
+      "venue": "The Velveeta Room",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Live at Sunset Strip: Comedy Showcase",
+      "venue": "Sunset Strip Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    }
+  ]
+}

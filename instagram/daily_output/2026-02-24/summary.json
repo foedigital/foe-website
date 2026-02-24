@@ -1,0 +1,68 @@
+{
+  "date": "2026-02-24T00:00:00",
+  "date_display": "Tuesday, February 24, 2026",
+  "total_shows": 7,
+  "free_shows": 1,
+  "venues": [
+    "Cap City Comedy",
+    "Creek and the Cave",
+    "Paramount Theatre",
+    "Sunset Strip Comedy",
+    "Vulcan Gas Company",
+    "Rozco's Comedy"
+  ],
+  "images_count": 7,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/71bded6d5965d715_ig.jpg",
+    "https://foe-website.vercel.app/images/paramount_theatre/fc9237e68f50d8fd_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/open_mic_night_d801caf3_ig.jpg",
+    "https://foe-website.vercel.app/images/vulcan_gas_company/5fd5ace3b92a606a_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/e1d558ded71033a7_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/af19c2d762d8cbca_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/ab00d69cc18f7e85_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "The Drop In Stand-Up Comedy Show",
+      "venue": "Sunset Strip Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "CHRIS FLEMING",
+      "venue": "Paramount Theatre",
+      "time": "7:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "Open Mic Night",
+      "venue": "Cap City Comedy",
+      "time": "7:30 PM",
+      "is_free": true
+    },
+    {
+      "name": "The Kill Tony Regulars",
+      "venue": "Vulcan Gas Company",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Tuesday Gigante",
+      "venue": "Rozco's Comedy",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Austin Comedy Killers",
+      "venue": "Sunset Strip Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Estando con Francisco \u2013 Micr\u00f3fono Abierto",
+      "venue": "Creek and the Cave",
+      "time": "10:00 PM",
+      "is_free": false
+    }
+  ]
+}

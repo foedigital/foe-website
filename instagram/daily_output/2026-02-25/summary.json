@@ -1,0 +1,75 @@
+{
+  "date": "2026-02-25T00:00:00",
+  "date_display": "Wednesday, February 25, 2026",
+  "total_shows": 8,
+  "free_shows": 1,
+  "venues": [
+    "Paramount Theatre",
+    "Creek and the Cave",
+    "Cap City Comedy",
+    "Sunset Strip Comedy",
+    "The Velveeta Room",
+    "Rozco's Comedy"
+  ],
+  "images_count": 8,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/a3672914849c9726_ig.jpg",
+    "https://foe-website.vercel.app/images/paramount_theatre/6d59018222b2f1d0_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/mike_goodwin_d957a80f_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/a9776f989ab01d6c_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/6428d337c50f4ab1_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/the_red_room_at_cap_city_stand_b722e954_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/9c276581036637c1_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/1fcc0efd374c509e_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "Acting-Off",
+      "venue": "Sunset Strip Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "ROB ANDERSON",
+      "venue": "Paramount Theatre",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "MIKE GOODWIN",
+      "venue": "Cap City Comedy",
+      "time": "7:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "Eastside Open Mic",
+      "venue": "Rozco's Comedy",
+      "time": "8:00 PM",
+      "is_free": true
+    },
+    {
+      "name": "Comedy Powered by BILT",
+      "venue": "Creek and the Cave",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "THE RED ROOM AT CAP CITY: STAND-UP 101 GRADUATION SHOWCASE",
+      "venue": "Cap City Comedy",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Sunset Strip Comedy Showcase",
+      "venue": "Sunset Strip Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Hump",
+      "venue": "The Velveeta Room",
+      "time": "9:00 PM",
+      "is_free": false
+    }
+  ]
+}

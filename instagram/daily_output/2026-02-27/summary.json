@@ -1,0 +1,95 @@
+{
+  "date": "2026-02-27T00:00:00",
+  "date_display": "Friday, February 27, 2026",
+  "total_shows": 11,
+  "free_shows": 0,
+  "venues": [
+    "Sunset Strip Comedy",
+    "Vulcan Gas Company",
+    "Secret Level",
+    "Cap City Comedy",
+    "Rozco's Comedy",
+    "Creek and the Cave",
+    "The Velveeta Room"
+  ],
+  "images_count": 9,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/vulcan_gas_company/d64638c50fb18d48_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/3ef5dc8ac218180e_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/9740e04893e3ffe5_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/jr_de_guzman_f89bd537_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/the_red_room_at_cap_city_dean__80ba7cfb_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/a8c7a7993e24fd3e_ig.jpg",
+    "https://foe-website.vercel.app/images/secret_level/17c106871c9a4480_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/3e99b334635e951a_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/6e6b03d07e2328fd_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "Lara Beitz Live!",
+      "venue": "Vulcan Gas Company",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Friday Night Laughs 7pm",
+      "venue": "Rozco's Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "David Nihill",
+      "venue": "Creek and the Cave",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "JR De Guzman",
+      "venue": "Cap City Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Red Room at Cap City: Dean Stanfield",
+      "venue": "Cap City Comedy",
+      "time": "7:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "Comedy Gold",
+      "venue": "Sunset Strip Comedy",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Secret Level: Stand-Up Comedy Show",
+      "venue": "Secret Level",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "All Star Weekend   Night T",
+      "venue": "The Velveeta Room",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Friday Night Laughs 9pm",
+      "venue": "Rozco's Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "JR De Guzman",
+      "venue": "Cap City Comedy",
+      "time": "9:15 PM",
+      "is_free": false
+    },
+    {
+      "name": "Sunset Strip After Dark Comedy Showcase",
+      "venue": "Sunset Strip Comedy",
+      "time": "10:00 PM",
+      "is_free": false
+    }
+  ]
+}

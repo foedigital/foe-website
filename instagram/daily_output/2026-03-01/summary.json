@@ -1,0 +1,52 @@
+{
+  "date": "2026-03-01T00:00:00",
+  "date_display": "Sunday, March 01, 2026",
+  "total_shows": 5,
+  "free_shows": 0,
+  "venues": [
+    "The Velveeta Room",
+    "Creek and the Cave",
+    "Sunset Strip Comedy",
+    "Cap City Comedy"
+  ],
+  "images_count": 5,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/creek_and_the_cave/27bc57550c13307b_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/2046ce0ce4c6a795_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/jr_de_guzman_f89bd537_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/2dd12930224caa68_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/0e23b69ce0ea2f5d_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "TRAUMA BOND WITH ME: A MENTAL HEALTH COMEDY SHOW!",
+      "venue": "Creek and the Cave",
+      "time": "6:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Sunset Sundays",
+      "venue": "Sunset Strip Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "JR DE GUZMAN",
+      "venue": "Cap City Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Cocktails and Comedy",
+      "venue": "The Velveeta Room",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Live at Sunset Strip: Comedy Showcase",
+      "venue": "Sunset Strip Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    }
+  ]
+}

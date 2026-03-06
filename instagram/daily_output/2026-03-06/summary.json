@@ -1,0 +1,95 @@
+{
+  "date": "2026-03-06T00:00:00",
+  "date_display": "Friday, March 06, 2026",
+  "total_shows": 11,
+  "free_shows": 0,
+  "venues": [
+    "Secret Level",
+    "Rozco's Comedy",
+    "Vulcan Gas Company",
+    "Cap City Comedy",
+    "Creek and the Cave",
+    "Sunset Strip Comedy",
+    "The Velveeta Room"
+  ],
+  "images_count": 9,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/vulcan_gas_company/49869676173aad13_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/3aec4743cedb4e2c_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/3ef5dc8ac218180e_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/kennedy_6a548654_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/the_red_room_at_cap_city_jessi_5ab35de6_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/a8c7a7993e24fd3e_ig.jpg",
+    "https://foe-website.vercel.app/images/secret_level/17c106871c9a4480_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/1aa25daeca1c1f28_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/8f01d0f53046e1e2_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "Jerry Wayne - Live!",
+      "venue": "Vulcan Gas Company",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Are You Garbage: Back On The Block Tour",
+      "venue": "Creek and the Cave",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Friday Night Laughs 7pm",
+      "venue": "Rozco's Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Kennedy",
+      "venue": "Cap City Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Red Room at Cap City: Jessica Michelle Singleton",
+      "venue": "Cap City Comedy",
+      "time": "7:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "Comedy Gold",
+      "venue": "Sunset Strip Comedy",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Secret Level: Stand-Up Comedy Show",
+      "venue": "Secret Level",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Austin All-Stars, a comedy show featuring the best comics in town,",
+      "venue": "The Velveeta Room",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Friday Night Laughs 9pm",
+      "venue": "Rozco's Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Red Room at Cap City: Jessica Michelle Singleton",
+      "venue": "Cap City Comedy",
+      "time": "9:45 PM",
+      "is_free": false
+    },
+    {
+      "name": "Sunset Strip After Dark Comedy Showcase",
+      "venue": "Sunset Strip Comedy",
+      "time": "10:00 PM",
+      "is_free": false
+    }
+  ]
+}

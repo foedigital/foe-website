@@ -1,0 +1,52 @@
+{
+  "date": "2026-03-08T00:00:00",
+  "date_display": "Sunday, March 08, 2026",
+  "total_shows": 5,
+  "free_shows": 0,
+  "venues": [
+    "Vulcan Gas Company",
+    "Sunset Strip Comedy",
+    "The Velveeta Room",
+    "Cap City Comedy"
+  ],
+  "images_count": 5,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/c5d0ff6f5eb28400_ig.jpg",
+    "https://foe-website.vercel.app/images/vulcan_gas_company/b6416568285862b1_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/natalie_cuomo_dbf15dda_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/2dd12930224caa68_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/c21c8ddaad769619_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "BBC - Big Book Club",
+      "venue": "Sunset Strip Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Heavy Hitters ft. Joe Begley",
+      "venue": "Vulcan Gas Company",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "NATALIE CUOMO",
+      "venue": "Cap City Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Cocktails and Comedy",
+      "venue": "The Velveeta Room",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Live at Sunset Strip: Comedy Showcase",
+      "venue": "Sunset Strip Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    }
+  ]
+}

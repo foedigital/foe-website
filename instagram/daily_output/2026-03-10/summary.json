@@ -1,0 +1,44 @@
+{
+  "date": "2026-03-10T00:00:00",
+  "date_display": "Tuesday, March 10, 2026",
+  "total_shows": 4,
+  "free_shows": 0,
+  "venues": [
+    "Sunset Strip Comedy",
+    "Vulcan Gas Company",
+    "Rozco's Comedy"
+  ],
+  "images_count": 4,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/71bded6d5965d715_ig.jpg",
+    "https://foe-website.vercel.app/images/vulcan_gas_company/5fd5ace3b92a606a_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/29643c6ce3d8d9dd_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/2e6db4ddcffed62b_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "The Drop In Stand-Up Comedy Show",
+      "venue": "Sunset Strip Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Kill Tony Regulars",
+      "venue": "Vulcan Gas Company",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Austin All-Star Comedy",
+      "venue": "Rozco's Comedy",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Austin Comedy Killers",
+      "venue": "Sunset Strip Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    }
+  ]
+}

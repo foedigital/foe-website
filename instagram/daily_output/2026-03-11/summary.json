@@ -1,0 +1,60 @@
+{
+  "date": "2026-03-11T00:00:00",
+  "date_display": "Wednesday, March 11, 2026",
+  "total_shows": 6,
+  "free_shows": 1,
+  "venues": [
+    "Sunset Strip Comedy",
+    "Cap City Comedy",
+    "Creek and the Cave",
+    "Rozco's Comedy",
+    "The Velveeta Room"
+  ],
+  "images_count": 6,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/a3672914849c9726_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/kristin_key_3001261a_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/a9776f989ab01d6c_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/9c276581036637c1_ig.jpg",
+    "https://foe-website.vercel.app/images/the_velveeta_room/1fcc0efd374c509e_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/3a0b18bc67232ef5_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "Acting-Off",
+      "venue": "Sunset Strip Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Kristin Key",
+      "venue": "Cap City Comedy",
+      "time": "7:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "Eastside Open Mic",
+      "venue": "Rozco's Comedy",
+      "time": "8:00 PM",
+      "is_free": true
+    },
+    {
+      "name": "Sunset Strip Comedy Showcase",
+      "venue": "Sunset Strip Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Hump on Wednesday March 11 at 9 PM",
+      "venue": "The Velveeta Room",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "You Laugh You Leave Live On Stage",
+      "venue": "Creek and the Cave",
+      "time": "10:00 PM",
+      "is_free": false
+    }
+  ]
+}

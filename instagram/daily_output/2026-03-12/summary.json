@@ -1,0 +1,73 @@
+{
+  "date": "2026-03-12T00:00:00",
+  "date_display": "Thursday, March 12, 2026",
+  "total_shows": 8,
+  "free_shows": 0,
+  "venues": [
+    "Creek and the Cave",
+    "Sunset Strip Comedy",
+    "Cap City Comedy",
+    "Rozco's Comedy"
+  ],
+  "images_count": 8,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/rozcos_comedy/05b4d900c0e6cf48_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/kristin_key_3001261a_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/b0b545f77696cb8d_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/the_red_room_at_cap_city_cj_la_8675dbd3_ig.jpg",
+    "https://foe-website.vercel.app/images/rozcos_comedy/29643c6ce3d8d9dd_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/33cfae2b76c44779_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/f4f9c82d4d6855f5_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/7876bb66f891eb39_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "Best in Austin Comedy",
+      "venue": "Rozco's Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "KRISTIN KEY",
+      "venue": "Cap City Comedy",
+      "time": "7:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "Deathsquad Secret Show",
+      "venue": "Sunset Strip Comedy",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "THE RED ROOM AT CAP CITY: CJ LANDRY",
+      "venue": "Cap City Comedy",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Austin All-Star Comedy",
+      "venue": "Rozco's Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Worldwide High Tic Tac Toe Championship",
+      "venue": "Creek and the Cave",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Battlicious: Freestyle Comedy Rap Battle",
+      "venue": "Creek and the Cave",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "DJ Mira Farenheit",
+      "venue": "Creek and the Cave",
+      "time": "11:00 PM",
+      "is_free": false
+    }
+  ]
+}

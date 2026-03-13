@@ -1,0 +1,85 @@
+{
+  "date": "2026-03-13T00:00:00",
+  "date_display": "Friday, March 13, 2026",
+  "total_shows": 10,
+  "free_shows": 0,
+  "venues": [
+    "Rozco's Comedy",
+    "Sunset Strip Comedy",
+    "Secret Level",
+    "Cap City Comedy",
+    "Creek and the Cave"
+  ],
+  "images_count": 7,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/rozcos_comedy/3ef5dc8ac218180e_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/luenell_8fac90de_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/the_red_room_at_cap_city_mo_ma_cc81da42_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/a8c7a7993e24fd3e_ig.jpg",
+    "https://foe-website.vercel.app/images/secret_level/17c106871c9a4480_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/d202aa7971f3f3c3_ig.jpg",
+    "https://foe-website.vercel.app/images/creek_and_the_cave/f0a545695f2c5aef_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "Friday Night Laughs 7pm",
+      "venue": "Rozco's Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Luenell",
+      "venue": "Cap City Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Red Room at Cap City: Mo Mandel",
+      "venue": "Cap City Comedy",
+      "time": "7:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "Comedy Gold",
+      "venue": "Sunset Strip Comedy",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Secret Level: Stand-Up Comedy Show",
+      "venue": "Secret Level",
+      "time": "8:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Friday Night Laughs 9pm",
+      "venue": "Rozco's Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Luenell",
+      "venue": "Cap City Comedy",
+      "time": "9:15 PM",
+      "is_free": false
+    },
+    {
+      "name": "The Red Room at Cap City: Mo Mandel",
+      "venue": "Cap City Comedy",
+      "time": "9:45 PM",
+      "is_free": false
+    },
+    {
+      "name": "Sunset Strip After Dark Comedy Showcase",
+      "venue": "Sunset Strip Comedy",
+      "time": "10:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Banana Phone: Unofficial SXSW Edition",
+      "venue": "Creek and the Cave",
+      "time": "11:55 PM",
+      "is_free": false
+    }
+  ]
+}

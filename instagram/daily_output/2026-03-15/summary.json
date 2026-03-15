@@ -1,0 +1,49 @@
+{
+  "date": "2026-03-15T00:00:00",
+  "date_display": "Sunday, March 15, 2026",
+  "total_shows": 5,
+  "free_shows": 0,
+  "venues": [
+    "Cap City Comedy",
+    "Sunset Strip Comedy"
+  ],
+  "images_count": 4,
+  "image_urls": [
+    "https://foe-website.vercel.app/images/cap_city_comedy/shapel_lacey_17149cd8_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/2046ce0ce4c6a795_ig.jpg",
+    "https://foe-website.vercel.app/images/cap_city_comedy/the_red_room_at_cap_city_mo_ma_cc81da42_ig.jpg",
+    "https://foe-website.vercel.app/images/sunset_strip_comedy/c21c8ddaad769619_ig.jpg"
+  ],
+  "shows": [
+    {
+      "name": "Shapel Lacey",
+      "venue": "Cap City Comedy",
+      "time": "4:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "Sunset Sundays",
+      "venue": "Sunset Strip Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "Shapel Lacey",
+      "venue": "Cap City Comedy",
+      "time": "7:00 PM",
+      "is_free": false
+    },
+    {
+      "name": "THE RED ROOM AT CAP CITY: MO MANDEL",
+      "venue": "Cap City Comedy",
+      "time": "7:30 PM",
+      "is_free": false
+    },
+    {
+      "name": "Live at Sunset Strip: Comedy Showcase",
+      "venue": "Sunset Strip Comedy",
+      "time": "9:00 PM",
+      "is_free": false
+    }
+  ]
+}
